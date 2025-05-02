@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Vertical Navbar</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        display: flex;
+        background-color: #f5f6fa;
+      }
+
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        background-color: white;
+        transition: width 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        width: 70px;
+      }
+
+      .navbar.expanded {
+        width: 200px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        cursor: pointer;
+      }
+
+      .logo-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #444 0%, #000 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo-icon::before {
+        content: "";
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+
+      .logo-text {
+        margin-left: 15px;
+        font-weight: bold;
+        font-size: 18px;
+        display: none;
+      }
+
+      .navbar.expanded .logo-text {
+        display: block;
+      }
+
+      .menu-toggle {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        cursor: pointer;
+        margin-bottom: 20px;
+      }
+
+      .hamburger {
+        width: 24px;
+        height: 20px;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .hamburger span {
+        height: 3px;
+        width: 100%;
+        background-color: #333;
+        border-radius: 3px;
+        transition: 0.3s;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        color: #555;
+        text-decoration: none;
+        transition: 0.2s;
+        cursor: pointer;
+      }
+
+      .nav-item:hover {
+        background-color: #f0f0f0;
+      }
+
+      .nav-item.active {
+        color: #333;
+        border-left: 3px solid #333;
+        background-color: #f0f0f0;
+      }
+
+      .nav-icon {
+        font-size: 22px;
+        min-width: 30px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .nav-text {
+        margin-left: 15px;
+        font-size: 16px;
+        white-space: nowrap;
+        opacity: 0;
+        display: none;
+      }
+
+      .navbar.expanded .nav-text {
+        opacity: 1;
+        display: block;
+      }
+
+      .content {
+        margin-left: 70px;
+        padding: 20px;
+        width: 100%;
+        transition: margin-left 0.3s ease;
+      }
+
+      .content.pushed {
+        margin-left: 200px;
+      }
+
+      /* Tablet view */
+      @media screen and (min-width: 769px) and (max-width: 1024px) {
+        .navbar {
+          width: 60px;
+        }
+
+        .navbar.expanded {
+          width: 200px;
+        }
+
+        .content {
+          margin-left: 60px;
+        }
+
+        .content.pushed {
+          margin-left: 200px;
+        }
+      }
+
+      /* Mobile view */
+      @media screen and (max-width: 768px) {
+        .navbar {
+          width: 60px;
+        }
+
+        .navbar.expanded {
+          width: 100%;
+        }
+
+        .content {
+          margin-left: 60px;
+        }
+
+        .content.pushed {
+          margin-left: 60px;
+          opacity: 0.3;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar" id="navbar">
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <span class="logo-text">Intellecta</span>
+      </div>
+      <div class="menu-toggle" id="menu-toggle">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#" class="nav-item active">
+          <div class="nav-icon"><i class="fas fa-th-large"></i></div>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"><i class="fas fa-graduation-cap"></i></div>
+          <span class="nav-text">Classes</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+          <span class="nav-text">Assignments</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+          <span class="nav-text">Analytics</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"><i class="fas fa-calendar"></i></div>
+          <span class="nav-text">Calendar</span>
+        </a>
+      </div>
+    </nav>
+
+    <main class="content" id="content">
+      <h1>Welcome to Intellecta</h1>
+      <p>Click the hamburger menu to toggle the navbar.</p>
+      <div
+        style="
+          margin-top: 20px;
+          padding: 20px;
+          background-color: white;
+          border-radius: 10px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <h2>Main Content Area</h2>
+        <p>This is where your dashboard content would go.</p>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const menuToggle = document.getElementById("menu-toggle");
+        const navbar = document.getElementById("navbar");
+        const content = document.getElementById("content");
+
+        menuToggle.addEventListener("click", function () {
+          navbar.classList.toggle("expanded");
+          content.classList.toggle("pushed");
+        });
+
+        // Also make the logo toggle the menu
+        document.querySelector(".logo").addEventListener("click", function () {
+          navbar.classList.toggle("expanded");
+          content.classList.toggle("pushed");
+        });
+
+        // Add active class to nav items when clicked
+        const navItems = document.querySelectorAll(".nav-item");
+        navItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            navItems.forEach((i) => i.classList.remove("active"));
+            this.classList.add("active");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
