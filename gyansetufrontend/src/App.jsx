@@ -5,6 +5,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,16 +21,24 @@ import ProtectedRoute from "./components/Auth/ProtectedRoute";
 // Role-based Dashboard Pages
 import StudentDashboard from "./pages/dashboards/StudentDashboard";
 import TeacherDashboard from "./pages/dashboards/TeacherDashboard";
-//import ParentDashboard from "./pages/dashboards/ParentDashboard";
-//import InstituteDashboard from "./pages/dashboards/InstituteDashboard";
+import ParentDashboard from "./pages/dashboards/ParentDashboard";
+import InstituteDashboard from "./pages/dashboards/InstituteDashboard";
+
+// Teacher Features
+import AssignmentPage from "./components/teacher/Assignments/AssignmentPage";
+import AIGenerate from "./components/teacher/Assignments/AIGnerate";
+import TeacherMainCalender from "./components/teacher/calender/MainCalenderTeacher";
 
 // Auth Service
-import { authService } from "../services/api";
+import authService from "./services/api/authService";
 
-function App() {
+// Wrapper component to handle location-based re-rendering
+function AppContent() {
+  const location = useLocation();
+
   // Helper function to redirect based on user role
   const RoleBasedRedirect = () => {
-    const user = authService.getUser();
+    const user = authService.getCurrentUser();
 
     if (!user) {
       return <Navigate to="/login" replace />;
@@ -51,51 +60,119 @@ function App() {
   };
 
   return (
-    <Router>
+    <>
       <ToastContainer position="top-right" autoClose={5000} />
       <Routes>
         {/* Public Routes */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-        Role-based Protected Routes
         <Route
-          path="/student"
+          path="/login"
           element={
-            <ProtectedRoute>
+            authService.isAuthenticated() ? (
+              <RoleBasedRedirect />
+            ) : (
+              <LoginPage />
+            )
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            authService.isAuthenticated() ? (
+              <RoleBasedRedirect />
+            ) : (
+              <SignupPage />
+            )
+          }
+        />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+        {/* Teacher Routes */}
+        <Route
+          key={location.pathname}
+          path="/teacher"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/create-assignment"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <AssignmentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/generate-assignment"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <AIGenerate />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/analytics"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/calendar"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherMainCalender />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Other Role Routes */}
+        <Route
+          path="/student/*"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
               <StudentDashboard />
             </ProtectedRoute>
           }
         />
         <Route
-          path="/teacher"
+          path="/parent/*"
           element={
-            <ProtectedRoute>
-              <TeacherDashboard />
-            </ProtectedRoute>
-          }
-        />
-        {/* <Route
-          path="/parent"
-          element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["parent"]}>
               <ParentDashboard />
             </ProtectedRoute>
           }
-        /> */}
-        {/* <Route
-          path="/institute"
+        />
+        <Route
+          path="/institute/*"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["institute"]}>
               <InstituteDashboard />
             </ProtectedRoute>
           }
-        /> */}
+        />
+
         {/* Root path redirects based on user role */}
         <Route path="/" element={<RoleBasedRedirect />} />
+
         {/* Redirect any unknown routes to role-based dashboard or login */}
         <Route path="*" element={<RoleBasedRedirect />} />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

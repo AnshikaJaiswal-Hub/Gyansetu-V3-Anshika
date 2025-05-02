@@ -6,20 +6,23 @@ import {
 } from "react-icons/io5";
 import Navbar from "../../components/teacher/TeacherNavbar";
 import ButtonsDemo from "../../components/teacher/TopButtons";
+import { useNavigate } from 'react-router-dom';
+import authService from '../../services/api/authService';
 
 import ClassOverview from "../../components/teacher/ClassOverview";
 import ClassPerformance from "../../components/teacher/ClassPerformance";
 import NeedsAttention from "../../components/teacher/NeedsAttention";
 
-const TeacherDashBoard = () => {
+const TeacherDashboard = () => {
   const [navExpanded, setNavExpanded] = useState(false);
   const [greeting, setGreeting] = useState("");
-  const [username, setUsername] = useState("Teacher");
-  const [selectedClass, setSelectedClass] = useState("6");
-  const [selectedSection, setSelectedSection] = useState("A");
   const [darkMode, setDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
+  const [selectedClass, setSelectedClass] = useState("6");
+  const [selectedSection, setSelectedSection] = useState("A");
+  const navigate = useNavigate();
+  const user = authService.getCurrentUser();
 
   // Mock data for different classes and sections
   const classData = {
@@ -291,35 +294,38 @@ const TeacherDashBoard = () => {
     setSelectedSection(e.target.value);
   };
 
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/login');
+  };
+
   const classKey = `${selectedClass}-${selectedSection}`;
   const currentClassData = classData[classKey] || classData["6-A"];
 
   const UtilityIcons = () => (
-    <div className="flex items-center space-x-3">
+    <div className="flex items-center space-x-4">
       <button
-        className={`w-10 h-10 rounded-full ${
-          darkMode ? "bg-black" : "bg-gray-300"
-        } flex items-center justify-center shadow-lg hover:bg-gray-400 transition-colors`}
         onClick={toggleTheme}
+        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
       >
         {darkMode ? (
-          <IoSunnyOutline className="text-white text-xl font-bold" />
+          <IoSunnyOutline className="text-xl" />
         ) : (
-          <IoMoonOutline className="text-gray-700 text-xl font-bold" />
+          <IoMoonOutline className="text-xl" />
         )}
       </button>
       <button
-        className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center shadow-lg hover:bg-gray-400 transition-colors overflow-hidden"
         onClick={handleProfileClick}
+        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
       >
         {profileImage ? (
           <img
             src={profileImage}
             alt="Profile"
-            className="w-full h-full object-cover"
+            className="w-6 h-6 rounded-full"
           />
         ) : (
-          <IoPersonCircleOutline className="text-gray-700 text-xl font-bold" />
+          <IoPersonCircleOutline className="text-xl" />
         )}
       </button>
     </div>
@@ -341,22 +347,28 @@ const TeacherDashBoard = () => {
         >
           <div className="p-6 md:p-8">
             {!isMobile && (
-              <div className="flex justify-end mb-4">
-                <UtilityIcons />
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-semibold text-gray-800">
+                    {greeting}, {user?.firstName || 'Teacher'}!
+                  </h1>
+                  <h2 className="text-gray-500 text-lg mt-2">
+                    Let's make this day productive.
+                  </h2>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <UtilityIcons />
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
             )}
-            <div className="mb-10">
-              <div className="flex flex-col items-start mb-2">
-                <h1 className="text-3xl md:text-6xl font-semibold text-gray-800">
-                  {greeting}, {username}!
-                </h1>
-                <h2 className="text-gray-400 text-lg mt-2">
-                  Let's make this day productive.
-                </h2>
-              </div>
-            </div>
 
-            {/* Create contact schedule */}
+            {/* Quick Action Buttons */}
             <ButtonsDemo />
 
             {/* Class Overview and Performance */}
@@ -377,9 +389,7 @@ const TeacherDashBoard = () => {
                 </div>
                 <div className="md:col-span-1 tablet:col-span-1 flex flex-col gap-6">
                   <NeedsAttention
-                    studentsNeedingAttention={
-                      currentClassData.studentsNeedingAttention
-                    }
+                    studentsNeedingAttention={currentClassData.studentsNeedingAttention}
                     selectedClass={selectedClass}
                     selectedSection={selectedSection}
                     allStudentsNeedingAttention={allStudentsNeedingAttention}
@@ -390,6 +400,7 @@ const TeacherDashBoard = () => {
           </div>
         </div>
       </div>
+
       <style jsx>{`
         @media (max-width: 767px) {
           .p-6 {
@@ -397,8 +408,7 @@ const TeacherDashBoard = () => {
             flex-direction: column;
             align-items: flex-start;
           }
-          h1,
-          h2 {
+          h1, h2 {
             text-align: left;
           }
         }
@@ -409,8 +419,7 @@ const TeacherDashBoard = () => {
           .tablet\\:col-span-1 {
             grid-column: span 1 / span 1;
           }
-          .p-6,
-          .md\\:p-8 {
+          .p-6, .md\\:p-8 {
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
@@ -419,13 +428,10 @@ const TeacherDashBoard = () => {
           .flex-1 {
             margin-left: ${navExpanded ? "330px" : "100px"};
           }
-          .mb-10,
-          .p-5 {
+          .mb-10, .p-5 {
             width: 100%;
           }
-          .mb-4,
-          .mb-6,
-          .mt-6 {
+          .mb-4, .mb-6, .mt-6 {
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -440,4 +446,4 @@ const TeacherDashBoard = () => {
   );
 };
 
-export default TeacherDashBoard;
+export default TeacherDashboard;

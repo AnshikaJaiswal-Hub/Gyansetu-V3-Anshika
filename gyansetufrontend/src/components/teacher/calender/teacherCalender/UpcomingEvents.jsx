@@ -4,11 +4,14 @@ import { Calendar } from "lucide-react";
 import EventTypeBadge from "./badges/EventTypeBadge";
 
 const UpcomingEvents = ({
-  filteredEvents,
+  filteredEvents = [],
   handleEventClick,
   getEventColorClass,
 }) => {
-  const upcomingEvents = filteredEvents
+  // Add default empty array if filteredEvents is undefined
+  const events = Array.isArray(filteredEvents) ? filteredEvents : [];
+  
+  const upcomingEvents = events
     .filter((event) => {
       const eventDate = event.date
         ? new Date(event.date)

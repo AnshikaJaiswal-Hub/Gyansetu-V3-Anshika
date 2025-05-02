@@ -20,27 +20,27 @@ const TeacherNavbar = ({ onNavToggle }) => {
     {
       name: "Dashboard",
       icon: <IoHomeOutline className="text-lg" />,
-      path: "/teacherdashboard",
+      path: "/teacher",
     },
     {
       name: "Create Assignments",
       icon: <IoGridOutline className="text-lg" />,
-      path: "/createassignment",
+      path: "/teacher/create-assignment",
     },
     {
       name: "Generate Assignments",
       icon: <IoDocumentTextOutline className="text-lg" />,
-      path: "/generateassignment",
+      path: "/teacher/generate-assignment",
     },
     {
       name: "Analytics",
       icon: <IoStatsChartOutline className="text-lg" />,
-      path: "/teacheranalytics",
+      path: "/teacher/analytics",
     },
     {
-      name: "Calender",
+      name: "Calendar",
       icon: <IoChatbubbleOutline className="text-lg" />,
-      path: "/teachercalender",
+      path: "/teacher/calendar",
     },
   ];
 
@@ -92,7 +92,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
           {/* Logo */}
           <div
             className="flex items-center cursor-pointer"
-            onClick={() => navigate("/teacherdashboard")}
+            onClick={() => navigate("/teacher")}
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md">
               <div className="w-4 h-4 rounded-full bg-white opacity-80" />
@@ -128,7 +128,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
                 {/* Logo */}
                 <div
                   className="flex items-center cursor-pointer"
-                  onClick={() => navigate("/teacherdashboard")}
+                  onClick={() => navigate("/teacher")}
                 >
                   <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center shadow-sm">
                     <div className="w-5 h-5 rounded-full bg-white opacity-90" />
@@ -210,7 +210,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
     >
       <div
         className="flex items-center px-5 py-6 cursor-pointer ml-3"
-        onClick={() => navigate("/teacherdashboard")}
+        onClick={() => navigate("/teacher")}
       >
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md">
           <div className="w-4 h-4 rounded-full bg-white opacity-80" />

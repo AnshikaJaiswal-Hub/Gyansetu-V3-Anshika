@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Check, ChevronDown, User } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import {
   IoMoonOutline,
   IoSunnyOutline,
@@ -14,6 +15,8 @@ import SettingsConfiguration from "./SeetingConfig";
 import ReviewComponent from "./EnhancedReview";
 
 export default function AssignmentCreatorMain() {
+  const location = useLocation();
+  
   // Original state
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedTemplate, setSelectedTemplate] = useState("quiz");
@@ -33,6 +36,22 @@ export default function AssignmentCreatorMain() {
   const [darkMode, setDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
+
+  // Reset state when navigating to this component
+  useEffect(() => {
+    setCurrentStep(1);
+    setSelectedTemplate("quiz");
+    setAssignmentData({
+      title: "",
+      description: "",
+      timeLimit: "",
+      dueDate: "",
+      subject: "",
+      gradeLevel: "",
+      difficulty: "medium",
+      sections: [],
+    });
+  }, [location.pathname]);
 
   // Check for mobile screen size
   useEffect(() => {

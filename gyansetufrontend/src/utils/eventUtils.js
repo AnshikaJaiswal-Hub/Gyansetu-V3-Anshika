@@ -6,7 +6,7 @@
  * @param {string} eventScope - The event scope (personal or student)
  * @returns {string} - CSS class string
  */
-export const getEventColorClass = (type, eventScope) => {
+export const getEventColorClass = (type = 'event', eventScope = 'personal') => {
   // First determine base color by event type
   let baseColor;
   switch (type) {
