@@ -5,11 +5,13 @@ import SchedulingTools from "./TeacherScheduling";
 import TimeTableGenerator from "./TeacherTimetable";
 import AnnouncementsManager from "./TeacherAnnouncements";
 import Navbar from "../TeacherNavbar";
+import authService from "../../../services/api/authService";
 
 const TeacherMainCalender = () => {
   const [activeTab, setActiveTab] = useState("calendar");
   const [navExpanded, setNavExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Mock data for events, notifications, announcements, and timetables (unchanged)
   const [events, setEvents] = useState([
@@ -183,6 +185,11 @@ const TeacherMainCalender = () => {
     setNavExpanded(expanded);
   };
 
+  // Toggle mobile menu
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   // Detect mobile view
   useEffect(() => {
     const checkMobile = () => {
@@ -195,6 +202,113 @@ const TeacherMainCalender = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Custom top header bar with logo and menu button */}
+      <div className="w-full bg-purple-100 flex items-center justify-between px-4 py-3 shadow-sm z-[9997] fixed top-0 left-0 right-0">
+        <div className="flex items-center">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md mr-3">
+            <div className="w-4 h-4 rounded-full bg-white opacity-80" />
+          </div>
+          <span className="font-bold text-lg text-gray-700">GyanSetu</span>
+        </div>
+        {isMobile && (
+          <button 
+            onClick={toggleMobileMenu}
+            className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm"
+            aria-label="Toggle menu"
+          >
+            <div className="flex flex-col justify-between h-5 w-5">
+              <span className="h-0.5 w-full bg-gray-500 rounded"></span>
+              <span className="h-0.5 w-3/4 bg-gray-500 rounded"></span>
+              <span className="h-0.5 w-full bg-gray-500 rounded"></span>
+            </div>
+          </button>
+        )}
+      </div>
+      
+      {/* Add space to push content below fixed header */}
+      <div className="h-[56px]"></div>
+      
+      {/* Mobile Menu - Only visible when toggled on mobile */}
+      {isMobile && mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9998]">
+          <div className="fixed top-0 right-0 h-screen w-3/4 bg-white shadow-lg z-[9999]">
+            <div className="flex items-center justify-between w-full px-6 py-4 border-b border-gray-100">
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center shadow-sm">
+                  <div className="w-5 h-5 rounded-full bg-white opacity-90" />
+                </div>
+                <span className="ml-3 font-bold text-xl whitespace-nowrap text-gray-800">
+                  GyanSetu
+                </span>
+              </div>
+
+              {/* Close button */}
+              <button onClick={toggleMobileMenu} className="p-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Navigation items */}
+            <div className="flex flex-col space-y-2 px-4 mt-6">
+              <a
+                href="/teacher"
+                className="flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+              >
+                <span className="ml-3">Dashboard</span>
+              </a>
+              <a
+                href="/teacher/create-assignment"
+                className="flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+              >
+                <span className="ml-3">Create Assignments</span>
+              </a>
+              <a
+                href="/teacher/generate-assignment"
+                className="flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+              >
+                <span className="ml-3">Generate Assignments</span>
+              </a>
+              <a
+                href="/teacher/analytics"
+                className="flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+              >
+                <span className="ml-3">Analytics</span>
+              </a>
+              <a
+                href="/teacher/calendar"
+                className="flex items-center px-4 py-3 rounded-lg bg-purple-100"
+              >
+                <span className="ml-3">Calendar</span>
+              </a>
+              
+              {/* Logout Button */}
+              <div 
+                className="flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 mt-6 cursor-pointer"
+                onClick={() => {
+                  authService.logout();
+                  window.location.href = '/login';
+                }}
+              >
+                <span className="ml-3">Logout</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="flex flex-col md:flex-row">
         <Navbar onNavToggle={handleNavToggle} />
         <div
@@ -311,6 +425,13 @@ const TeacherMainCalender = () => {
         @media (max-width: 767px) {
           .p-6 {
             padding: 1rem;
+          }
+          /* Ensure our fixed elements aren't covered by content */
+          .fixed {
+            position: fixed !important;
+          }
+          .z-[9999] {
+            z-index: 9999 !important;
           }
         }
         @media (min-width: 768px) and (max-width: 1023px) {

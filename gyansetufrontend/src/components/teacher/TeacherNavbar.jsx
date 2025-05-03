@@ -191,6 +191,25 @@ const TeacherNavbar = ({ onNavToggle }) => {
                     </span>
                   </div>
                 ))}
+                
+                {/* Logout Button */}
+                <div 
+                  className="relative flex items-center cursor-pointer transition-all duration-200 px-5 py-4 rounded-lg text-gray-700 hover:bg-gray-100 mt-auto"
+                  onClick={() => {
+                    const authService = require('../../services/api/authService').default;
+                    authService.logout();
+                    window.location.href = '/login';
+                  }}
+                >
+                  <div className="flex items-center justify-center min-w-[40px] w-10 h-10 rounded-full flex-shrink-0 bg-gray-100 text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                  </div>
+                  <span className="ml-4 font-medium whitespace-nowrap text-gray-600">
+                    Logout
+                  </span>
+                </div>
               </div>
             </div>
           </div>
