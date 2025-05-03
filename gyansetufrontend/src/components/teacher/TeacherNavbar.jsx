@@ -87,14 +87,14 @@ const TeacherNavbar = ({ onNavToggle }) => {
   if (isMobile) {
     return (
       <>
-        {/* Fixed top navbar */}
-        <nav className="fixed top-0 left-0 w-full bg-purple-100 flex items-center justify-between px-4 py-3 shadow-sm z-50">
+        {/* Fixed top navbar with transition for showing/hiding on scroll */}
+        <nav className="fixed top-0 left-0 w-full bg-purple-100 flex items-center justify-between px-4 py-3 shadow-sm z-10 mobile-navbar-top transition-transform duration-300 ease-in-out rounded-b-[20px]">
           {/* Logo */}
           <div
             className="flex items-center cursor-pointer"
             onClick={() => navigate("/teacher")}
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md">
+            <div className="w-8 h-8 rounded-[20px] bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md">
               <div className="w-4 h-4 rounded-full bg-white opacity-80" />
             </div>
             <span className="ml-3 font-bold text-lg whitespace-nowrap text-gray-700">
@@ -104,7 +104,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
 
           {/* Hamburger menu */}
           <div className="cursor-pointer" onClick={toggleNavbar}>
-            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-[20px] bg-white flex items-center justify-center shadow-sm">
               <div className="flex flex-col justify-between h-5 w-5">
                 <span className="h-0.5 w-full bg-gray-500 rounded"></span>
                 <span className="h-0.5 w-3/4 bg-gray-500 rounded"></span>
@@ -117,11 +117,11 @@ const TeacherNavbar = ({ onNavToggle }) => {
         {/* Mobile slide-out menu */}
         {expanded && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            className="fixed inset-0 bg-black bg-opacity-50 z-20"
             onClick={toggleNavbar}
           >
             <div
-              className="fixed top-0 right-0 h-screen w-screen bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out"
+              className="fixed top-0 right-0 h-screen w-screen bg-white shadow-lg z-30 transform transition-transform duration-300 ease-in-out"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between w-full px-6 py-4 border-b border-gray-100">
@@ -130,7 +130,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
                   className="flex items-center cursor-pointer"
                   onClick={() => navigate("/teacher")}
                 >
-                  <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center shadow-sm">
+                  <div className="w-10 h-10 rounded-[20px] bg-purple-600 flex items-center justify-center shadow-sm">
                     <div className="w-5 h-5 rounded-full bg-white opacity-90" />
                   </div>
                   <span className="ml-3 font-bold text-xl whitespace-nowrap text-gray-800">
@@ -140,7 +140,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
 
                 {/* Close button */}
                 <div className="cursor-pointer" onClick={toggleNavbar}>
-                  <div className="w-10 h-10 rounded-LG bg-gray-100 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-[20px] bg-gray-100 flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6 text-gray-500"
@@ -164,7 +164,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
                 {navItems.map((item) => (
                   <div
                     key={item.name}
-                    className={`relative flex items-center cursor-pointer transition-all duration-200 px-5 py-4 rounded-lg ${
+                    className={`relative flex items-center cursor-pointer transition-all duration-200 px-5 py-4 rounded-[20px] ${
                       activeItem === item.name
                         ? "bg-purple-100 text-purple-800"
                         : "text-gray-700 hover:bg-gray-100"
@@ -172,7 +172,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
                     onClick={() => handleNavClick(item)}
                   >
                     <div
-                      className={`flex items-center justify-center min-w-[40px] w-10 h-10 rounded-full flex-shrink-0 ${
+                      className={`flex items-center justify-center min-w-[40px] w-10 h-10 rounded-[20px] flex-shrink-0 ${
                         activeItem === item.name
                           ? "bg-gray-900 text-white"
                           : "bg-gray-100 text-gray-600"
@@ -195,8 +195,8 @@ const TeacherNavbar = ({ onNavToggle }) => {
             </div>
           </div>
         )}
-        {/* Add top spacing to account for fixed navbar */}
-        <div className="h-16"></div>
+        {/* Spacer div with Tailwind transitions */}
+        <div className="h-16 transition-all duration-300"></div>
       </>
     );
   }
@@ -204,7 +204,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
   // Desktop/Tablet view
   return (
     <nav
-      className={`fixed top-0 left-0 h-screen transition-all duration-300 z-40 flex flex-col 
+      className={`fixed top-0 left-0 h-screen transition-all duration-300 z-10 flex flex-col 
         bg-gradient-to-b from-gray-100 to-purple-50
         ${expanded ? "w-[330px]" : "w-[100px]"}`}
     >
@@ -212,7 +212,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
         className="flex items-center px-5 py-6 cursor-pointer ml-3"
         onClick={() => navigate("/teacher")}
       >
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md">
+        <div className="w-8 h-8 rounded-[20px] bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md">
           <div className="w-4 h-4 rounded-full bg-white opacity-80" />
         </div>
         {expanded && (
@@ -226,7 +226,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
         className="flex items-center px-5 py-3 cursor-pointer mb-8 ml-2"
         onClick={toggleNavbar}
       >
-        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+        <div className="w-10 h-10 rounded-[20px] bg-white flex items-center justify-center shadow-sm">
           <div className="flex flex-col justify-between h-5 w-5">
             <span className="h-0.5 w-full bg-gray-500 rounded"></span>
             <span className="h-0.5 w-3/4 bg-gray-500 rounded"></span>
@@ -243,7 +243,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
             className={`relative flex items-center cursor-pointer transition-all duration-200
               ${
                 expanded
-                  ? "px-3 py-3 rounded-xl " +
+                  ? "px-3 py-3 rounded-[20px] " +
                     (activeItem === item.name
                       ? "bg-gradient-to-r from-purple-200 to-purple-50 text-purple-700 shadow-sm"
                       : "text-gray-500 hover:bg-purple-50")
@@ -252,7 +252,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
             onClick={() => handleNavClick(item)}
           >
             <div
-              className={`flex items-center justify-center min-w-[40px] w-10 h-10 rounded-full flex-shrink-0
+              className={`flex items-center justify-center min-w-[40px] w-10 h-10 rounded-[20px] flex-shrink-0
               ${
                 activeItem === item.name
                   ? "bg-gray-800 text-white"

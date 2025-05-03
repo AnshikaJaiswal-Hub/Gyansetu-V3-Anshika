@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Check, BookOpen, PenTool, Zap, Folder } from "lucide-react";
+import { Check, BookOpen, PenTool, FileText, Folder } from "lucide-react";
 
 export default function TemplateSelection({ onNext, onSelectTemplate }) {
   const [selectedTemplate, setSelectedTemplate] = useState("quiz");
@@ -19,10 +19,10 @@ export default function TemplateSelection({ onNext, onSelectTemplate }) {
       icon: <PenTool className="w-10 h-10 text-purple-600" />,
     },
     {
-      id: "interactive",
-      name: "Interactive Game",
-      description: "Gamified assessment for engaging learning",
-      icon: <Zap className="w-10 h-10 text-purple-600" />,
+      id: "test",
+      name: "Test Module",
+      description: "Comprehensive testing with various question types",
+      icon: <FileText className="w-10 h-10 text-purple-600" />,
     },
     {
       id: "project",
