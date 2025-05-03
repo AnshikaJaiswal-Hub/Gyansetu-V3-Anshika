@@ -1,24 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { Calendar, Settings } from "lucide-react";
-import CalendarView from "./teacherCalender/TeacherCalenderView";
-import SchedulingTools from "./TeacherScheduling";
-import TimeTableGenerator from "./TeacherTimetable";
-import AnnouncementsManager from "./TeacherAnnouncements";
+import {
+  IoMoonOutline,
+  IoSunnyOutline,
+  IoPersonCircleOutline,
+  IoCalendarOutline,
+  IoSettingsOutline,
+  IoGridOutline,
+  IoMegaphoneOutline,
+} from "react-icons/io5";
 import Navbar from "../TeacherNavbar";
+import { useNavigate } from "react-router-dom";
 import authService from "../../../services/api/authService";
 
-const TeacherMainCalender = () => {
-  const [activeTab, setActiveTab] = useState("calendar");
+// Calendar and other components
+import CalendarView from "./teacherCalender/TeacherCalenderView";
+import SchedulingTools from "./teacherScheduling/TeacherScheduling";
+import TimeTableGenerator from "./TeacherTimetable";
+import AnnouncementsManager from "./TeacherAnnouncements";
+
+const TeacherCalendar = () => {
+  // State variables
   const [navExpanded, setNavExpanded] = useState(false);
+  const [greeting, setGreeting] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("calendar");
+  const [profileImage, setProfileImage] = useState(null);
+  const navigate = useNavigate();
+  const user = authService.getCurrentUser();
 
-  // Mock data for events, notifications, announcements, and timetables (unchanged)
+  // Mock data for events
   const [events, setEvents] = useState([
     {
       id: 1,
       title: "Staff Meeting",
-      date: "2025-04-30",
+      date: "2025-05-05",
       start: "09:00",
       end: "10:00",
       type: "meeting",
@@ -28,7 +45,7 @@ const TeacherMainCalender = () => {
     {
       id: 2,
       title: "Parent-Teacher Conference",
-      date: "2025-05-02",
+      date: "2025-05-10",
       start: "14:00",
       end: "16:00",
       type: "conference",
@@ -57,7 +74,7 @@ const TeacherMainCalender = () => {
     {
       id: 5,
       title: "Teacher Development Workshop",
-      date: "2025-05-05",
+      date: "2025-05-12",
       start: "13:00",
       end: "16:00",
       type: "training",
@@ -66,7 +83,7 @@ const TeacherMainCalender = () => {
     },
     {
       id: 6,
-      title: "School Holiday - Labor Day",
+      title: "School Holiday",
       date: "2025-05-01",
       allDay: true,
       type: "holiday",
@@ -75,6 +92,7 @@ const TeacherMainCalender = () => {
     },
   ]);
 
+  // Mock data for notifications
   const [scheduledNotifications, setScheduledNotifications] = useState([
     {
       id: 101,
@@ -94,6 +112,7 @@ const TeacherMainCalender = () => {
     },
   ]);
 
+  // Mock data for announcements
   const [announcements, setAnnouncements] = useState([
     {
       id: 201,
@@ -124,6 +143,7 @@ const TeacherMainCalender = () => {
     },
   ]);
 
+  // Mock data for timetables
   const [timeTables, setTimeTables] = useState([
     {
       id: 301,
@@ -141,7 +161,7 @@ const TeacherMainCalender = () => {
     },
   ]);
 
-  // Event handlers (unchanged)
+  // Event handlers
   const handleAddEvent = (newEvent) => {
     const eventWithId = { ...newEvent, id: events.length + 1 };
     setEvents([...events, eventWithId]);
@@ -180,9 +200,42 @@ const TeacherMainCalender = () => {
     setTimeTables([...timeTables, timeTableWithId]);
   };
 
+  // Setting greeting based on time of day
+  useEffect(() => {
+    const updateGreeting = () => {
+      const currentHour = new Date().getHours();
+      if (currentHour >= 5 && currentHour < 12) {
+        setGreeting("Good Morning");
+      } else if (currentHour >= 12 && currentHour < 18) {
+        setGreeting("Good Afternoon");
+      } else {
+        setGreeting("Good Evening");
+      }
+    };
+
+    updateGreeting();
+    const timer = setInterval(updateGreeting, 60000);
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
   // Handle navbar toggle
   const handleNavToggle = (expanded) => {
     setNavExpanded(expanded);
+  };
+
+  // Toggle dark/light mode
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
   };
 
   // Toggle mobile menu
@@ -190,28 +243,78 @@ const TeacherMainCalender = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  // Detect mobile view
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+  // Handle profile image upload
+  const handleProfileClick = () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          setProfileImage(event.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
     };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+    fileInput.click();
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    authService.logout();
+    navigate("/login");
+  };
+
+  // Utility icons component
+  const UtilityIcons = () => (
+    <div className="flex items-center space-x-4">
+      <button
+        onClick={toggleTheme}
+        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+      >
+        {darkMode ? (
+          <IoSunnyOutline className="text-xl" />
+        ) : (
+          <IoMoonOutline className="text-xl" />
+        )}
+      </button>
+      <button
+        onClick={handleProfileClick}
+        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+      >
+        {profileImage ? (
+          <img
+            src={profileImage}
+            alt="Profile"
+            className="w-6 h-6 rounded-full"
+          />
+        ) : (
+          <IoPersonCircleOutline className="text-xl" />
+        )}
+      </button>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Custom top header bar with logo and menu button */}
-      <div className="w-full bg-purple-100 flex items-center justify-between px-4 py-3 shadow-sm z-[9997] fixed top-0 left-0 right-0">
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md mr-3">
-            <div className="w-4 h-4 rounded-full bg-white opacity-80" />
+    <div
+      className={`min-h-screen ${
+        darkMode
+          ? "bg-gray-900 text-white"
+          : "bg-gradient-to-br from-purple-200 via-white to-purple-300"
+      }`}
+    >
+      {/* Mobile Header */}
+      {isMobile && (
+        <div className="w-full bg-purple-100 flex items-center justify-between px-4 py-3 shadow-sm z-50 fixed top-0 left-0 right-0">
+          <div className="flex items-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md mr-3">
+              <div className="w-4 h-4 rounded-full bg-white opacity-80" />
+            </div>
+            <span className="font-bold text-lg text-gray-700">GyanSetu</span>
           </div>
-          <span className="font-bold text-lg text-gray-700">GyanSetu</span>
-        </div>
-        {isMobile && (
-          <button 
+          <button
             onClick={toggleMobileMenu}
             className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm"
             aria-label="Toggle menu"
@@ -222,15 +325,12 @@ const TeacherMainCalender = () => {
               <span className="h-0.5 w-full bg-gray-500 rounded"></span>
             </div>
           </button>
-        )}
-      </div>
-      
-      {/* Add space to push content below fixed header */}
-      <div className="h-[56px]"></div>
-      
-      {/* Mobile Menu - Only visible when toggled on mobile */}
+        </div>
+      )}
+
+      {/* Mobile Menu */}
       {isMobile && mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9998]">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
           <div className="fixed top-0 right-0 h-screen w-3/4 bg-white shadow-lg z-[9999]">
             <div className="flex items-center justify-between w-full px-6 py-4 border-b border-gray-100">
               <div className="flex items-center">
@@ -293,14 +393,11 @@ const TeacherMainCalender = () => {
               >
                 <span className="ml-3">Calendar</span>
               </a>
-              
+
               {/* Logout Button */}
-              <div 
+              <div
                 className="flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 mt-6 cursor-pointer"
-                onClick={() => {
-                  authService.logout();
-                  window.location.href = '/login';
-                }}
+                onClick={handleLogout}
               >
                 <span className="ml-3">Logout</span>
               </div>
@@ -308,119 +405,188 @@ const TeacherMainCalender = () => {
           </div>
         </div>
       )}
-      
+
+      {/* Add space to push content below fixed header on mobile */}
+      {isMobile && <div className="h-[56px]"></div>}
+
       <div className="flex flex-col md:flex-row">
         <Navbar onNavToggle={handleNavToggle} />
+        {isMobile && (
+          <div className="fixed top-3 right-16 z-50">
+            <UtilityIcons />
+          </div>
+        )}
         <div
           className={`flex-1 transition-all duration-300 pt-[20px] md:pt-0 ${
             navExpanded ? "ml-0 md:ml-[330px]" : "ml-0 md:ml-[100px]"
           }`}
         >
           <div className="p-6 md:p-8">
+            {!isMobile && (
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h1
+                    className={`text-3xl md:text-4xl font-semibold ${
+                      darkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    {greeting}, {user?.firstName || "Teacher"}!
+                  </h1>
+                  <h2
+                    className={`${
+                      darkMode ? "text-gray-300" : "text-gray-500"
+                    } text-lg mt-2`}
+                  >
+                    Manage your school schedule and events
+                  </h2>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <UtilityIcons />
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Tab Navigation */}
-            <div className="bg-white shadow rounded-lg mb-6">
+            <div
+              className={`${
+                darkMode ? "bg-gray-800" : "bg-white"
+              } shadow rounded-lg mb-6`}
+            >
               <div className="flex flex-wrap items-center p-4 space-x-3 md:space-x-6">
                 <button
                   className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                     activeTab === "calendar"
                       ? "bg-purple-100 text-purple-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                      : `${
+                          darkMode
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-600 hover:bg-gray-100"
+                        }`
                   }`}
                   onClick={() => setActiveTab("calendar")}
                 >
-                  <Calendar size={18} className="mr-2" />
+                  <IoCalendarOutline size={18} className="mr-2" />
                   Calendar
                 </button>
                 <button
                   className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                     activeTab === "scheduling"
                       ? "bg-purple-100 text-purple-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                      : `${
+                          darkMode
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-600 hover:bg-gray-100"
+                        }`
                   }`}
                   onClick={() => setActiveTab("scheduling")}
                 >
-                  <Settings size={18} className="mr-2" />
+                  <IoSettingsOutline size={18} className="mr-2" />
                   Scheduling
                 </button>
                 <button
                   className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                     activeTab === "timetable"
                       ? "bg-purple-100 text-purple-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                      : `${
+                          darkMode
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-600 hover:bg-gray-100"
+                        }`
                   }`}
                   onClick={() => setActiveTab("timetable")}
                 >
-                  <Settings size={18} className="mr-2" />
+                  <IoGridOutline size={18} className="mr-2" />
                   Time Table
                 </button>
                 <button
                   className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                     activeTab === "announcements"
                       ? "bg-purple-100 text-purple-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                      : `${
+                          darkMode
+                            ? "text-gray-300 hover:bg-gray-700"
+                            : "text-gray-600 hover:bg-gray-100"
+                        }`
                   }`}
                   onClick={() => setActiveTab("announcements")}
                 >
-                  <Settings size={18} className="mr-2" />
+                  <IoMegaphoneOutline size={18} className="mr-2" />
                   Announcements
                 </button>
               </div>
             </div>
 
             {/* Dynamic Content based on Active Tab */}
-            {activeTab === "calendar" && (
-              <CalendarView
-                events={events || []}
-                onAddEvent={handleAddEvent}
-                onEditEvent={handleEditEvent}
-                onDeleteEvent={handleDeleteEvent}
-                classes={[
-                  {
-                    id: 1,
-                    name: "Math 101",
-                    sections: [
-                      { id: 1, name: "Section A" },
-                      { id: 2, name: "Section B" },
-                    ],
-                  },
-                  {
-                    id: 2,
-                    name: "Science 201",
-                    sections: [
-                      { id: 3, name: "Section A" },
-                      { id: 4, name: "Section B" },
-                    ],
-                  },
-                ]}
-              />
-            )}
+            <div
+              className={`${
+                darkMode ? "bg-gray-800 text-white" : "bg-white"
+              } shadow rounded-lg p-6`}
+            >
+              {activeTab === "calendar" && (
+                <CalendarView
+                  events={events}
+                  onAddEvent={handleAddEvent}
+                  onEditEvent={handleEditEvent}
+                  onDeleteEvent={handleDeleteEvent}
+                  classes={[
+                    {
+                      id: 1,
+                      name: "Math 101",
+                      sections: [
+                        { id: 1, name: "Section A" },
+                        { id: 2, name: "Section B" },
+                      ],
+                    },
+                    {
+                      id: 2,
+                      name: "Science 201",
+                      sections: [
+                        { id: 3, name: "Section A" },
+                        { id: 4, name: "Section B" },
+                      ],
+                    },
+                  ]}
+                  darkMode={darkMode}
+                />
+              )}
 
-            {/* Content for Scheduling Tab */}
-            {activeTab === "scheduling" && (
-              <SchedulingTools
-                scheduledNotifications={scheduledNotifications}
-                onAddNotification={handleAddNotification}
-              />
-            )}
+              {/* Content for Scheduling Tab */}
+              {activeTab === "scheduling" && (
+                <SchedulingTools
+                  scheduledNotifications={scheduledNotifications}
+                  onAddNotification={handleAddNotification}
+                  darkMode={darkMode}
+                />
+              )}
 
-            {/* Content for Timetable Tab */}
-            {activeTab === "timetable" && (
-              <TimeTableGenerator
-                timeTables={timeTables}
-                onAddTimeTable={handleAddTimeTable}
-              />
-            )}
+              {/* Content for Timetable Tab */}
+              {activeTab === "timetable" && (
+                <TimeTableGenerator
+                  timeTables={timeTables}
+                  onAddTimeTable={handleAddTimeTable}
+                  darkMode={darkMode}
+                />
+              )}
 
-            {/* Content for Announcements Tab */}
-            {activeTab === "announcements" && (
-              <AnnouncementsManager
-                announcements={announcements}
-                onAddAnnouncement={handleAddAnnouncement}
-              />
-            )}
+              {/* Content for Announcements Tab */}
+              {activeTab === "announcements" && (
+                <AnnouncementsManager
+                  announcements={announcements}
+                  onAddAnnouncement={handleAddAnnouncement}
+                  darkMode={darkMode}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
+
       <style jsx>{`
         @media (max-width: 767px) {
           .p-6 {
@@ -430,8 +596,8 @@ const TeacherMainCalender = () => {
           .fixed {
             position: fixed !important;
           }
-          .z-[9999] {
-            z-index: 9999 !important;
+          .z-50 {
+            z-index: 50 !important;
           }
         }
         @media (min-width: 768px) and (max-width: 1023px) {
@@ -439,10 +605,19 @@ const TeacherMainCalender = () => {
           .md\\:p-8 {
             padding: 1.5rem;
           }
+          .tablet\\:grid-cols-1 {
+            grid-template-columns: 1fr;
+          }
+          .tablet\\:col-span-1 {
+            grid-column: span 1 / span 1;
+          }
+          .flex-1 {
+            margin-left: ${navExpanded ? "330px" : "100px"};
+          }
         }
       `}</style>
     </div>
   );
 };
 
-export default TeacherMainCalender;
+export default TeacherCalendar;

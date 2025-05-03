@@ -5,10 +5,11 @@ import {
   Routes,
   Route,
   Navigate,
-  useLocation
+  useLocation,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import StudentAssignmentInterface from "./components/students/Assignment/StudentAssignment";
 
 // Auth Pages
 import LoginPage from "./pages/Login";
@@ -19,7 +20,7 @@ import ResetPasswordPage from "./pages/ResetPassword";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 
 // Role-based Dashboard Pages
-import StudentDashboard from "./pages/dashboards/StudentDashboard";
+import StudentDashboard from "./components/students/studentDasboard/StudentDasboard";
 import TeacherDashboard from "./pages/dashboards/TeacherDashboard";
 import ParentDashboard from "./pages/dashboards/ParentDashboard";
 import InstituteDashboard from "./pages/dashboards/InstituteDashboard";
@@ -31,6 +32,7 @@ import TeacherMainCalender from "./components/teacher/calender/MainCalenderTeach
 
 // Auth Service
 import authService from "./services/api/authService";
+import MainChatbot from "./components/students/Chatbot/MainChatbot";
 
 // Wrapper component to handle location-based re-rendering
 function AppContent() {
@@ -47,7 +49,7 @@ function AppContent() {
     // Redirect to the appropriate dashboard based on user role
     switch (user.role) {
       case "student":
-        return <Navigate to="/student" replace />;
+        return <Navigate to="/Studentdashboard" replace />;
       case "teacher":
         return <Navigate to="/teacher" replace />;
       case "parent":
@@ -135,10 +137,26 @@ function AppContent() {
 
         {/* Other Role Routes */}
         <Route
-          path="/student/*"
+          path="/Studentdashboard*"
           element={
             <ProtectedRoute allowedRoles={["student"]}>
               <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chatbot"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <MainChatbot />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/StudentAssignment"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <StudentAssignmentInterface />
             </ProtectedRoute>
           }
         />
