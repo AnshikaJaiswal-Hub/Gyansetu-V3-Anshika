@@ -10,9 +10,20 @@ dotenv.config();
 const app = express();
 
 // Middleware
+// Allow CORS for any localhost port and optional FRONTEND_URL
+const { FRONTEND_URL } = process.env;
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g., mobile clients or server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow the configured frontend URL
+    if (FRONTEND_URL && origin === FRONTEND_URL) return callback(null, true);
+    // Allow any http(s)://localhost:<port>
+    if (/^https?:\/\/localhost:\d+$/.test(origin)) return callback(null, true);
+    // Otherwise, block
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

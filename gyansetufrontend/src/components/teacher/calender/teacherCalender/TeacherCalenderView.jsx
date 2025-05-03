@@ -202,104 +202,104 @@ const TeacherCalendarView = ({
 
   // Render the calendar content with all components
   const renderCalendarContent = () => {
-    return (
-      <>
-        {/* Calendar Controls */}
-        <CalendarHeader
-          currentView={currentView}
-          setCurrentView={setCurrentView}
-          currentDate={currentDate}
-          headerTitle={getHeaderTitle()}
-          navigatePrevious={navigatePrevious}
-          navigateNext={navigateNext}
-          handleTodayClick={handleTodayClick}
-          handleAddEventClick={handleAddEventClick}
-          showFilterMenu={showFilterMenu}
-          setShowFilterMenu={setShowFilterMenu}
-          filterType={filterType}
-          setFilterType={setFilterType}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-        />
+  return (
+    <>
+      {/* Calendar Controls */}
+      <CalendarHeader
+        currentView={currentView}
+        setCurrentView={setCurrentView}
+        currentDate={currentDate}
+        headerTitle={getHeaderTitle()}
+        navigatePrevious={navigatePrevious}
+        navigateNext={navigateNext}
+        handleTodayClick={handleTodayClick}
+        handleAddEventClick={handleAddEventClick}
+        showFilterMenu={showFilterMenu}
+        setShowFilterMenu={setShowFilterMenu}
+        filterType={filterType}
+        setFilterType={setFilterType}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
 
-        {/* Calendar Content */}
-        <div className="mb-6">
-          {currentView === "day" && (
-            <DayView
-              currentDate={currentDate}
-              events={getEventsForCurrentDay()}
-              handleEventClick={handleEventClick}
-              getEventColorClass={getEventColorClass}
-            />
-          )}
-          {currentView === "week" && (
-            <WeekView
-              days={getDaysOfWeek()}
-              filteredEvents={filteredEvents}
-              handleEventClick={handleEventClick}
-              getEventColorClass={getEventColorClass}
-            />
-          )}
-          {currentView === "month" && (
-            <MonthView
-              days={getDaysOfMonth()}
-              getEventsForDay={getEventsForDay}
-              handleEventClick={handleEventClick}
-              getEventColorClass={getEventColorClass}
-              filteredEvents={filteredEvents}
-            />
-          )}
-          {currentView === "quarter" && (
-            <QuarterView
-              quarters={getQuartersOfYear()}
-              currentDate={currentDate}
-              getEventsForMonth={getEventsForMonth}
-              handleEventClick={handleEventClick}
-              getEventColorClass={getEventColorClass}
-            />
-          )}
-          {currentView === "year" && (
-            <YearView
-              months={getMonthsOfYear()}
-              getEventsForMonth={getEventsForMonth}
-              setCurrentDate={setCurrentDate}
-              setCurrentView={setCurrentView}
-            />
-          )}
-        </div>
-
-        {/* Upcoming Events Section */}
-        <UpcomingEvents
-          filteredEvents={filteredEvents}
-          handleEventClick={handleEventClick}
-          getEventColorClass={getEventColorClass}
-        />
-
-        {/* Event Modals */}
-        {showEventModal && (
-          <EventModal
-            eventForm={eventForm}
-            setEventForm={setEventForm}
-            isEditMode={isEditMode}
-            handleInputChange={handleInputChange}
-            handleSubmitEvent={handleSubmitEvent}
-            setShowEventModal={setShowEventModal}
-            classes={classes}
-            getSectionsForClass={getSectionsForClass}
+      {/* Calendar Content */}
+      <div className="mb-6">
+        {currentView === "day" && (
+          <DayView
+            currentDate={currentDate}
+            events={getEventsForCurrentDay()}
+            handleEventClick={handleEventClick}
+            getEventColorClass={getEventColorClass}
           />
         )}
-
-        {showViewEventModal && selectedEvent && (
-          <ViewEventModal
-            selectedEvent={selectedEvent}
-            setShowViewEventModal={setShowViewEventModal}
-            handleDeleteEvent={handleDeleteEvent}
-            handleEditEvent={handleEditEvent}
-            classes={classes}
+        {currentView === "week" && (
+          <WeekView
+            days={getDaysOfWeek()}
+            filteredEvents={filteredEvents}
+            handleEventClick={handleEventClick}
+            getEventColorClass={getEventColorClass}
           />
         )}
-      </>
-    );
+        {currentView === "month" && (
+          <MonthView
+            days={getDaysOfMonth()}
+            getEventsForDay={getEventsForDay}
+            handleEventClick={handleEventClick}
+            getEventColorClass={getEventColorClass}
+            filteredEvents={filteredEvents}
+          />
+        )}
+        {currentView === "quarter" && (
+          <QuarterView
+            quarters={getQuartersOfYear()}
+            currentDate={currentDate}
+            getEventsForMonth={getEventsForMonth}
+            handleEventClick={handleEventClick}
+            getEventColorClass={getEventColorClass}
+          />
+        )}
+        {currentView === "year" && (
+          <YearView
+            months={getMonthsOfYear()}
+            getEventsForMonth={getEventsForMonth}
+            setCurrentDate={setCurrentDate}
+            setCurrentView={setCurrentView}
+          />
+        )}
+      </div>
+
+      {/* Upcoming Events Section */}
+      <UpcomingEvents
+        filteredEvents={filteredEvents}
+        handleEventClick={handleEventClick}
+        getEventColorClass={getEventColorClass}
+      />
+
+      {/* Event Modals */}
+      {showEventModal && (
+        <EventModal
+          eventForm={eventForm}
+          setEventForm={setEventForm}
+          isEditMode={isEditMode}
+          handleInputChange={handleInputChange}
+          handleSubmitEvent={handleSubmitEvent}
+          setShowEventModal={setShowEventModal}
+          classes={classes}
+          getSectionsForClass={getSectionsForClass}
+        />
+      )}
+
+      {showViewEventModal && selectedEvent && (
+        <ViewEventModal
+          selectedEvent={selectedEvent}
+          setShowViewEventModal={setShowViewEventModal}
+          handleDeleteEvent={handleDeleteEvent}
+          handleEditEvent={handleEditEvent}
+          classes={classes}
+        />
+      )}
+    </>
+  );
   };
 
   return renderCalendarContent();
