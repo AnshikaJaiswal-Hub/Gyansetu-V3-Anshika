@@ -7,7 +7,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoginOverlay from "./LoginOverlay";
-import { authService } from "../../../services/api";
+import authService from "../../services/api/authService";
 import RoleSelection from "./RoleSelection";
 
 const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
@@ -77,14 +77,12 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate role is selected
     if (!formData.role) {
       toast.error("Please select a role");
       setRoleError("Role selection is required");
       return;
     }
 
-    // Check for empty email or password
     if (!formData.email.trim()) {
       setAuthError("Email is required");
       return;
@@ -104,46 +102,34 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
     const interval = simulateProgress();
 
     try {
-      // Use the authService from our API
       const response = await authService.login(formData);
-
+      clearInterval(interval);
+      setProgress(100);
       toast.success("Login successful! 🎉");
 
-      // Call the callback with the user data if it exists
-      if (onSuccessfulLogin && response.user) {
-        setTimeout(() => {
-          onSuccessfulLogin(response.user);
-        }, 500);
-      } else {
-        // Fallback to navigate to home
-        setTimeout(() => {
-          navigate("/");
-        }, 500);
-      }
+      // Get the user data from the response
+      const user = response.user;
+
+      // Navigate to the appropriate dashboard based on user role
+      setTimeout(() => {
+        navigate(`/${user.role}`);
+      }, 500);
     } catch (error) {
       console.error("Login error:", error);
       clearInterval(interval);
       setLoading(false);
       setProgress(100);
 
-      // Check if this is a role mismatch error
-      if (error.response && error.response.status === 403) {
+      if (error.response?.status === 403 && error.response?.data?.actualRole) {
         const actualRole = error.response.data.actualRole;
-        setRoleError(
-          `This account is registered as a ${actualRole}. Please select the correct role.`
-        );
+        setRoleError(`This account is registered as a ${actualRole}. Please select the correct role.`);
         setSuggestedRole(actualRole);
-
-        // Show a more visible toast error
-        toast.error(
-          `This account is registered as a ${actualRole}. Please select the correct role.`,
-          {
-            position: "top-center",
-            autoClose: 5000,
-          }
-        );
+        toast.error(`This account is registered as a ${actualRole}. Please select the correct role.`, {
+          position: "top-center",
+          autoClose: 5000
+        });
       } else {
-        toast.error(error.message || "Login failed");
+        toast.error(error.message || "Invalid email or password");
         setAuthError("Invalid email or password");
       }
     } finally {
@@ -169,18 +155,19 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
 
-      // Include role in the verification request
-      const response = await authService.verifyToken(idToken, formData.role);
+      const response = await authService.login({
+        email: result.user.email,
+        role: formData.role,
+        googleToken: idToken
+      });
 
       toast.success("Login successful! 🎉");
 
-      // Call the callback with the user data if it exists
       if (onSuccessfulLogin && response.user) {
         setTimeout(() => {
           onSuccessfulLogin(response.user);
         }, 500);
       } else {
-        // Fallback to navigate to home
         setTimeout(() => {
           navigate("/");
         }, 500);
@@ -188,24 +175,16 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
     } catch (error) {
       console.error("Google login error:", error);
 
-      // Check if this is a role mismatch error
-      if (error.response && error.response.status === 403) {
+      if (error.response?.status === 403 && error.response?.data?.actualRole) {
         const actualRole = error.response.data.actualRole;
-        setRoleError(
-          `This account is registered as a ${actualRole}. Please select the correct role.`
-        );
+        setRoleError(`This account is registered as a ${actualRole}. Please select the correct role.`);
         setSuggestedRole(actualRole);
-
-        // Show a more visible toast error
-        toast.error(
-          `This account is registered as a ${actualRole}. Please select the correct role.`,
-          {
-            position: "top-center",
-            autoClose: 5000,
-          }
-        );
+        toast.error(`This account is registered as a ${actualRole}. Please select the correct role.`, {
+          position: "top-center",
+          autoClose: 5000
+        });
       } else {
-        toast.error(error.message || "Login failed ❌");
+        toast.error(error.message || "Login failed");
         setAuthError("Authentication failed");
       }
     }

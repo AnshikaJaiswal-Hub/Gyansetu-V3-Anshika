@@ -205,7 +205,7 @@ const TeacherMainCalender = () => {
           <div className="p-6 md:p-8">
             {/* Tab Navigation */}
             <div className="bg-white shadow rounded-lg mb-6">
-              <div className="flex items-center p-4 space-x-6">
+              <div className="flex flex-wrap items-center p-4 space-x-3 md:space-x-6">
                 <button
                   className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                     activeTab === "calendar"
@@ -253,13 +253,31 @@ const TeacherMainCalender = () => {
               </div>
             </div>
 
-            {/* Content for Calendar Tab */}
+            {/* Dynamic Content based on Active Tab */}
             {activeTab === "calendar" && (
               <CalendarView
-                events={events}
+                events={events || []}
                 onAddEvent={handleAddEvent}
                 onEditEvent={handleEditEvent}
                 onDeleteEvent={handleDeleteEvent}
+                classes={[
+                  {
+                    id: 1,
+                    name: "Math 101",
+                    sections: [
+                      { id: 1, name: "Section A" },
+                      { id: 2, name: "Section B" },
+                    ],
+                  },
+                  {
+                    id: 2,
+                    name: "Science 201",
+                    sections: [
+                      { id: 3, name: "Section A" },
+                      { id: 4, name: "Section B" },
+                    ],
+                  },
+                ]}
               />
             )}
 

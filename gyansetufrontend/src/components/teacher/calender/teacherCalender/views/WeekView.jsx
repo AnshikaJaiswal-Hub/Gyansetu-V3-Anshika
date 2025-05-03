@@ -1,5 +1,5 @@
 // File: components/calendar/views/WeekView.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Users, ChevronLeft, ChevronRight } from "lucide-react";
 
 const WeekView = ({
@@ -12,6 +12,9 @@ const WeekView = ({
   const [visibleDays, setVisibleDays] = useState([]);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Memoize the days array to prevent unnecessary re-renders
+  const memoizedDays = useMemo(() => days, [JSON.stringify(days)]);
 
   // Check if we're on mobile based on screen width
   useEffect(() => {
@@ -33,12 +36,12 @@ const WeekView = ({
   useEffect(() => {
     if (isMobile) {
       // On mobile, show only one day at a time
-      setVisibleDays(days.slice(currentDayIndex, currentDayIndex + 1));
+      setVisibleDays(memoizedDays.slice(currentDayIndex, currentDayIndex + 1));
     } else {
       // On desktop, show all days
-      setVisibleDays(days);
+      setVisibleDays(memoizedDays);
     }
-  }, [days, currentDayIndex, isMobile]);
+  }, [memoizedDays, currentDayIndex, isMobile]);
 
   // Handle day navigation for mobile view
   const goToPreviousDay = () => {
@@ -48,13 +51,17 @@ const WeekView = ({
   };
 
   const goToNextDay = () => {
-    if (currentDayIndex < days.length - 1) {
+    if (currentDayIndex < memoizedDays.length - 1) {
       setCurrentDayIndex(currentDayIndex + 1);
     }
   };
 
   // Helper to check if event is at specific day and hour
   const getEventsForTimeSlot = (day, hour) => {
+    if (!filteredEvents || !Array.isArray(filteredEvents)) {
+      return [];
+    }
+    
     return filteredEvents.filter((event) => {
       if (event.allDay) return false;
       if (!event.date && !event.startDate) return false;
@@ -78,6 +85,10 @@ const WeekView = ({
 
   // Helper to get all-day events for a specific day
   const getAllDayEventsForDay = (day) => {
+    if (!filteredEvents || !Array.isArray(filteredEvents)) {
+      return [];
+    }
+    
     return filteredEvents.filter((event) => {
       if (!event.allDay) return false;
 

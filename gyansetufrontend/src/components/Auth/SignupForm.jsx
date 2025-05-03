@@ -7,6 +7,7 @@ import { auth } from "../../firebaseConfig";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import authService from "../../services/api/authService";
 
 const SignupForm = ({ switchToLogin }) => {
   const [countryCode, setCountryCode] = useState("+91");
@@ -15,27 +16,52 @@ const SignupForm = ({ switchToLogin }) => {
     role: "student",
     email: "",
     password: "",
+    phone: "",
+    firstName: "",
+    lastName: ""
   });
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
 
   const handleChange = useCallback((e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }, []);
+    const { name, value } = e.target;
+    if (name === 'phone') {
+      setFormData((prev) => ({ ...prev, phone: `${countryCode}${value}` }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  }, [countryCode]);
 
   const simulateProgress = () => {
     let percent = 0;
     const interval = setInterval(() => {
       percent += 10;
       setProgress(percent);
-      if (percent >= 90) clearInterval(interval); // Stop at 90% until API response
+      if (percent >= 90) clearInterval(interval);
     }, 300);
     return interval;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate required fields
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    if (!formData.password.trim()) {
+      setError("Password is required");
+      return;
+    }
+
+    if (!formData.phone.trim()) {
+      setError("Phone number is required");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setProgress(0);
@@ -43,67 +69,62 @@ const SignupForm = ({ switchToLogin }) => {
     const interval = simulateProgress();
 
     try {
-      const response = await fetch(
-        "https://auth-service-tfl3.onrender.com/api/signup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Signup failed");
-      }
-
-      setProgress(100); // Set to 100% on success
-      toast.success("Login successful! 🎉");
-      setTimeout(() => {
-        navigate("/login");
-      }, 500);
+      const response = await authService.signup(formData);
+      clearInterval(interval);
+      setProgress(100);
+      toast.success("Signup successful! Please login to continue 🎉");
+      
+      // Clear form data
       setFormData({
         role: "student",
         email: "",
         password: "",
+        phone: "",
+        firstName: "",
+        lastName: ""
       });
+
+      // Navigate to login page after a short delay
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (error) {
-      toast.error(error.message || "Login failed ❌");
+      clearInterval(interval);
+      toast.error(error.message || "Signup failed ❌");
       setError(error.message);
+    } finally {
       clearInterval(interval);
       setLoading(false);
-    } finally {
-      setLoading(false); // Ensure loading state resets
     }
   };
 
   const handleGoogleLogin = async () => {
+    if (!formData.role) {
+      toast.error("Please select a role before signing up with Google");
+      return;
+    }
+
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
+      
+      // Create user data from Google profile
+      const userData = {
+        email: result.user.email,
+        role: formData.role,
+        firstName: result.user.displayName?.split(' ')[0] || '',
+        lastName: result.user.displayName?.split(' ').slice(1).join(' ') || '',
+        phone: result.user.phoneNumber || ''
+      };
 
-      // Send ID token to the backend for verification
-      const response = await fetch(
-        "https://auth-service-tfl3.onrender.com/api/verifyToken",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: idToken }),
-        }
-      );
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Login failed");
-
-      toast.success("Login successful! 🎉");
+      const response = await authService.signup(userData);
+      toast.success("Signup successful! 🎉");
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 500);
     } catch (error) {
-      toast.error(error.message || "Login failed ❌");
+      toast.error(error.message || "Signup failed ❌");
       setError(error.message);
     }
   };
@@ -120,7 +141,6 @@ const SignupForm = ({ switchToLogin }) => {
         Enter your personal data to create your account
       </p>
 
-      {/* Error container with fixed height to prevent layout shifts */}
       <div className="h-6 mb-2">
         {error && <p className="text-red-500 text-sm">{error}</p>}
       </div>
@@ -136,10 +156,7 @@ const SignupForm = ({ switchToLogin }) => {
           onMouseLeave={(e) => (e.target.style.backgroundColor = "#9f7aea")}
           onClick={handleGoogleLogin}
         >
-          <FaGoogle
-            className="text-xs md:text-lg bg-transparent"
-            style={{ background: "transparent" }}
-          />
+          <FaGoogle className="text-xs md:text-lg bg-transparent" />
         </button>
         <button
           className="text-white px-3 md:px-4 py-1 md:py-2 rounded-[15px] border border-purple-300 transition-colors cursor-pointer flex items-center justify-center"
@@ -150,10 +167,7 @@ const SignupForm = ({ switchToLogin }) => {
           }}
           onMouseLeave={(e) => (e.target.style.backgroundColor = "#9f7aea")}
         >
-          <FaApple
-            className="text-xs md:text-lg bg-transparent"
-            style={{ background: "transparent" }}
-          />
+          <FaApple className="text-xs md:text-lg bg-transparent" />
         </button>
       </div>
 
@@ -170,8 +184,7 @@ const SignupForm = ({ switchToLogin }) => {
           onChange={handleChange}
           className="w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus:outline-none focus:border-purple-500 appearance-none cursor-pointer"
           style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20' stroke='%236b46c1'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E\")",
+            backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20' stroke='%236b46c1'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E\")",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "right 1rem center",
             backgroundSize: "1.5rem",
@@ -179,9 +192,25 @@ const SignupForm = ({ switchToLogin }) => {
         >
           <option value="student">Student</option>
           <option value="teacher">Teacher</option>
-          <option value="institution">Institution</option>
+          <option value="institute">Institution</option>
           <option value="parent">Parent</option>
         </select>
+
+        <input
+          type="text"
+          name="firstName"
+          placeholder="First Name"
+          className="w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus:outline-none focus:border-purple-500"
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="lastName"
+          placeholder="Last Name"
+          className="w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus:outline-none focus:border-purple-500"
+          onChange={handleChange}
+        />
 
         <input
           type="email"
@@ -192,7 +221,6 @@ const SignupForm = ({ switchToLogin }) => {
         />
 
         <div className="flex items-center w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus-within:border-purple-500">
-          {/* Country Code Selector */}
           <select
             value={countryCode}
             onChange={(e) => setCountryCode(e.target.value)}
@@ -205,15 +233,15 @@ const SignupForm = ({ switchToLogin }) => {
             <option value="+81">🇯🇵 +81</option>
           </select>
 
-          {/* Phone Number Input */}
           <input
             type="text"
+            name="phone"
             placeholder="Phone number"
             className="w-full bg-purple-50 text-purple-900 focus:outline-none"
+            onChange={handleChange}
           />
         </div>
 
-        {/* Password Input Component */}
         <PasswordInput handleChange={handleChange} />
 
         <button

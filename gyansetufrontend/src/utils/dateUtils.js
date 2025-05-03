@@ -7,7 +7,10 @@
  * @param {Array} filteredEvents - The filtered events array
  * @returns {Object} - Object containing date helper functions
  */
-export const getDateHelpers = (currentDate, currentView, filteredEvents) => {
+export const getDateHelpers = (currentDate, currentView, filteredEvents = []) => {
+  // Ensure filteredEvents is always an array
+  const events = Array.isArray(filteredEvents) ? filteredEvents : [];
+  
   // Get header title based on current view and date
   const getHeaderTitle = () => {
     if (currentView === "day") {
@@ -86,7 +89,7 @@ export const getDateHelpers = (currentDate, currentView, filteredEvents) => {
   // Get events for the current day
   const getEventsForCurrentDay = () => {
     const currentDateStr = currentDate.toISOString().split("T")[0];
-    return filteredEvents.filter((event) => {
+    return events.filter((event) => {
       // Single day event
       if (event.date) {
         return event.date === currentDateStr;
@@ -113,7 +116,7 @@ export const getDateHelpers = (currentDate, currentView, filteredEvents) => {
     endOfWeek.setDate(startOfWeek.getDate() + 6);
     endOfWeek.setHours(23, 59, 59, 999);
 
-    return filteredEvents.filter((event) => {
+    return events.filter((event) => {
       // Single day event
       if (event.date) {
         const eventDate = new Date(event.date);
@@ -243,7 +246,7 @@ export const getDateHelpers = (currentDate, currentView, filteredEvents) => {
 
   // Get events for a specific day
   const getEventsForDay = (dateString) => {
-    return filteredEvents.filter((event) => {
+    return events.filter((event) => {
       // Single day event
       if (event.date) {
         return event.date === dateString;
@@ -317,7 +320,7 @@ export const getDateHelpers = (currentDate, currentView, filteredEvents) => {
     const startDate = new Date(year, month, 1);
     const endDate = new Date(year, month + 1, 0);
 
-    return filteredEvents.filter((event) => {
+    return events.filter((event) => {
       // Single day event
       if (event.date) {
         const eventDate = new Date(event.date);
@@ -342,7 +345,7 @@ export const getDateHelpers = (currentDate, currentView, filteredEvents) => {
     const startDate = new Date(year, quarterStartMonth, 1);
     const endDate = new Date(year, quarterStartMonth + 3, 0);
 
-    return filteredEvents.filter((event) => {
+    return events.filter((event) => {
       // Single day event
       if (event.date) {
         const eventDate = new Date(event.date);
