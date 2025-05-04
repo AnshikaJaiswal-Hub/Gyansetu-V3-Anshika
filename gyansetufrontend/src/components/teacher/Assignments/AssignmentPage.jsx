@@ -241,7 +241,7 @@ export default function AssignmentCreatorMain() {
                         )}
                       </div>
                       <span
-                        className={`mt-2 text-xs sm:text-sm ${
+                        className={`mt-2 text-xs sm:text-sm hidden sm:block ${
                           currentStep === index + 1
                             ? "font-medium text-purple-800"
                             : "text-gray-600"

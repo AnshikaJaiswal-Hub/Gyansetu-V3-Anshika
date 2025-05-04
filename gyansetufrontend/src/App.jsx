@@ -20,7 +20,7 @@ import ResetPasswordPage from "./pages/ResetPassword";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 
 // Role-based Dashboard Pages
-import StudentDashboard from "./components/students/studentDasboard/StudentDasboard";
+import StudentDashboard from "./pages/dashboards/StudentDashboard";
 import TeacherDashboard from "./pages/dashboards/TeacherDashboard";
 import ParentDashboard from "./pages/dashboards/ParentDashboard";
 import InstituteDashboard from "./pages/dashboards/InstituteDashboard";

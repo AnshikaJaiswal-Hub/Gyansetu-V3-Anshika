@@ -12,6 +12,7 @@ import {
   Calendar,
   Clock3,
 } from "lucide-react";
+import StudentNavbar from "../studentDasboard/StudentNavbar";
 
 const StudentAssignmentInterface = () => {
   // Mock data - in a real application, this would come from an API
@@ -210,6 +211,10 @@ const StudentAssignmentInterface = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [currentTab, setCurrentTab] = useState("upcoming"); // upcoming or attempted
 
+  // Added state for Navbar interaction
+  const [navExpanded, setNavExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
   // Get current date and time for checking assignment availability
   const getCurrentDateTime = () => {
     return new Date();
@@ -224,6 +229,16 @@ const StudentAssignmentInterface = () => {
     }, 60000); // Update every minute
 
     return () => clearInterval(interval);
+  }, []);
+
+  // Added effect for mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Check if assignment is available for taking based on scheduled time
@@ -310,6 +325,19 @@ const StudentAssignmentInterface = () => {
     }
   };
 
+  // Define subject colors
+  const subjectColors = {
+    Mathematics: "bg-red-200", // Red for Maths
+    Chemistry: "bg-blue-200", // Blue for Science (using Chemistry as example)
+    Physics: "bg-blue-300", // Another blue shade for Science
+    Biology: "bg-cyan-200", // Cyan for Biology
+    History: "bg-green-200", // Green for Social Science (using History as example)
+    Geography: "bg-green-300", // Another green shade for Social Science
+    "Computer Science": "bg-yellow-200", // Yellow for Computer Science
+    // Add more subjects and colors as needed
+    default: "bg-violet-300", // Default color
+  };
+
   // Calculate due date
   const formatDueDate = (dateString) => {
     const date = new Date(dateString);
@@ -385,6 +413,11 @@ const StudentAssignmentInterface = () => {
     }
   };
 
+  // Added handler for Navbar toggle
+  const handleNavToggle = (expanded) => {
+    setNavExpanded(expanded);
+  };
+
   // Handle selecting an assignment
   const handleSelectAssignment = (assignment) => {
     setActiveAssignment(assignment);
@@ -394,6 +427,7 @@ const StudentAssignmentInterface = () => {
     setSavedAnswers({});
     setMarkedForReview([]);
     setCurrentQuestion(0);
+    return null; // Return null if no active assignment or not started
   };
 
   // Handle start
@@ -477,7 +511,9 @@ const StudentAssignmentInterface = () => {
           upcomingAssignments.map((assignment) => (
             <div
               key={assignment.id}
-              className="bg-violet-300 rounded-2xl shadow-md overflow-hidden"
+              className={`${
+                subjectColors[assignment.subject] || subjectColors.default
+              } rounded-2xl shadow-md overflow-hidden`}
             >
               <div className="p-6">
                 <div className="flex justify-between items-start mb-2">
@@ -1106,14 +1142,21 @@ const StudentAssignmentInterface = () => {
   );
 
   return (
-    <div className="bg-gradient-to-br from-violet-200 via-white to-violet-400 min-h-screen pt-4">
-      {/* Main content */}
-      <main className="mt-4">
-        {!activeAssignment && renderAssignmentsList()}
-        {activeAssignment && !started && !isSubmitted && renderWelcomeScreen()}
-        {activeAssignment && started && !isSubmitted && renderQuestionsScreen()}
-        {activeAssignment && isSubmitted && renderSubmittedScreen()}
-      </main>
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+      <StudentNavbar onNavToggle={handleNavToggle} />
+      <div className={`flex-1 transition-all duration-300 ${navExpanded ? "ml-0 md:ml-[330px]" : "ml-0 md:ml-[100px]"}`}>
+        <div className="p-4 md:p-8">
+          {!activeAssignment ? (
+            renderAssignmentsList()
+          ) : !started ? (
+            renderWelcomeScreen()
+          ) : isSubmitted ? (
+            renderSubmittedScreen()
+          ) : (
+            renderQuestionsScreen()
+          )}
+        </div>
+      </div>
     </div>
   );
 };

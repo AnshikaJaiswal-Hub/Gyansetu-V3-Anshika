@@ -32,11 +32,11 @@ const TeacherNavbar = ({ onNavToggle }) => {
       icon: <IoDocumentTextOutline className="text-lg" />,
       path: "/teacher/generate-assignment",
     },
-    {
-      name: "Analytics",
-      icon: <IoStatsChartOutline className="text-lg" />,
-      path: "/teacher/analytics",
-    },
+    // {
+    //   name: "Analytics",
+    //   icon: <IoStatsChartOutline className="text-lg" />,
+    //   path: "/teacher/analytics",
+    // },
     {
       name: "Calendar",
       icon: <IoChatbubbleOutline className="text-lg" />,
