@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../components/Auth/AuthLayout";
-import ForgotPassword from "../components/Auth/ResetPassword";
+import ResetPassword from "../components/Auth/ResetPassword";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const ResetPasswordPage = () => {
 
   return (
     <AuthLayout animate={animate} loading={loading}>
-      <ForgotPassword switchToLogin={switchToLogin} />
+      <ResetPassword switchToLogin={switchToLogin} />
     </AuthLayout>
   );
 };

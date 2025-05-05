@@ -149,23 +149,33 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
     setAuthError(null);
     setRoleError(null);
     setSuggestedRole(null);
-    const provider = new GoogleAuthProvider();
-
+    setLoading(true);
+    setProgress(0);
+    
+    const interval = simulateProgress();
+    
     try {
+      const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
 
-      const response = await authService.login({
+      const userData = {
         email: result.user.email,
         role: formData.role,
-        googleToken: idToken
-      });
+        googleToken: idToken,
+        firstName: result.user.displayName?.split(' ')[0] || '',
+        lastName: result.user.displayName?.split(' ').slice(1).join(' ') || '',
+        phone: result.user.phoneNumber || ''
+      };
 
+      const response = await authService.googleLogin(userData);
+      clearInterval(interval);
+      setProgress(100);
       toast.success("Login successful! 🎉");
 
       if (onSuccessfulLogin && response.user) {
         setTimeout(() => {
-          onSuccessfulLogin(response.user);
+          navigate(`/${response.user.role}`);
         }, 500);
       } else {
         setTimeout(() => {
@@ -174,6 +184,7 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
       }
     } catch (error) {
       console.error("Google login error:", error);
+      clearInterval(interval);
 
       if (error.response?.status === 403 && error.response?.data?.actualRole) {
         const actualRole = error.response.data.actualRole;
@@ -187,7 +198,26 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
         toast.error(error.message || "Login failed");
         setAuthError("Authentication failed");
       }
+    } finally {
+      clearInterval(interval);
+      setLoading(false);
     }
+  };
+
+  const handleAppleLogin = async () => {
+    if (!formData.role) {
+      toast.error("Please select a role before signing in with Apple");
+      setRoleError("Role selection is required");
+      return;
+    }
+
+    setAuthError(null);
+    setRoleError(null);
+    setSuggestedRole(null);
+    
+    // Apple Sign In is currently a placeholder
+    // In a real implementation, you would use the Apple Sign In SDK
+    toast.info("Apple Sign In is coming soon!");
   };
 
   // Function to navigate to reset password page
@@ -239,6 +269,7 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
             borderColor: themeColors.borderColor,
             color: themeColors.textSecondary,
           }}
+          onClick={handleAppleLogin}
         >
           <FaApple size={18} />
         </button>

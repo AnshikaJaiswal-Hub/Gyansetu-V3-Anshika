@@ -135,7 +135,7 @@ function AppContent() {
           }
         />
 
-        {/* Other Role Routes */}
+        {/* Student Routes */}
         <Route
           path="/Studentdashboard*"
           element={
@@ -160,6 +160,8 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
+        {/* Parent Routes */}
         <Route
           path="/parent/*"
           element={
@@ -168,6 +170,8 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
+        {/* Institute Routes */}
         <Route
           path="/institute/*"
           element={

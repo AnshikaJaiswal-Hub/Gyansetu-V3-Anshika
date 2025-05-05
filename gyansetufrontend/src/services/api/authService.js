@@ -41,6 +41,64 @@ api.interceptors.response.use(
 );
 
 const authService = {
+  // Step 1: Send verification OTP to email
+  preSignup: async (email, role) => {
+    try {
+      const response = await api.post('/pre-signup', { email, role });
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw error.response.data;
+      } else {
+        throw { message: 'Error occurred during pre-signup.' };
+      }
+    }
+  },
+
+  // Step 2: Verify email OTP
+  verifyEmailOTP: async (email, otp) => {
+    try {
+      const response = await api.post('/verify-email-otp', { email, otp });
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw error.response.data;
+      } else {
+        throw { message: 'Error occurred during OTP verification.' };
+      }
+    }
+  },
+
+  // Step 3: Complete registration with verified token
+  completeSignup: async (userData, verifiedToken) => {
+    try {
+      // Map frontend field names to backend field names
+      const mappedData = {
+        email: userData.email,
+        password: userData.password,
+        phone: userData.phone || '',
+        role: userData.role,
+        first_name: userData.firstName || '',
+        last_name: userData.lastName || '',
+        verified_token: verifiedToken
+      };
+
+      const response = await api.post('/complete-signup', mappedData);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw error.response.data;
+      } else {
+        throw { message: 'Error occurred during signup completion.' };
+      }
+    }
+  },
+
+  // Combined method for backwards compatibility
   signup: async (userData) => {
     try {
       // Map frontend field names to backend field names
@@ -85,6 +143,11 @@ const authService = {
       // Handle Google token if present
       if (credentials.googleToken) {
         return authService.googleLogin(credentials);
+      }
+
+      // Handle Apple token if present
+      if (credentials.appleToken) {
+        return authService.appleLogin(credentials);
       }
 
       const response = await api.post('/login', mappedData);
@@ -152,6 +215,81 @@ const authService = {
         throw error.response;
       } else {
         throw { message: 'Error occurred during Google login.' };
+      }
+    }
+  },
+
+  appleLogin: async (credentials) => {
+    try {
+      const response = await api.post('/apple-login', {
+        email: credentials.email,
+        role: credentials.role,
+        appleToken: credentials.appleToken,
+        first_name: credentials.firstName || '',
+        last_name: credentials.lastName || '',
+        phone: credentials.phone || ''
+      });
+      
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        // Handle role mismatch for Apple login
+        if (error.response.status === 403 && error.response.data.detail === "Role mismatch") {
+          error.response.data = {
+            actualRole: error.response.data.actualRole || "unknown"
+          };
+        }
+        throw error.response;
+      } else {
+        throw { message: 'Error occurred during Apple login.' };
+      }
+    }
+  },
+
+  // Password reset methods
+  requestPasswordReset: async (email) => {
+    try {
+      const response = await api.post('/forgot-password', { email });
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw error.response.data;
+      } else {
+        throw { message: 'Error occurred during password reset request.' };
+      }
+    }
+  },
+
+  verifyResetOTP: async (email, otp) => {
+    try {
+      const response = await api.post('/verify-reset-otp', { email, otp });
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw error.response.data;
+      } else {
+        throw { message: 'Error occurred during OTP verification.' };
+      }
+    }
+  },
+
+  resetPassword: async (email, newPassword, token) => {
+    try {
+      const response = await api.post('/reset-password', {
+        email,
+        new_password: newPassword,
+        token
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw error.response.data;
+      } else {
+        throw { message: 'Error occurred during password reset.' };
       }
     }
   },
