@@ -1,3 +1,4 @@
+// src/services/api/authService.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/auth';
@@ -42,7 +43,17 @@ api.interceptors.response.use(
 const authService = {
   signup: async (userData) => {
     try {
-      const response = await api.post('/signup', userData);
+      // Map frontend field names to backend field names
+      const mappedData = {
+        email: userData.email,
+        password: userData.password,
+        phone: userData.phone || '',
+        role: userData.role,
+        first_name: userData.firstName || '',
+        last_name: userData.lastName || ''
+      };
+
+      const response = await api.post('/signup', mappedData);
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -64,7 +75,19 @@ const authService = {
 
   login: async (credentials) => {
     try {
-      const response = await api.post('/login', credentials);
+      // Map frontend field names to backend field names if needed
+      const mappedData = {
+        email: credentials.email,
+        password: credentials.password,
+        role: credentials.role
+      };
+
+      // Handle Google token if present
+      if (credentials.googleToken) {
+        return authService.googleLogin(credentials);
+      }
+
+      const response = await api.post('/login', mappedData);
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -73,14 +96,62 @@ const authService = {
     } catch (error) {
       if (error.response) {
         // Check for role mismatch
-        if (error.response.status === 403 && error.response.data.actualRole) {
-          throw error.response;
+        if (error.response.status === 403 && error.response.data.detail === "Role mismatch") {
+          const user = await authService.getUserByEmail(credentials.email);
+          if (user) {
+            error.response.data = {
+              actualRole: user.role
+            };
+          }
         }
-        throw error.response.data;
+        throw error.response;
       } else if (error.request) {
         throw { message: 'No response from server. Please try again.' };
       } else {
         throw { message: 'Error occurred during login.' };
+      }
+    }
+  },
+
+  // Method to get user by email (for handling role mismatch errors)
+  getUserByEmail: async (email) => {
+    try {
+      // This endpoint would need to be implemented on the backend
+      const response = await api.get(`/user-by-email?email=${email}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user by email:', error);
+      return null;
+    }
+  },
+
+  googleLogin: async (credentials) => {
+    try {
+      const response = await api.post('/google-login', {
+        email: credentials.email,
+        role: credentials.role,
+        googleToken: credentials.googleToken,
+        first_name: credentials.firstName || '',
+        last_name: credentials.lastName || '',
+        phone: credentials.phone || ''
+      });
+      
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        // Handle role mismatch for Google login
+        if (error.response.status === 403 && error.response.data.detail === "Role mismatch") {
+          error.response.data = {
+            actualRole: error.response.data.actualRole || "unknown"
+          };
+        }
+        throw error.response;
+      } else {
+        throw { message: 'Error occurred during Google login.' };
       }
     }
   },
@@ -129,4 +200,4 @@ const authService = {
   }
 };
 
-export default authService; 
+export default authService;
