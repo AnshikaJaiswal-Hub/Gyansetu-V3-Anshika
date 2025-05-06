@@ -1,113 +1,276 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
+import styled from 'styled-components';
 
 const LoadingOverlay = () => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50">
-      <div className="w-10 h-10 border-4 border-gray-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-      {/* <p className="text-white">Loading...</p> */}
-      <div className="text-center mt-6">
-        <div className="flex items-center justify-center mb-4">
-          <img
-            src="/actual.jpg"
-            alt="Neon House Logo"
-            className="w-24 h-24 animate-spin"
-          />{" "}
-        </div>
-
-        <motion.div
-          className="mb-4 text-lg font-medium"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, repeat: Infinity, repeatType: "mirror" }}
-        >
-          <p>Creating your account, please wait...</p>
-        </motion.div>
-        <p className="mb-2 text-xs font-light text-gray-400">
-          Empowering your property journey with innovation{" "}
-        </p>
-
-        <div className="relative w-64 mx-auto h-2 bg-gray-700 rounded-full">
-          <motion.div
-            className="absolute top-0 left-0 h-full bg-green-500 rounded-full"
-            initial={{ width: "0%" }}
-            animate={{ width: "70%" }}
-            transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}
-          ></motion.div>{" "}
-        </div>
+    <StyledWrapper>
+      <div className="loadingspinner">
+        <div id="square1" />
+        <div id="square2" />
+        <div id="square3" />
+        <div id="square4" />
+        <div id="square5" />
       </div>
-
-      <div className="text-center pb-4">
-        <p className="text-xs text-gray-500">
-          Finding the best properties <span className="animate-pulse">...</span>{" "}
-        </p>
-        <p className="text-xs text-gray-500">
-          {" "}
-          Analyzing market trends <span className="animate-pulse">
-            ...
-          </span>{" "}
-        </p>
-        <p className="text-xs text-gray-500">
-          Customizing your experience <span className="animate-pulse">...</span>
-        </p>
-      </div>
-    </div>
+    </StyledWrapper>
   );
-};
+}
+
+const StyledWrapper = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  .loadingspinner {
+    --square: 26px;
+    --offset: 30px;
+    --duration: 2.4s;
+    --delay: 0.2s;
+    --timing-function: ease-in-out;
+    --in-duration: 0.4s;
+    --in-delay: 0.1s;
+    --in-timing-function: ease-out;
+    width: calc( 3 * var(--offset) + var(--square));
+    height: calc( 2 * var(--offset) + var(--square));
+    padding: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .loadingspinner div {
+    display: inline-block;
+    background: darkorange;
+      /*background: var(--text-color);*/
+      /*box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);*/
+    border: none;
+    border-radius: 2px;
+    width: var(--square);
+    height: var(--square);
+    position: absolute;
+    padding: 0px;
+    margin: 0px;
+    font-size: 6pt;
+    color: black;
+  }
+
+  .loadingspinner #square1 {
+    left: calc( 0 * var(--offset) );
+    top: calc( 0 * var(--offset) );
+    animation: square1 var(--duration) var(--delay) var(--timing-function) infinite,
+                 squarefadein var(--in-duration) calc(1 * var(--in-delay)) var(--in-timing-function) both;
+  }
+
+  .loadingspinner #square2 {
+    left: calc( 0 * var(--offset) );
+    top: calc( 1 * var(--offset) );
+    animation: square2 var(--duration) var(--delay) var(--timing-function) infinite,
+                squarefadein var(--in-duration) calc(1 * var(--in-delay)) var(--in-timing-function) both;
+  }
+
+  .loadingspinner #square3 {
+    left: calc( 1 * var(--offset) );
+    top: calc( 1 * var(--offset) );
+    animation: square3 var(--duration) var(--delay) var(--timing-function) infinite,
+                 squarefadein var(--in-duration) calc(2 * var(--in-delay)) var(--in-timing-function) both;
+  }
+
+  .loadingspinner #square4 {
+    left: calc( 2 * var(--offset) );
+    top: calc( 1 * var(--offset) );
+    animation: square4 var(--duration) var(--delay) var(--timing-function) infinite,
+                 squarefadein var(--in-duration) calc(3 * var(--in-delay)) var(--in-timing-function) both;
+  }
+
+  .loadingspinner #square5 {
+    left: calc( 3 * var(--offset) );
+    top: calc( 1 * var(--offset) );
+    animation: square5 var(--duration) var(--delay) var(--timing-function) infinite,
+                 squarefadein var(--in-duration) calc(4 * var(--in-delay)) var(--in-timing-function) both;
+  }
+
+  @keyframes square1 {
+    0% {
+      left: calc( 0 * var(--offset) );
+      top: calc( 0 * var(--offset) );
+    }
+
+    8.333% {
+      left: calc( 0 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    100% {
+      left: calc( 0 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+  }
+
+  @keyframes square2 {
+    0% {
+      left: calc( 0 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    8.333% {
+      left: calc( 0 * var(--offset) );
+      top: calc( 2 * var(--offset) );
+    }
+
+    16.67% {
+      left: calc( 1 * var(--offset) );
+      top: calc( 2 * var(--offset) );
+    }
+
+    25.00% {
+      left: calc( 1 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    83.33% {
+      left: calc( 1 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    91.67% {
+      left: calc( 1 * var(--offset) );
+      top: calc( 0 * var(--offset) );
+    }
+
+    100% {
+      left: calc( 0 * var(--offset) );
+      top: calc( 0 * var(--offset) );
+    }
+  }
+
+  @keyframes square3 {
+    0%,100% {
+      left: calc( 1 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    16.67% {
+      left: calc( 1 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    25.00% {
+      left: calc( 1 * var(--offset) );
+      top: calc( 0 * var(--offset) );
+    }
+
+    33.33% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 0 * var(--offset) );
+    }
+
+    41.67% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    66.67% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    75.00% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 2 * var(--offset) );
+    }
+
+    83.33% {
+      left: calc( 1 * var(--offset) );
+      top: calc( 2 * var(--offset) );
+    }
+
+    91.67% {
+      left: calc( 1 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+  }
+
+  @keyframes square4 {
+    0% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    33.33% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    41.67% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 2 * var(--offset) );
+    }
+
+    50.00% {
+      left: calc( 3 * var(--offset) );
+      top: calc( 2 * var(--offset) );
+    }
+
+    58.33% {
+      left: calc( 3 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    100% {
+      left: calc( 3 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+  }
+
+  @keyframes square5 {
+    0% {
+      left: calc( 3 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    50.00% {
+      left: calc( 3 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    58.33% {
+      left: calc( 3 * var(--offset) );
+      top: calc( 0 * var(--offset) );
+    }
+
+    66.67% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 0 * var(--offset) );
+    }
+
+    75.00% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+
+    100% {
+      left: calc( 2 * var(--offset) );
+      top: calc( 1 * var(--offset) );
+    }
+  }
+
+  @keyframes squarefadein {
+    0% {
+      transform: scale(0.75);
+      opacity: 0.0;
+    }
+
+    100% {
+      transform: scale(1.0);
+      opacity: 1.0;
+    }
+  }
+`;
 
 export default LoadingOverlay;
-
-// improved code:
-// import React from "react";
-// import { motion } from "framer-motion";
-
-// const LoadingScreen = () => {
-//   return (
-//     <div className="flex flex-col justify-between inset-0 min-h-screen bg-black text-white z-50">
-//       <div className="text-center mt-6">
-//         <div className="flex items-center justify-center mb-4">
-//           <img
-//             src="/actual.jpg"
-//             alt="Neon House Logo"
-//             className="w-24 h-24 animate-spin"
-//           />
-//         </div>
-
-//         <motion.div
-//           className="mb-4 text-lg font-medium"
-//           initial={{ opacity: 0 }}
-//           animate={{ opacity: 1 }}
-//           transition={{ duration: 1, repeat: Infinity, repeatType: "mirror" }}
-//         >
-//           <p>Creating your account, please wait...</p>
-//         </motion.div>
-//         <p className="mb-2 text-xs font-light text-gray-400">
-//           Empowering your property journey with innovation
-//         </p>
-
-//         <div className="relative w-64 mx-auto h-2 bg-gray-700 rounded-full">
-//           <motion.div
-//             className="absolute top-0 left-0 h-full bg-green-500 rounded-full"
-//             initial={{ width: "0%" }}
-//             animate={{ width: "70%" }}
-//             transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}
-//           ></motion.div>
-//         </div>
-//       </div>
-
-//       <div className="text-center pb-4">
-//         <p className="text-xs text-gray-500">
-//           Finding the best properties <span className="animate-pulse">...</span>
-//         </p>
-//         <p className="text-xs text-gray-500">
-//           Analyzing market trends <span className="animate-pulse">...</span>
-//         </p>
-//         <p className="text-xs text-gray-500">
-//           Customizing your experience <span className="animate-pulse">...</span>
-//         </p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default LoadingScreen;

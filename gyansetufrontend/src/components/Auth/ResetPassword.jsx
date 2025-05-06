@@ -4,6 +4,7 @@ import { FaArrowLeft, FaEnvelope, FaCheck, FaLock, FaEye, FaEyeSlash } from "rea
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoginOverlay from "./LoginOverlay";
+import SimpleLoader from "./SimpleLoader";
 import OTPInput from "./OTPInput";
 import authService from "../../services/api/authService";
 
@@ -14,6 +15,7 @@ const ResetPassword = ({ switchToLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resetToken, setResetToken] = useState("");
   const [loading, setLoading] = useState(false);
+  const [quickLoading, setQuickLoading] = useState(false); // For verify/OTP operations
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [resendDisabled, setResendDisabled] = useState(false);
@@ -147,7 +149,7 @@ const ResetPassword = ({ switchToLogin }) => {
   const handleResendOTP = async () => {
     if (resendDisabled) return;
     
-    setLoading(true);
+    setQuickLoading(true);
     setError(null);
 
     try {
@@ -187,13 +189,13 @@ const ResetPassword = ({ switchToLogin }) => {
         }
       }, 1000);
     } finally {
-      setLoading(false);
+      setQuickLoading(false);
     }
   };
 
   // Step 2: Verify OTP
   const handleOTPComplete = async (otp) => {
-    setLoading(true);
+    setQuickLoading(true);
     setError(null);
     
     try {
@@ -211,7 +213,7 @@ const ResetPassword = ({ switchToLogin }) => {
       toast.error(error.message || "Invalid verification code");
       setError(error.message || "Invalid verification code");
     } finally {
-      setLoading(false);
+      setQuickLoading(false);
     }
   };
 
@@ -523,6 +525,7 @@ const ResetPassword = ({ switchToLogin }) => {
     <div className="flex flex-col items-center text-center h-full overflow-y-auto px-6">
       <ToastContainer position="top-right" autoClose={7000} />
       {loading && <LoginOverlay progress={progress} />}
+      {quickLoading && <SimpleLoader />}
 
       {/* Back button (only on first step) */}
       {step === 1 && (

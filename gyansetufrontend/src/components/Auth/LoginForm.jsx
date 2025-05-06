@@ -7,6 +7,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoginOverlay from "./LoginOverlay";
+import SimpleLoader from "./SimpleLoader";
 import authService from "../../services/api/authService";
 import RoleSelection from "./RoleSelection";
 
@@ -18,6 +19,7 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
     role: "",
   });
   const [loading, setLoading] = useState(false);
+  const [quickLoading, setQuickLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [authError, setAuthError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -223,9 +225,9 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
   // Function to navigate to reset password page
   const navigateToResetPassword = () => {
     // Adding a small loading animation for consistent UX
-    setLoading(true);
+    setQuickLoading(true);
     setTimeout(() => {
-      setLoading(false);
+      setQuickLoading(false);
       navigate("/reset-password");
     }, 1200);
   };
@@ -234,6 +236,7 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
     <div className="flex flex-col items-center text-center h-full overflow-y-auto px-6">
       <ToastContainer position="top-right" autoClose={7000} />
       {loading && <LoginOverlay progress={progress} />}
+      {quickLoading && <SimpleLoader />}
 
       {/* Top Badge */}
       <h1

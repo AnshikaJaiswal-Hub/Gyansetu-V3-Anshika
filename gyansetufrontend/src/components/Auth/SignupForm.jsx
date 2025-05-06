@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import { FaGoogle, FaApple, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import SignupOverlay from "./SignupOverlay";
+import SimpleLoader from "./SimpleLoader";
 import { auth } from "../../firebaseConfig";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
@@ -21,6 +22,7 @@ const SignupForm = ({ switchToLogin }) => {
     otp: ""
   });
   const [loading, setLoading] = useState(false);
+  const [quickLoading, setQuickLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
@@ -73,17 +75,12 @@ const SignupForm = ({ switchToLogin }) => {
       return;
     }
 
-    setLoading(true);
+    setQuickLoading(true);
     setError(null);
-    setProgress(0);
-
-    const interval = simulateProgress();
 
     try {
       // Send verification OTP
       await authService.preSignup(formData.email, formData.role);
-      clearInterval(interval);
-      setProgress(100);
       toast.success("Verification code sent to your email!");
       
       // Show OTP field
@@ -104,12 +101,10 @@ const SignupForm = ({ switchToLogin }) => {
         }
       }, 1000);
     } catch (error) {
-      clearInterval(interval);
-      toast.error(error.message || "Failed to send verification code");
-      setError(error.message || "Failed to send verification code");
+      toast.error(error.message || "Failed to send verification code fill all fields first");
+      setError(error.message || "Failed to send verification code fill all fields first");
     } finally {
-      clearInterval(interval);
-      setLoading(false);
+      setQuickLoading(false);
     }
   };
 
@@ -117,7 +112,7 @@ const SignupForm = ({ switchToLogin }) => {
   const handleResendOTP = async () => {
     if (resendDisabled) return;
     
-    setLoading(true);
+    setQuickLoading(true);
     setError(null);
 
     try {
@@ -143,7 +138,7 @@ const SignupForm = ({ switchToLogin }) => {
       toast.error(error.message || "Failed to resend verification code");
       setError(error.message || "Failed to resend verification code");
     } finally {
-      setLoading(false);
+      setQuickLoading(false);
     }
   };
 
@@ -156,7 +151,7 @@ const SignupForm = ({ switchToLogin }) => {
       return;
     }
     
-    setLoading(true);
+    setQuickLoading(true);
     setError(null);
     
     try {
@@ -174,7 +169,7 @@ const SignupForm = ({ switchToLogin }) => {
       toast.error(error.message || "Invalid verification code");
       setError(error.message || "Invalid verification code");
     } finally {
-      setLoading(false);
+      setQuickLoading(false);
     }
   };
 
@@ -311,6 +306,7 @@ const SignupForm = ({ switchToLogin }) => {
     <div className="flex flex-col items-center text-center space-y-0 mt-0">
       <ToastContainer position="top-right" autoClose={7000} />
       {loading && <SignupOverlay progress={progress} />}
+      {quickLoading && <SimpleLoader />}
 
       <h1 className="font-primary font-secondary text-lg md:text-4xl font-thin mt-2 text-purple-900">
         Sign up account
