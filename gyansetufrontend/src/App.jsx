@@ -10,6 +10,8 @@ import {
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import StudentAssignmentInterface from "./components/students/Assignment/StudentAssignment";
+import NotesApp from "./components/students/notes/NotesApp";
+import ContentApp from "./components/students/Content/Content";
 
 // Auth Pages
 import LoginPage from "./pages/Login";
@@ -26,9 +28,11 @@ import ParentDashboard from "./pages/dashboards/ParentDashboard";
 import InstituteDashboard from "./pages/dashboards/InstituteDashboard";
 
 // Teacher Features
-import AssignmentPage from "./components/teacher/Assignments/AssignmentPage";
-import AIGenerate from "./components/teacher/Assignments/AIGnerate";
+import AssignmentPage from "./components/teacher/Assignments/createAssignment/AssignmentPage";
+import AIGenerate from "./components/teacher/Assignments/generateAssignment/AIAssistantantIntegration";
 import TeacherMainCalender from "./components/teacher/calender/MainCalenderTeacher";
+import TeacherContent from "./components/teacher/contentUploading/TeacherContent";
+import CompleteProfilePage from "./components/teacher/profile/CompleteProfilePage";
 
 // Auth Service
 import authService from "./services/api/authService";
@@ -134,13 +138,39 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route
+          key={location.pathname}
+          path="/teacher/content"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherContent />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/profile"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <CompleteProfilePage />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Other Role Routes */}
+        {/* Student Routes */}
         <Route
           path="/Studentdashboard*"
           element={
             <ProtectedRoute allowedRoles={["student"]}>
               <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notes"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <NotesApp />
             </ProtectedRoute>
           }
         />
@@ -160,6 +190,24 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+         <Route
+          path="/content"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <ContentApp />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/cal"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <TeacherMainCalender />
+            </ProtectedRoute>
+          }
+        />
+      
+          
         <Route
           path="/parent/*"
           element={

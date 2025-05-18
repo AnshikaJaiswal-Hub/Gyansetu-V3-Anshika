@@ -6,6 +6,8 @@ import {
   IoStatsChartOutline,
   IoChatbubbleOutline,
 } from "react-icons/io5";
+
+import { FaBook } from 'react-icons/fa';
 import { useNavigate, useLocation } from "react-router-dom";
 
 const TeacherNavbar = ({ onNavToggle }) => {
@@ -32,11 +34,11 @@ const TeacherNavbar = ({ onNavToggle }) => {
       icon: <IoDocumentTextOutline className="text-lg" />,
       path: "/teacher/generate-assignment",
     },
-    // {
-    //   name: "Analytics",
-    //   icon: <IoStatsChartOutline className="text-lg" />,
-    //   path: "/teacher/analytics",
-    // },
+    {
+      name: "Content",
+      icon: <FaBook className="text-lg" />,
+      path: "/teacher/content",
+    },
     {
       name: "Calendar",
       icon: <IoChatbubbleOutline className="text-lg" />,

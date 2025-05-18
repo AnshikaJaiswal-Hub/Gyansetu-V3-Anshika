@@ -69,17 +69,17 @@ const StudentNavbar = ({ onNavToggle }) => {
       name: "Assignment",
       icon: <IoDocumentTextOutline className="text-lg" />,
       path: "/StudentAssignment",
-    },
-    {
-      name: "Quiz",
-      icon: <IoHelpBuoyOutline className="text-lg" />,
-      path: "/quiz",
+    },{
+      name: "Notes",
+      icon: <IoDocumentTextOutline className="text-lg" />,
+      path: "/notes",
     },
     {
       name: "Content",
-      icon: <IoBookOutline className="text-lg" />,
+      icon: <IoDocumentTextOutline className="text-lg" />,
       path: "/content",
     },
+    
     {
       name: "Calendar",
       icon: <IoCalendarClearOutline className="text-lg" />,

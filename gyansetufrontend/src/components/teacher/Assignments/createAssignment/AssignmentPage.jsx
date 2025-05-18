@@ -8,7 +8,7 @@ import {
 } from "react-icons/io5";
 
 // Import components
-import Navbar from "../TeacherNavbar"; // Reusing the same Navbar component
+import Navbar from "../../TeacherNavbar"; // Reusing the same Navbar component
 import TemplateSelection from "./TemplateSelection";
 import ContentCreation from "./content/ContentCreation";
 import SettingsConfiguration from "./SettingConfig";
