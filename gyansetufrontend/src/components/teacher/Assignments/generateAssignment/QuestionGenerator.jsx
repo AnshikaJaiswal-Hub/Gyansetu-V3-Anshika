@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Wand2, Sparkles, BookOpen, Users, GraduationCap } from "lucide-react";
+import { Wand2, Sparkles, BookOpen, Users, GraduationCap, Calendar, Clock, Info, AlertTriangle , MessageSquare } from "lucide-react";
 import PropTypes from "prop-types";
 
 // Class, section and subject data
@@ -815,6 +815,31 @@ const QuestionGenerator = ({ selectedTemplate }) => {
             </select>
           </div>
         </div>
+        {/* New Topic Description Field */}
+        <div className="mb-4">
+          <label
+            htmlFor="topicDescription"
+            className="block text-xs font-medium text-gray-600 mb-1"
+          >
+            <div className="flex items-center">
+              <MessageSquare className="w-3 h-3 mr-1" />
+              Topic Description or Custom Instructions
+            </div>
+          </label>
+          <textarea
+            id="topicDescription"
+            name="topicDescription"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+            placeholder="Provide additional details or specific instructions for generating questions..."
+            value={formState.topicDescription}
+            onChange={handleInputChange}
+            rows="3"
+            aria-label="Topic description or custom instructions"
+          ></textarea>
+          <p className="text-xs text-gray-500 mt-1">
+            Describe specific concepts to focus on or add custom instructions for AI-generated questions.
+          </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
             <label
@@ -899,9 +924,477 @@ QuestionGenerator.propTypes = {
   selectedTemplate: PropTypes.oneOf(["quiz", "written", "interactive", "project"]),
 };
 
+// Modal component for "Keep All" confirmation
+const ConfirmationModal = ({ isOpen, onClose, onAddMore, onPublishNow, title, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 shadow-xl">
+        <h3 className="text-lg font-medium text-gray-900 mb-2">{title}</h3>
+        <div className="py-2">{children}</div>
+        <div className="mt-4 flex space-x-2 justify-end">
+          <button
+            onClick={onClose}
+            className="px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition-colors text-sm"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onAddMore}
+            className="px-3 py-1.5 border border-purple-700 bg-white text-purple-700 rounded-md hover:bg-purple-50 transition-colors text-sm"
+          >
+            Add More Questions
+          </button>
+          <button
+            onClick={onPublishNow}
+            className="px-3 py-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm"
+          >
+            Publish Assignment
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Modal component for publishing assignment
+const PublishModal = ({ isOpen, onClose, onPublish }) => {
+  const [publishSettings, setPublishSettings] = React.useState({
+    title: "",
+    instructions: "",
+    publishDate: getTodayDate(),
+    publishTime: getCurrentTime(),
+    dueDate: getTomorrowDate(),
+    dueTime: getCurrentTime(),
+    passingScore: 70,
+    showTimer: true,
+    showPoints: true,
+    feedbackType: "after-submit",
+    latePolicy: "accept",
+    penaltyRules: [],
+    setLateDeadline: false,
+    lateDeadline: "",
+  });
+
+  function getTodayDate() {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  }
+
+  function getTomorrowDate() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  }
+
+  function getCurrentTime() {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  }
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setPublishSettings({
+      ...publishSettings,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
+  // Add penalty rule
+  const addPenaltyRule = () => {
+    setPublishSettings({
+      ...publishSettings,
+      penaltyRules: [
+        ...publishSettings.penaltyRules,
+        { time: "", points: "" },
+      ],
+    });
+  };
+
+  // Remove penalty rule
+  const removePenaltyRule = (index) => {
+    const newRules = publishSettings.penaltyRules.filter((_, i) => i !== index);
+    setPublishSettings({
+      ...publishSettings,
+      penaltyRules: newRules,
+    });
+  };
+
+  // Update penalty rule
+  const updatePenaltyRule = (index, field, value) => {
+    const newRules = [...publishSettings.penaltyRules];
+    newRules[index][field] = value;
+    setPublishSettings({
+      ...publishSettings,
+      penaltyRules: newRules,
+    });
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
+      <div className="bg-white rounded-lg p-6 w-full max-w-3xl mx-4 my-8 shadow-xl">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium text-gray-900">Publish Assignment</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+          {/* Basic Assignment Information */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-medium text-gray-700 flex items-center">
+              <Info className="w-4 h-4 mr-1 text-purple-600" />
+              Assignment Details
+            </h4>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Assignment Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={publishSettings.title}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                placeholder="Enter a title for this assignment"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Instructions for Students
+              </label>
+              <textarea
+                name="instructions"
+                value={publishSettings.instructions}
+                onChange={handleInputChange}
+                rows="3"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                placeholder="Enter any specific instructions for this assignment"
+              ></textarea>
+            </div>
+          </div>
+
+          {/* Publish and Due Dates - Rearranged to column format */}
+          <div className="grid grid-cols-1 gap-4 pt-2">
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 flex items-center mb-3">
+                <Calendar className="w-4 h-4 mr-1 text-purple-600" />
+                Publish Date & Time
+              </h4>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    name="publishDate"
+                    value={publishSettings.publishDate}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Time
+                  </label>
+                  <input
+                    type="time"
+                    name="publishTime"
+                    value={publishSettings.publishTime}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 flex items-center mb-3">
+                <Clock className="w-4 h-4 mr-1 text-purple-600" />
+                Due Date & Time
+              </h4>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    name="dueDate"
+                    value={publishSettings.dueDate}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Time
+                  </label>
+                  <input
+                    type="time"
+                    name="dueTime"
+                    value={publishSettings.dueTime}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            {/* Display Settings - Now in column format */}
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 flex items-center mb-3">
+                <Wand2 className="w-4 h-4 mr-1 text-purple-600" />
+                Display Settings
+              </h4>
+              <div className="space-y-2">
+                <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="showPoints"
+                      checked={publishSettings.showPoints}
+                      onChange={handleInputChange}
+                      className="mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 rounded"
+                    />
+                    <span className="text-sm">Show point values to students</span>
+                  </label>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="showTimer"
+                      checked={publishSettings.showTimer}
+                      onChange={handleInputChange}
+                      className="mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 rounded"
+                    />
+                    <span className="text-sm">Show timer during quiz</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            {/* Passing Score - Now in column format */}
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 flex items-center mb-3">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  className="w-4 h-4 mr-1 text-purple-600"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Passing Score
+              </h4>
+              <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                <label className="block text-xs font-medium text-gray-600 mb-2">
+                  Passing Percentage
+                </label>
+                <div className="flex items-center">
+                  <input
+                    type="number"
+                    name="passingScore"
+                    value={publishSettings.passingScore}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    min="0"
+                    max="100"
+                  />
+                  <div className="ml-2 text-sm font-medium">%</div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Students must score at least this percentage to pass the assignment
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Feedback and Late Policy */}
+          <div className="pt-2">
+            <h4 className="text-sm font-medium text-gray-700 flex items-center mb-3">
+              <AlertTriangle className="w-4 h-4 mr-1 text-purple-600" />
+              Feedback & Late Submission Settings
+            </h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Show Feedback
+                </label>
+                <select
+                  name="feedbackType"
+                  value={publishSettings.feedbackType}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                >
+                  <option value="after-submit">After submission</option>
+                  <option value="after-due">After due date</option>
+                  <option value="manual">When manually released</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Late Submission Policy
+                </label>
+                <select
+                  name="latePolicy"
+                  value={publishSettings.latePolicy}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                >
+                  <option value="accept">Accept late submissions</option>
+                  <option value="penalty">Accept with penalty</option>
+                  <option value="reject">Do not accept late submissions</option>
+                </select>
+              </div>
+            </div>
+
+            {publishSettings.latePolicy === "accept" && (
+              <div className="bg-gray-50 p-3 rounded-md border border-gray-200 mb-3">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="setLateDeadline"
+                    checked={publishSettings.setLateDeadline}
+                    onChange={handleInputChange}
+                    className="mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 rounded"
+                  />
+                  <span className="text-sm">Set a final deadline for late submissions</span>
+                </label>
+                
+                {publishSettings.setLateDeadline && (
+                  <div className="grid grid-cols-2 gap-2 mt-2 pl-6">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Final Deadline Date
+                      </label>
+                      <input
+                        type="date"
+                        name="lateDeadline"
+                        value={publishSettings.lateDeadline}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {publishSettings.latePolicy === "penalty" && (
+              <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                <h5 className="text-xs font-medium text-gray-700 mb-2">Late Submission Penalties</h5>
+                
+                {publishSettings.penaltyRules.map((rule, index) => (
+                  <div key={index} className="flex items-center space-x-2 mb-2 flex-wrap">
+                    <span className="text-xs">After</span>
+                    <input
+                      type="number"
+                      value={rule.time}
+                      onChange={(e) => updatePenaltyRule(index, "time", e.target.value)}
+                      className="w-16 px-2 py-1 border border-gray-300 rounded-md text-xs"
+                      placeholder="mins"
+                      min="0"
+                    />
+                    <span className="text-xs">minutes, deduct</span>
+                    <input
+                      type="number"
+                      value={rule.points}
+                      onChange={(e) => updatePenaltyRule(index, "points", e.target.value)}
+                      className="w-16 px-2 py-1 border border-gray-300 rounded-md text-xs"
+                      placeholder="points"
+                      min="0"
+                    />
+                    <span className="text-xs">points</span>
+                    <button
+                      onClick={() => removePenaltyRule(index)}
+                      className="text-red-500 hover:text-red-700 text-xs ml-auto"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                
+                <div className="flex flex-wrap items-center gap-2 mt-3">
+                  <button
+                    onClick={addPenaltyRule}
+                    className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs hover:bg-purple-200"
+                  >
+                    + Add penalty rule
+                  </button>
+                  
+                  <button
+                    className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 flex items-center"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="mr-1"
+                    >
+                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                      <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                      <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save Penalty Rules
+                  </button>
+                  
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-md p-2 text-xs text-yellow-700 mt-2 w-full">
+                    <strong>Note:</strong> These penalties will automatically apply to submissions received after the due date. Make sure to explain the penalty rules to students.
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-end space-x-2 mt-6 pt-3 border-t border-gray-200">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 text-sm"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onPublish(publishSettings)}
+            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-sm font-medium"
+          >
+            Publish Assignment
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const GeneratedQuestions = ({ questions, numQuestions, onRemoveAll }) => {
   const [selectedQuestions, setSelectedQuestions] = React.useState([]);
   const [rejectedQuestions, setRejectedQuestions] = React.useState([]);
+  const [showKeepAllModal, setShowKeepAllModal] = React.useState(false);
+  const [showPublishModal, setShowPublishModal] = React.useState(false);
+  const [allQuestions, setAllQuestions] = React.useState([]);
   
   // Display all questions or limit to a specific number
   const displayedQuestions = questions.slice(0, Math.min(questions.length, 5));
@@ -910,10 +1403,82 @@ const GeneratedQuestions = ({ questions, numQuestions, onRemoveAll }) => {
   const approvedCount = selectedQuestions.length;
   const rejectedCount = rejectedQuestions.length;
 
+  // Add current questions to all questions collection
+  React.useEffect(() => {
+    if (questions.length > 0) {
+      // Only add questions that aren't already in allQuestions
+      const newQuestionIds = questions.map(q => q.id);
+      const existingQuestionIds = allQuestions.map(q => q.id);
+      const uniqueNewQuestions = questions.filter(q => !existingQuestionIds.includes(q.id));
+      
+      if (uniqueNewQuestions.length > 0) {
+        setAllQuestions(prev => [...prev, ...uniqueNewQuestions]);
+      }
+    }
+  }, [questions]);
+
+  // Track status changes from individual question components
+  const updateQuestionStatus = (questionId, status) => {
+    if (status === 'approved') {
+      setSelectedQuestions(prev => {
+        if (!prev.includes(questionId)) {
+          return [...prev, questionId];
+        }
+        return prev;
+      });
+      setRejectedQuestions(prev => prev.filter(id => id !== questionId));
+    } else if (status === 'rejected') {
+      setRejectedQuestions(prev => {
+        if (!prev.includes(questionId)) {
+          return [...prev, questionId];
+        }
+        return prev;
+      });
+      setSelectedQuestions(prev => prev.filter(id => id !== questionId));
+    }
+  };
+
   const handleKeepAll = () => {
-    // Logic to approve all questions
-    setSelectedQuestions(questions.map(q => q.id));
-    setRejectedQuestions([]);
+    // Logic to approve all currently displayed questions
+    const questionIds = questions.map(q => q.id);
+    
+    // Add all current question IDs to selected questions
+    setSelectedQuestions(prev => {
+      // Combine previous selections with new ones, removing duplicates
+      const combined = [...new Set([...prev, ...questionIds])];
+      return combined;
+    });
+    
+    // Remove these IDs from rejected questions if they were previously rejected
+    setRejectedQuestions(prev => 
+      prev.filter(id => !questionIds.includes(id))
+    );
+    
+    // Show confirmation modal
+    setShowKeepAllModal(true);
+  };
+
+  const handleAddMoreQuestions = () => {
+    setShowKeepAllModal(false);
+    // Keep the current state, allow teacher to add more questions
+  };
+
+  const handlePublishNow = () => {
+    setShowKeepAllModal(false);
+    setShowPublishModal(true);
+  };
+
+  const handlePublishAssignment = (publishSettings) => {
+    // Here you would typically save the assignment to your backend
+    console.log("Publishing assignment with settings:", publishSettings);
+    console.log("Selected questions:", selectedQuestions);
+    console.log("All questions:", allQuestions);
+    
+    // Show success message or redirect
+    setShowPublishModal(false);
+    
+    // You could replace this with a redirect or a success modal
+    alert("Assignment published successfully!");
   };
 
   return (
@@ -938,21 +1503,32 @@ const GeneratedQuestions = ({ questions, numQuestions, onRemoveAll }) => {
       </div>
 
       <div className="divide-y divide-gray-200">
-        {displayedQuestions.map((question, index) =>
-          question.options.length > 0 ? (
+        {displayedQuestions.map((question, index) => {
+          // Check if this question is already approved or rejected
+          const isApproved = selectedQuestions.includes(question.id);
+          const isRejected = rejectedQuestions.includes(question.id);
+          
+          // Set initial status based on current state
+          let initialStatus = 'pending';
+          if (isApproved) initialStatus = 'approved';
+          if (isRejected) initialStatus = 'rejected';
+          
+          return question.options.length > 0 ? (
             <QuestionItem 
               key={question.id} 
-              question={question} 
-              index={index} 
+              question={{...question, status: initialStatus}} 
+              index={index}
+              onStatusChange={(status) => updateQuestionStatus(question.id, status)}
             />
           ) : (
             <QuestionItemCondensed 
               key={question.id} 
-              question={question} 
+              question={{...question, status: initialStatus}} 
               index={index}
+              onStatusChange={(status) => updateQuestionStatus(question.id, status)}
             />
-          )
-        )}
+          );
+        })}
       </div>
 
       <div className="bg-gray-50 p-4 flex justify-between items-center">
@@ -1007,6 +1583,26 @@ const GeneratedQuestions = ({ questions, numQuestions, onRemoveAll }) => {
           </button>
         </div>
       </div>
+
+      {/* Keep All Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showKeepAllModal}
+        onClose={() => setShowKeepAllModal(false)}
+        onAddMore={handleAddMoreQuestions}
+        onPublishNow={handlePublishNow}
+        title="Questions Selected"
+      >
+        <p className="text-gray-600 text-sm">
+          You've selected {selectedQuestions.length} questions. Would you like to add more questions or proceed to publish this assignment?
+        </p>
+      </ConfirmationModal>
+
+      {/* Publish Assignment Modal */}
+      <PublishModal
+        isOpen={showPublishModal}
+        onClose={() => setShowPublishModal(false)}
+        onPublish={handlePublishAssignment}
+      />
     </div>
   );
 };
@@ -1017,10 +1613,24 @@ GeneratedQuestions.propTypes = {
   onRemoveAll: PropTypes.func.isRequired
 };
 
-const QuestionItem = ({ question, index }) => {
+const QuestionItem = ({ question, index, onStatusChange }) => {
   const [status, setStatus] = React.useState(question.status || 'pending'); // 'pending', 'approved', 'rejected'
   const [isEditing, setIsEditing] = React.useState(false);
   const [editedText, setEditedText] = React.useState(question.text);
+
+  // Update parent component when status changes
+  React.useEffect(() => {
+    if (onStatusChange && status !== 'pending') {
+      onStatusChange(status);
+    }
+  }, [status, onStatusChange]);
+
+  // When question prop changes with a different status, update local state
+  React.useEffect(() => {
+    if (question.status && question.status !== status) {
+      setStatus(question.status);
+    }
+  }, [question.status]);
 
   const handleApprove = () => {
     setStatus('approved');
@@ -1222,12 +1832,27 @@ QuestionItem.propTypes = {
     ).isRequired,
   }).isRequired,
   index: PropTypes.number.isRequired,
+  onStatusChange: PropTypes.func,
 };
 
-const QuestionItemCondensed = ({ question, index }) => {
+const QuestionItemCondensed = ({ question, index, onStatusChange }) => {
   const [status, setStatus] = React.useState(question.status || 'pending'); // 'pending', 'approved', 'rejected'
   const [isEditing, setIsEditing] = React.useState(false);
   const [editedText, setEditedText] = React.useState(question.text);
+
+  // Update parent component when status changes
+  React.useEffect(() => {
+    if (onStatusChange && status !== 'pending') {
+      onStatusChange(status);
+    }
+  }, [status, onStatusChange]);
+
+  // When question prop changes with a different status, update local state
+  React.useEffect(() => {
+    if (question.status && question.status !== status) {
+      setStatus(question.status);
+    }
+  }, [question.status]);
 
   const handleApprove = () => {
     setStatus('approved');
@@ -1410,6 +2035,7 @@ QuestionItemCondensed.propTypes = {
     questionType: PropTypes.string,
   }).isRequired,
   index: PropTypes.number.isRequired,
+  onStatusChange: PropTypes.func,
 };
 
 export default QuestionGenerator;
