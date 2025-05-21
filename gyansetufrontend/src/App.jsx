@@ -1,5 +1,5 @@
-// src/App.js
-import React from "react";
+// Updated App.js with Welcome Page routing and global dark theme
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,12 +14,14 @@ import NotesApp from "./components/students/notes/NotesApp";
 import ContentApp from "./components/students/Content/Content";
 
 // Auth Pages
+import WelcomePage from "./pages/WelcomePage"; // Import the new welcome page
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
 import ResetPasswordPage from "./pages/ResetPassword";
 
 // Protected Routes Component
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
 // Role-based Dashboard Pages
 import StudentDashboard from "./pages/dashboards/StudentDashboard";
@@ -37,6 +39,25 @@ import CompleteProfilePage from "./components/teacher/profile/CompleteProfilePag
 // Auth Service
 import authService from "./services/api/authService";
 import MainChatbot from "./components/students/Chatbot/MainChatbot";
+
+// Import theme styles
+import "./darkTheme.css";
+
+// ThemeWrapper component to apply theme class to body
+const ThemeWrapper = ({ children }) => {
+  const { darkMode } = useTheme();
+
+  useEffect(() => {
+    // Apply or remove dark-theme class to the body based on darkMode state
+    if (darkMode) {
+      document.body.classList.add("dark-theme");
+    } else {
+      document.body.classList.remove("dark-theme");
+    }
+  }, [darkMode]);
+
+  return <>{children}</>;
+};
 
 // Wrapper component to handle location-based re-rendering
 function AppContent() {
@@ -67,170 +88,195 @@ function AppContent() {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={5000} />
-      <Routes>
-        {/* Public Routes */}
-        <Route
-          path="/login"
-          element={
-            authService.isAuthenticated() ? (
-              <RoleBasedRedirect />
-            ) : (
-              <LoginPage />
-            )
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            authService.isAuthenticated() ? (
-              <RoleBasedRedirect />
-            ) : (
-              <SignupPage />
-            )
-          }
-        />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <ThemeProvider>
+        <ThemeWrapper>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            theme="colored" // Makes toasts follow the theme
+          />
+          <Routes>
+            {/* Welcome Page - Initial Landing Page */}
+            <Route
+              path="/"
+              element={
+                authService.isAuthenticated() ? (
+                  <RoleBasedRedirect />
+                ) : (
+                  <WelcomePage />
+                )
+              }
+            />
 
-        {/* Teacher Routes */}
-        <Route
-          key={location.pathname}
-          path="/teacher"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <TeacherDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          key={location.pathname}
-          path="/teacher/create-assignment"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <AssignmentPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          key={location.pathname}
-          path="/teacher/generate-assignment"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <AIGenerate />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          key={location.pathname}
-          path="/teacher/analytics"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <TeacherDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          key={location.pathname}
-          path="/teacher/calendar"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <TeacherMainCalender />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          key={location.pathname}
-          path="/teacher/content"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <TeacherContent />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          key={location.pathname}
-          path="/teacher/profile"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <CompleteProfilePage />
-            </ProtectedRoute>
-          }
-        />
+            {/* Public Routes */}
+            <Route
+              path="/login"
+              element={
+                authService.isAuthenticated() ? (
+                  <RoleBasedRedirect />
+                ) : (
+                  <LoginPage />
+                )
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                authService.isAuthenticated() ? (
+                  <RoleBasedRedirect />
+                ) : (
+                  <SignupPage />
+                )
+              }
+            />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-        {/* Student Routes */}
-        <Route
-          path="/Studentdashboard*"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <StudentDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/notes"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <NotesApp />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/chatbot"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <MainChatbot />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/StudentAssignment"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <StudentAssignmentInterface />
-            </ProtectedRoute>
-          }
-        />
-         <Route
-          path="/content"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <ContentApp />
-            </ProtectedRoute>
-          }
-        />
-         <Route
-          path="/cal"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <TeacherMainCalender />
-            </ProtectedRoute>
-          }
-        />
-      
-          
-        <Route
-          path="/parent/*"
-          element={
-            <ProtectedRoute allowedRoles={["parent"]}>
-              <ParentDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/institute/*"
-          element={
-            <ProtectedRoute allowedRoles={["institute"]}>
-              <InstituteDashboard />
-            </ProtectedRoute>
-          }
-        />
+            {/* Teacher Routes */}
+            <Route
+              key={location.pathname}
+              path="/teacher"
+              element={
+                <ProtectedRoute allowedRoles={["teacher"]}>
+                  <TeacherDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              key={location.pathname}
+              path="/teacher/create-assignment"
+              element={
+                <ProtectedRoute allowedRoles={["teacher"]}>
+                  <AssignmentPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              key={location.pathname}
+              path="/teacher/generate-assignment"
+              element={
+                <ProtectedRoute allowedRoles={["teacher"]}>
+                  <AIGenerate />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              key={location.pathname}
+              path="/teacher/analytics"
+              element={
+                <ProtectedRoute allowedRoles={["teacher"]}>
+                  <TeacherDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              key={location.pathname}
+              path="/teacher/calendar"
+              element={
+                <ProtectedRoute allowedRoles={["teacher"]}>
+                  <TeacherMainCalender />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              key={location.pathname}
+              path="/teacher/content"
+              element={
+                <ProtectedRoute allowedRoles={["teacher"]}>
+                  <TeacherContent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              key={location.pathname}
+              path="/teacher/profile"
+              element={
+                <ProtectedRoute allowedRoles={["teacher"]}>
+                  <CompleteProfilePage />
+                </ProtectedRoute>
+              }
+            />
 
-        {/* Root path redirects based on user role */}
-        <Route path="/" element={<RoleBasedRedirect />} />
+            {/* Student Routes */}
+            <Route
+              path="/Studentdashboard*"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <StudentDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notes"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <NotesApp />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/chatbot"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <MainChatbot />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/StudentAssignment"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <StudentAssignmentInterface />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/content"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <ContentApp />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cal"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <TeacherMainCalender />
+                </ProtectedRoute>
+              }
+            />
 
-        {/* Redirect any unknown routes to role-based dashboard or login */}
-        <Route path="*" element={<RoleBasedRedirect />} />
-      </Routes>
+            <Route
+              path="/parent/*"
+              element={
+                <ProtectedRoute allowedRoles={["parent"]}>
+                  <ParentDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/institute/*"
+              element={
+                <ProtectedRoute allowedRoles={["institute"]}>
+                  <InstituteDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Redirect any unknown routes to welcome page or role-based dashboard */}
+            <Route
+              path="*"
+              element={
+                authService.isAuthenticated() ? (
+                  <RoleBasedRedirect />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
+            />
+          </Routes>
+        </ThemeWrapper>
+      </ThemeProvider>
     </>
   );
 }

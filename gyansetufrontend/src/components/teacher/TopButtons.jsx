@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MessageCircle, Calendar, Plus, ChevronRight } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext"; // Import the theme hook
 
 const ButtonsDemo = () => {
   const [showContactOptions, setShowContactOptions] = useState(false);
   const [showScheduleOptions, setShowScheduleOptions] = useState(false);
   const navigate = useNavigate();
+
+  // Use the theme context
+  const { darkMode } = useTheme();
 
   const handleContactClick = () => {
     setShowContactOptions(!showContactOptions);
@@ -21,12 +25,40 @@ const ButtonsDemo = () => {
     navigate("/teacher/create-assignment");
   };
 
+  // Base and dark mode button styles
+  const baseButtonClass =
+    "font-bold text-xl md:text-lg lg:text-xl py-3 px-6 rounded-full flex items-center justify-between shadow-md hover:shadow-lg transition-all duration-300 w-full md:w-auto";
+
+  // Create Assignment button styles
+  const createAssignmentClass = darkMode
+    ? `${baseButtonClass} bg-[#5b3a64 ] text-white border-2 border-purple-300`
+    : `${baseButtonClass} bg-gray-100 text-purple-800 border-2 border-purple-800`;
+
+  // Contact and Schedule button styles
+  const actionButtonClass = darkMode
+    ? `${baseButtonClass} bg-[#5b3a64 ] text-white border-2 border-purple-300`
+    : `${baseButtonClass} bg-white text-purple-800 border-2 border-purple-800`;
+
+  // Dropdown styles
+  const dropdownClass = darkMode
+    ? "absolute mt-2 w-40 bg-gray-800 border border-gray-600 rounded shadow-lg z-10 left-0"
+    : "absolute mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-10 left-0";
+
+  const dropdownItemClass = darkMode
+    ? "block w-full text-left px-4 py-2 text-white hover:bg-gray-700"
+    : "block w-full text-left px-4 py-2 hover:bg-gray-100";
+
+  // Circle icon background
+  const circleIconClass = darkMode
+    ? "ml-6 h-8 w-8 bg-[#231130] text-white rounded-full flex items-center justify-center"
+    : "ml-6 h-8 w-8 bg-black text-white rounded-full flex items-center justify-center";
+
   return (
     // Container with flex-col for mobile (vertical) and flex-row for larger screens (horizontal)
-    <div className="flex flex-col w-full gap-4 md:flex-row md:gap-6">
+    <div className="flex flex-col w-full gap-4 md:flex-row md:gap-6 md:mb-10">
       {/* Create Assignment Button */}
       <button
-        className="bg-gray-100 text-purple-800 font-bold text-xl md:text-lg lg:text-xl py-3 px-6 rounded-full flex items-center justify-between border-2 border-purple-800 shadow-md hover:shadow-lg transition-all duration-300 w-full md:w-auto"
+        className={createAssignmentClass}
         onClick={handleCreateAssignmentClick}
       >
         <div className="flex items-center">
@@ -37,52 +69,38 @@ const ButtonsDemo = () => {
 
       {/* Contact Button */}
       <div className="relative w-full md:w-auto">
-        <button
-          className="bg-white text-purple-800 font-bold text-xl md:text-lg lg:text-xl py-3 px-6 rounded-full flex items-center justify-between border-2 border-purple-800 shadow-md hover:shadow-lg transition-all duration-300 w-full md:w-auto"
-          onClick={handleContactClick}
-        >
+        <button className={actionButtonClass} onClick={handleContactClick}>
           <div className="flex items-center">
             <MessageCircle className="mr-2" size={20} />
             <span>Contact</span>
           </div>
-          <div className="ml-6 h-8 w-8 bg-black text-white rounded-full flex items-center justify-center">
+          <div className={circleIconClass}>
             <ChevronRight size={16} />
           </div>
         </button>
         {showContactOptions && (
-          <div className="absolute mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-10 left-0">
-            <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
-              Student
-            </button>
-            <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
-              Parent
-            </button>
+          <div className={dropdownClass}>
+            <button className={dropdownItemClass}>Student</button>
+            <button className={dropdownItemClass}>Parent</button>
           </div>
         )}
       </div>
 
       {/* Schedule Meeting Button */}
       <div className="relative w-full md:w-auto">
-        <button
-          className="bg-white text-purple-800 font-bold text-xl md:text-lg lg:text-xl py-3 px-6 rounded-full flex items-center justify-between border-2 border-purple-800 shadow-md hover:shadow-lg transition-all duration-300 w-full md:w-auto"
-          onClick={handleScheduleClick}
-        >
+        <button className={actionButtonClass} onClick={handleScheduleClick}>
           <div className="flex items-center">
             <Calendar className="mr-2" size={20} />
             <span>Schedule Meeting</span>
           </div>
-          <div className="ml-6 h-8 w-8 bg-black text-white rounded-full flex items-center justify-center">
+          <div className={circleIconClass}>
             <ChevronRight size={16} />
           </div>
         </button>
         {showScheduleOptions && (
-          <div className="absolute mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-10 left-0">
-            <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
-              Student
-            </button>
-            <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
-              Parent
-            </button>
+          <div className={dropdownClass}>
+            <button className={dropdownItemClass}>Student</button>
+            <button className={dropdownItemClass}>Parent</button>
           </div>
         )}
       </div>
