@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import TeacherNavbar from "./Navbar";
+import StudentNavbar from "./StudentNavbar";
 
 class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
@@ -48,7 +48,7 @@ const Layout = () => {
 
   return (
     <div className="flex min-h-screen">
-      <TeacherNavbar onNavToggle={handleNavToggle} />
+      <StudentNavbar onNavToggle={handleNavToggle} />
       <main
         className={`flex-1 transition-all duration-300 ${
           isMobile ? "mt-16" : navExpanded ? "ml-[330px]" : "ml-[100px]"

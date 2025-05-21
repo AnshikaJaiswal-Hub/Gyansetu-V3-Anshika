@@ -1,4 +1,3 @@
-// src/App.js
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -6,10 +5,11 @@ import {
   Route,
   Navigate,
   useLocation,
+  Outlet
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import StudentAssignmentInterface from "./components/students/Assignment/StudentAssignment";
+import StudentProfileForm from "./components/students/studentDashboard/StudentProfile/StudentProfileForm";
 
 // Auth Pages
 import LoginPage from "./pages/Login";
@@ -30,9 +30,48 @@ import AssignmentPage from "./components/teacher/Assignments/AssignmentPage";
 import AIGenerate from "./components/teacher/Assignments/AIGnerate";
 import TeacherMainCalender from "./components/teacher/calender/MainCalenderTeacher";
 
+//Student Features
+import Layout from "./components/students/studentDashboard/Layout";
+import ContentApp from "./components/students/Content/Content";
+import StudentQuizInterface from "./components/students/Quizs/StudentQuizInterface";
+import StudentCalendar from "./components/students/Calendar/StudentCalendar";
+
+//Parent Features
+import AttendanceCalendar from "./components/Parent/parentDashboard/AttendanceCalendar";
+import ParentLayout from "./components/Parent/parentDashboard/ParentLayout";
+
+
+
 // Auth Service
 import authService from "./services/api/authService";
 import MainChatbot from "./components/students/Chatbot/MainChatbot";
+
+// StudentAuth component combines protection and layout
+const StudentAuth = ({ children }) => {
+  const user = authService.getCurrentUser();
+  
+  // If not logged in or not a student, redirect appropriately
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (user.role !== "student") {
+    // Redirect based on role
+    switch (user.role) {
+      case "teacher":
+        return <Navigate to="/teacher" replace />;
+      case "parent":
+        return <Navigate to="/parent" replace />;
+      case "institute":
+        return <Navigate to="/institute" replace />;
+      default:
+        return <Navigate to="/login" replace />;
+    }
+  }
+  
+  // User is authenticated and is a student, show children with layout
+  return children;
+};
 
 // Wrapper component to handle location-based re-rendering
 function AppContent() {
@@ -53,7 +92,7 @@ function AppContent() {
       case "teacher":
         return <Navigate to="/teacher" replace />;
       case "parent":
-        return <Navigate to="/parent" replace />;
+        return <Navigate to="/Parentdashboard" replace />;
       case "institute":
         return <Navigate to="/institute" replace />;
       default:
@@ -66,31 +105,12 @@ function AppContent() {
       <ToastContainer position="top-right" autoClose={5000} />
       <Routes>
         {/* Public Routes */}
-        <Route
-          path="/login"
-          element={
-            authService.isAuthenticated() ? (
-              <RoleBasedRedirect />
-            ) : (
-              <LoginPage />
-            )
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            authService.isAuthenticated() ? (
-              <RoleBasedRedirect />
-            ) : (
-              <SignupPage />
-            )
-          }
-        />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* Teacher Routes */}
         <Route
-          key={location.pathname}
           path="/teacher"
           element={
             <ProtectedRoute allowedRoles={["teacher"]}>
@@ -99,7 +119,6 @@ function AppContent() {
           }
         />
         <Route
-          key={location.pathname}
           path="/teacher/create-assignment"
           element={
             <ProtectedRoute allowedRoles={["teacher"]}>
@@ -108,7 +127,6 @@ function AppContent() {
           }
         />
         <Route
-          key={location.pathname}
           path="/teacher/generate-assignment"
           element={
             <ProtectedRoute allowedRoles={["teacher"]}>
@@ -117,7 +135,6 @@ function AppContent() {
           }
         />
         <Route
-          key={location.pathname}
           path="/teacher/analytics"
           element={
             <ProtectedRoute allowedRoles={["teacher"]}>
@@ -126,7 +143,6 @@ function AppContent() {
           }
         />
         <Route
-          key={location.pathname}
           path="/teacher/calendar"
           element={
             <ProtectedRoute allowedRoles={["teacher"]}>
@@ -135,39 +151,42 @@ function AppContent() {
           }
         />
 
-        {/* Other Role Routes */}
+        {/* Student Routes with Layout that works with the existing ProtectedRoute */}
         <Route
-          path="/Studentdashboard*"
           element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <StudentDashboard />
-            </ProtectedRoute>
+            <StudentAuth>
+              <Layout />
+            </StudentAuth>
           }
-        />
+        >
+          <Route path="/Studentdashboard/*" element={<StudentDashboard />} />
+          <Route path="/profile" element={<StudentProfileForm />} />
+          <Route path="/content" element={<ContentApp />} />
+          <Route path="/quiz" element={<StudentQuizInterface />} />
+          <Route path="/StudentCalendar" element={<StudentCalendar/>} />
+        </Route>
+        <Route path="/chatbot" element={<MainChatbot />} />
+
+        {/* Parent Routes */}
+        <Route element={ <ParentLayout/>} >
         <Route
-          path="/chatbot"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <MainChatbot />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/StudentAssignment"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <StudentAssignmentInterface />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/parent/*"
+          path="/Parentdashboard"
           element={
             <ProtectedRoute allowedRoles={["parent"]}>
               <ParentDashboard />
             </ProtectedRoute>
           }
         />
+         <Route
+          path="/parent/attendance"
+          element={
+            <ProtectedRoute allowedRoles={["parent"]}>
+              <AttendanceCalendar />
+            </ProtectedRoute>
+          }
+        />
+        </Route>
+         {/* Institute Routes */}
         <Route
           path="/institute/*"
           element={
@@ -176,6 +195,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        
 
         {/* Root path redirects based on user role */}
         <Route path="/" element={<RoleBasedRedirect />} />

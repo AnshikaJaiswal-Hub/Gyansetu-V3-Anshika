@@ -8,8 +8,9 @@ import {
   IoBookOutline,
   IoCalendarClearOutline,
 } from "react-icons/io5";
+import AttendanceCalendar from "./AttendanceCalendar";
 
-const StudentNavbar = ({ onNavToggle }) => {
+const ParentNavbar = ({ onNavToggle }) => {
   // Initialize expanded state from localStorage or default to false
   const [expanded, setExpanded] = useState(() => {
     const savedState = localStorage.getItem("navbarExpanded");
@@ -58,12 +59,12 @@ const StudentNavbar = ({ onNavToggle }) => {
     {
       name: "Dashboard",
       icon: <IoHomeOutline className="text-lg" />,
-      path: "/Studentdashboard",
+      path: "/Parentdashboard",
     },
     {
-      name: "Chatbot",
-      icon: <IoChatboxOutline className="text-lg" />,
-      path: "/chatbot",
+      name: "Attendance",
+      icon: <IoCalendarClearOutline className="text-lg" />,
+      path: "/parent/attendance",
     },
     {
       name: "Assignment",
@@ -80,11 +81,7 @@ const StudentNavbar = ({ onNavToggle }) => {
       icon: <IoBookOutline className="text-lg" />,
       path: "/content",
     },
-    {
-      name: "Calendar",
-      icon: <IoCalendarClearOutline className="text-lg" />,
-      path: "/cal",
-    },
+   
   ];
 
   if (isMobile && !expanded) {
@@ -183,7 +180,7 @@ const StudentNavbar = ({ onNavToggle }) => {
             key={item.name}
             to={item.path}
             onClick={handleNavClick}
-            className={`relative flex items-center cursor-pointer transition-all duration-200
+            className={`relative flex items-center cursor-pointer transition-all duration-200 group
               ${
                 expanded
                   ? `px-3 py-3 rounded-xl ${
@@ -199,21 +196,21 @@ const StudentNavbar = ({ onNavToggle }) => {
               }`}
           >
             <div
-              className={`flex items-center justify-center min-w-[40px] w-10 h-10 rounded-full flex-shrink-0
+              className={`flex items-center justify-center min-w-[40px] w-10 h-10 rounded-full flex-shrink-0 transition-colors
               ${
                 location.pathname === item.path
                   ? "bg-gray-800 text-white"
-                  : "bg-white text-gray-500 hover:bg-gray-800 hover:text-white"
+                  : "bg-white text-gray-500 group-hover:bg-gray-800 group-hover:text-white"
               }`}
             >
               {item.icon}
             </div>
             {expanded && (
               <span
-                className={`ml-4 font-medium whitespace-nowrap ${
+                className={`ml-4 font-medium whitespace-nowrap transition-colors ${
                   location.pathname === item.path
                     ? "text-gray-700"
-                    : "text-gray-600 hover:text-gray-700"
+                    : "text-gray-600 group-hover:text-gray-700"
                 }`}
               >
                 {item.name}
@@ -238,4 +235,4 @@ const StudentNavbar = ({ onNavToggle }) => {
   );
 };
 
-export default StudentNavbar;
+export default ParentNavbar;
