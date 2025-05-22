@@ -9,6 +9,7 @@ import authService from "../../services/api/authService";
 import ParentNavbar from "../../components/Parent/parentDashboard/ParentNavbar";
 import AttendancePieChart from "../../components/Parent/parentDashboard/AttendancePieChart";
 import { useTheme } from "../../context/ThemeContext"; // Import the theme hook
+import StudentProgressChart from "../../components/Parent/parentDashboard/ProgressChart";
 
 const ParentDashboard = () => {
   const [greeting, setGreeting] = useState("");
@@ -65,14 +66,14 @@ const ParentDashboard = () => {
     <div
       className={`min-h-screen ${
         darkMode ? "bg-[#5b3a64]" : "bg-gray-100"
-      } transition-colors duration-300 pt-10 pr-10 pb-10`}
+      } transition-colors duration-300 pt-10 pr-10 pb-10 `}
     >
       <div
         className={`min-h-screen ${
           darkMode
             ? "bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]"
             : "bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400"
-        } rounded-4xl p-1 pl-6 transition-colors duration-300`}
+        } rounded-4xl p-1 pl-6 pr-6 pb-6 transition-colors duration-300`}
       >
         {/* Header with greeting and utility icons */}
         <div className="flex justify-between items-start pt-6 pr-6">
@@ -150,8 +151,17 @@ const ParentDashboard = () => {
           >
             Parent Dashboard
           </h2>
-          <div className="flex items-center space-x-4">
-            <AttendancePieChart />
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 h-full mt-8 ">
+            {/* Attendance Pie Chart - Takes up 5 columns */}
+            <div className="xl:col-span-5 rounded-lg p-6">
+              <div className="w-full h-full">
+                <AttendancePieChart />
+              </div>
+            </div>
+            {/* Student Progress Chart - Takes up 7 columns */}
+            <div className="xl:col-span-7 min-h-96">
+              <StudentProgressChart />
+            </div>
           </div>
         </div>
       </div>

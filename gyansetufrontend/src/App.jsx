@@ -10,11 +10,6 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import StudentAssignmentInterface from "./components/students/Quizs/StudentQuizInterface";
-import NotesApp from "./components/students/notes/NotesApp";
-import ContentApp from "./components/students/Content/Content";
-import StudentProfileForm from "./components/students/studentDashboard/StudentProfile/StudentProfileForm";
-import StudentProgressReport from "./components/Parent/parentDashboard/StudentProgress";
 
 // Auth Pages
 import WelcomePage from "./pages/WelcomePage"; // Import the new welcome page
@@ -27,7 +22,7 @@ import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
 // Role-based Dashboard Pages
-import StudentDashboard from "./pages/dashboards/StudentDashboard";
+
 import TeacherDashboard from "./pages/dashboards/TeacherDashBoard";
 import ParentDashboard from "./pages/dashboards/ParentDashboard";
 import InstituteDashboard from "./pages/dashboards/InstituteDashboard";
@@ -42,10 +37,10 @@ import CompleteProfilePage from "./components/teacher/profile/CompleteProfilePag
 //Parent Features
 import AttendanceCalendar from "./components/Parent/parentDashboard/AttendanceCalendar";
 import ParentLayout from "./components/Parent/parentDashboard/ParentLayout";
+import StudentProgressReport from "./components/Parent/parentDashboard/StudentProgress";
 
 // Auth Service
 import authService from "./services/api/authService";
-import MainChatbot from "./components/students/Chatbot/MainChatbot";
 
 // Import theme styles
 import "./darkTheme.css";
@@ -109,8 +104,6 @@ function AppContent() {
 
     // Redirect to the appropriate dashboard based on user role
     switch (user.role) {
-      case "student":
-        return <Navigate to="/Studentdashboard" replace />;
       case "teacher":
         return <Navigate to="/teacher" replace />;
       case "parent":
@@ -241,56 +234,6 @@ function AppContent() {
               }
             />
 
-            {/* Student Routes */}
-            <Route
-              path="/Studentdashboard*"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <StudentDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/notes"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <NotesApp />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/chatbot"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <MainChatbot />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/StudentAssignment"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <StudentAssignmentInterface />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/content"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <ContentApp />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/cal"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <TeacherMainCalender />
-                </ProtectedRoute>
-              }
-            />
-
             <Route
               path="/institute/*"
               element={
@@ -327,7 +270,7 @@ function AppContent() {
                 }
               />
               <Route
-                path="/studentprogress"
+                path="/parent/studentprogress"
                 element={<StudentProgressReport />}
               />
             </Route>

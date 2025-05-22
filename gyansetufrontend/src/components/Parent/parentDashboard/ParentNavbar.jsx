@@ -7,6 +7,7 @@ import {
   IoHelpBuoyOutline,
   IoBookOutline,
   IoCalendarClearOutline,
+  IoTimeOutline,
 } from "react-icons/io5";
 import AttendanceCalendar from "./AttendanceCalendar";
 import { useTheme } from "../../../context/ThemeContext"; // Import the theme hook
@@ -67,23 +68,23 @@ const ParentNavbar = ({ onNavToggle }) => {
     },
     {
       name: "Attendance",
-      icon: <IoCalendarClearOutline className="text-lg" />,
+      icon: <IoHelpBuoyOutline className="text-lg" />,
       path: "/parent/attendance",
     },
     {
-      name: "Assignment",
+      name: "Progress Report",
       icon: <IoDocumentTextOutline className="text-lg" />,
-      path: "/parent/schedule-meeting",
+      path: "/parent/studentprogress",
     },
     {
-      name: "Quiz",
+      name: "calendar",
       icon: <IoHelpBuoyOutline className="text-lg" />,
-      path: "/quiz",
+      path: "/parent/calendar",
     },
     {
-      name: "Content",
-      icon: <IoBookOutline className="text-lg" />,
-      path: "/content",
+      name: "Schedule Meeting",
+      icon: <IoTimeOutline className="text-lg" />,
+      path: "/parent/schedule-meeting",
     },
   ];
 
