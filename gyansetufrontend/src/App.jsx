@@ -21,14 +21,10 @@ import ProtectedRoute from "./components/Auth/ProtectedRoute";
 
 // Role-based Dashboard Pages
 import StudentDashboard from "./pages/dashboards/StudentDashboard";
-import TeacherDashboard from "./pages/dashboards/TeacherDashboard";
-import ParentDashboard from "./pages/dashboards/ParentDashboard";
 import InstituteDashboard from "./pages/dashboards/InstituteDashboard";
 
 // Teacher Features
-import AssignmentPage from "./components/teacher/Assignments/AssignmentPage";
-import AIGenerate from "./components/teacher/Assignments/AIGnerate";
-import TeacherMainCalender from "./components/teacher/calender/MainCalenderTeacher";
+
 
 //Student Features
 import Layout from "./components/students/studentDashboard/Layout";
@@ -37,8 +33,6 @@ import StudentQuizInterface from "./components/students/Quizs/StudentQuizInterfa
 import StudentCalendar from "./components/students/Calendar/StudentCalendar";
 
 //Parent Features
-import AttendanceCalendar from "./components/Parent/parentDashboard/AttendanceCalendar";
-import ParentLayout from "./components/Parent/parentDashboard/ParentLayout";
 
 
 
@@ -110,47 +104,7 @@ function AppContent() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* Teacher Routes */}
-        <Route
-          path="/teacher"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <TeacherDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/teacher/create-assignment"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <AssignmentPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/teacher/generate-assignment"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <AIGenerate />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/teacher/analytics"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <TeacherDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/teacher/calendar"
-          element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
-              <TeacherMainCalender />
-            </ProtectedRoute>
-          }
-        />
-
+    
         {/* Student Routes with Layout that works with the existing ProtectedRoute */}
         <Route
           element={
@@ -168,34 +122,7 @@ function AppContent() {
         <Route path="/chatbot" element={<MainChatbot />} />
 
         {/* Parent Routes */}
-        <Route element={ <ParentLayout/>} >
-        <Route
-          path="/Parentdashboard"
-          element={
-            <ProtectedRoute allowedRoles={["parent"]}>
-              <ParentDashboard />
-            </ProtectedRoute>
-          }
-        />
-         <Route
-          path="/parent/attendance"
-          element={
-            <ProtectedRoute allowedRoles={["parent"]}>
-              <AttendanceCalendar />
-            </ProtectedRoute>
-          }
-        />
-        </Route>
-         {/* Institute Routes */}
-        <Route
-          path="/institute/*"
-          element={
-            <ProtectedRoute allowedRoles={["institute"]}>
-              <InstituteDashboard />
-            </ProtectedRoute>
-          }
-        />
-        
+       
 
         {/* Root path redirects based on user role */}
         <Route path="/" element={<RoleBasedRedirect />} />
