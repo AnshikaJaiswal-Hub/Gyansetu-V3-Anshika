@@ -1,56 +1,37 @@
 import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   IoHomeOutline,
-  IoGridOutline,
+  IoChatboxOutline,
   IoDocumentTextOutline,
-  IoStatsChartOutline,
-  IoChatbubbleOutline,
+  IoHelpBuoyOutline,
+  IoBookOutline,
+  IoCalendarClearOutline,
 } from "react-icons/io5";
+import AttendanceCalendar from "./AttendanceCalendar";
+import { useTheme } from "../../../context/ThemeContext"; // Import the theme hook
 
-import { FaBook } from "react-icons/fa";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useTheme } from "../../context/ThemeContext"; // Import the theme hook
-
-const TeacherNavbar = ({ onNavToggle }) => {
-  const [expanded, setExpanded] = useState(false);
-  const [activeItem, setActiveItem] = useState("Dashboard");
+const ParentNavbar = ({ onNavToggle }) => {
+  // Initialize expanded state from localStorage or default to false
+  const [expanded, setExpanded] = useState(() => {
+    const savedState = localStorage.getItem("parentNavbarExpanded");
+    return savedState ? JSON.parse(savedState) : false;
+  });
   const [isMobile, setIsMobile] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
 
   // Use the theme context
   const { darkMode } = useTheme();
 
-  // Define navigation items
-  const navItems = [
-    {
-      name: "Dashboard",
-      icon: <IoHomeOutline className="text-lg" />,
-      path: "/teacher",
-    },
-    {
-      name: "Create Assignments",
-      icon: <IoGridOutline className="text-lg" />,
-      path: "/teacher/create-assignment",
-    },
-    {
-      name: "Generate Assignments",
-      icon: <IoDocumentTextOutline className="text-lg" />,
-      path: "/teacher/generate-assignment",
-    },
-    {
-      name: "Content",
-      icon: <FaBook className="text-lg" />,
-      path: "/teacher/content",
-    },
-    {
-      name: "Calendar",
-      icon: <IoChatbubbleOutline className="text-lg" />,
-      path: "/teacher/calendar",
-    },
-  ];
+  // Save expanded state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("parentNavbarExpanded", JSON.stringify(expanded));
+    if (onNavToggle) {
+      onNavToggle(expanded);
+    }
+  }, [expanded, onNavToggle]);
 
-  // Check if mobile on mount and window resize
+  // Handle window resize to detect mobile view
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -64,30 +45,47 @@ const TeacherNavbar = ({ onNavToggle }) => {
     };
   }, []);
 
-  // Set active item based on current path whenever location changes
-  useEffect(() => {
-    const currentPath = location.pathname;
-    const matchingItem = navItems.find((item) => item.path === currentPath);
-
-    if (matchingItem) {
-      setActiveItem(matchingItem.name);
-    }
-  }, [location.pathname]);
-
   const toggleNavbar = () => {
-    const newExpandedState = !expanded;
-    setExpanded(newExpandedState);
-    if (onNavToggle) {
-      onNavToggle(newExpandedState);
-    }
+    setExpanded((prev) => !prev); // Update state and let useEffect handle persistence
   };
 
-  const handleNavClick = (item) => {
-    console.log(`Navigating to: ${item.path}`);
-    setActiveItem(item.name);
-    navigate(item.path);
-    if (isMobile) toggleNavbar();
+  // Handle navigation item click
+  const handleNavClick = (e) => {
+    // Don't collapse navbar when navigation items are clicked
+    // Just let the Link component handle the navigation
+    if (isMobile) {
+      setExpanded(false); // Only collapse on mobile when a link is clicked
+    }
+    // On desktop, we maintain the current expanded state
   };
+
+  const navItems = [
+    {
+      name: "Dashboard",
+      icon: <IoHomeOutline className="text-lg" />,
+      path: "/Parentdashboard",
+    },
+    {
+      name: "Attendance",
+      icon: <IoCalendarClearOutline className="text-lg" />,
+      path: "/parent/attendance",
+    },
+    {
+      name: "Assignment",
+      icon: <IoDocumentTextOutline className="text-lg" />,
+      path: "/parent/schedule-meeting",
+    },
+    {
+      name: "Quiz",
+      icon: <IoHelpBuoyOutline className="text-lg" />,
+      path: "/quiz",
+    },
+    {
+      name: "Content",
+      icon: <IoBookOutline className="text-lg" />,
+      path: "/content",
+    },
+  ];
 
   // Mobile view - horizontal layout at the top
   if (isMobile) {
@@ -96,14 +94,11 @@ const TeacherNavbar = ({ onNavToggle }) => {
         {/* Fixed top navbar with transition for showing/hiding on scroll */}
         <nav
           className={`fixed top-0 left-0 w-full ${
-            darkMode ? "bg-[#5b3a64]" : "bg-purple-100"
-          } flex items-center justify-between px-4 py-3 shadow-sm z-10 mobile-navbar-top transition-transform duration-300 ease-in-out`}
+            darkMode ? "bg-[#5b3a64]" : "bg-white"
+          } flex items-center justify-between px-4 py-6 shadow-sm z-50 transition-all duration-300 ease-in-out rounded-b-[20px]`}
         >
           {/* Logo */}
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={() => navigate("/teacher")}
-          >
+          <div className="flex items-center cursor-pointer">
             <div className="w-8 h-8 rounded-[20px] bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md">
               <div className="w-4 h-4 rounded-full bg-white opacity-80" />
             </div>
@@ -162,10 +157,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
                 }`}
               >
                 {/* Logo */}
-                <div
-                  className="flex items-center cursor-pointer"
-                  onClick={() => navigate("/teacher")}
-                >
+                <div className="flex items-center cursor-pointer">
                   <div className="w-10 h-10 rounded-[20px] bg-purple-600 flex items-center justify-center shadow-sm">
                     <div className="w-5 h-5 rounded-full bg-white opacity-90" />
                   </div>
@@ -208,10 +200,12 @@ const TeacherNavbar = ({ onNavToggle }) => {
               {/* Navigation items */}
               <div className="flex flex-col space-y-2 px-4 mt-10 w-full">
                 {navItems.map((item) => (
-                  <div
+                  <Link
                     key={item.name}
+                    to={item.path}
+                    onClick={handleNavClick}
                     className={`relative flex items-center cursor-pointer transition-all duration-200 px-5 py-4 rounded-[20px] ${
-                      activeItem === item.name
+                      location.pathname === item.path
                         ? darkMode
                           ? "bg-[#5b3a64] text-white"
                           : "bg-purple-100 text-purple-800"
@@ -219,11 +213,10 @@ const TeacherNavbar = ({ onNavToggle }) => {
                         ? "text-gray-300 hover:bg-gray-800"
                         : "text-gray-700 hover:bg-gray-100"
                     }`}
-                    onClick={() => handleNavClick(item)}
                   >
                     <div
                       className={`flex items-center justify-center min-w-[40px] w-10 h-10 rounded-[20px] flex-shrink-0 ${
-                        activeItem === item.name
+                        location.pathname === item.path
                           ? darkMode
                             ? "bg-purple-900 text-white"
                             : "bg-gray-900 text-white"
@@ -236,7 +229,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
                     </div>
                     <span
                       className={`ml-4 font-medium whitespace-nowrap ${
-                        activeItem === item.name
+                        location.pathname === item.path
                           ? darkMode
                             ? "text-white"
                             : "text-gray-700"
@@ -247,7 +240,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
                     >
                       {item.name}
                     </span>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -262,14 +255,19 @@ const TeacherNavbar = ({ onNavToggle }) => {
   // Desktop/Tablet view
   return (
     <nav
-      className={`fixed top-0 left-0 h-screen transition-all duration-300 z-10 flex flex-col 
-        ${darkMode ? "bg-[#5b3a64]" : "bg-gray-100"}
-        ${expanded ? "w-[330px]" : "w-[100px]"}`}
+      className={`fixed top-0 left-0 h-screen transition-all duration-300 z-50 flex flex-col 
+        ${
+          isMobile
+            ? darkMode
+              ? "bg-gray-900"
+              : "bg-gradient-to-r from-purple-50 to-gray-100"
+            : darkMode
+            ? "bg-[#5b3a64]"
+            : "bg-gradient-to-b from-gray-100 to-purple-50"
+        }
+        ${expanded ? (isMobile ? "w-full" : "w-[330px]") : "w-[100px]"}`}
     >
-      <div
-        className="flex items-center px-5 py-6 cursor-pointer ml-3"
-        onClick={() => navigate("/teacher")}
-      >
+      <div className="flex items-center px-5 py-6 cursor-pointer ml-3">
         <div className="w-8 h-8 rounded-[20px] bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md">
           <div className="w-4 h-4 rounded-full bg-white opacity-80" />
         </div>
@@ -285,7 +283,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
       </div>
 
       <div
-        className="flex items-center px-5 py-3 cursor-pointer mb-8 ml-2"
+        className="flex items-center px-5 py-3 cursor-pointer mb-4 ml-2"
         onClick={toggleNavbar}
       >
         <div
@@ -313,72 +311,77 @@ const TeacherNavbar = ({ onNavToggle }) => {
         </div>
       </div>
 
-      {/* Navigation items */}
       <div className="flex flex-col h-full space-y-3 px-2">
         {navItems.map((item) => (
-          <div
+          <Link
             key={item.name}
-            className={`relative flex items-center cursor-pointer transition-all duration-200
+            to={item.path}
+            onClick={handleNavClick}
+            className={`relative flex items-center cursor-pointer transition-all duration-200 group
               ${
                 expanded
-                  ? "px-3 py-3 rounded-[20px] " +
-                    (activeItem === item.name
-                      ? darkMode
-                        ? "bg-[#4a2f52] text-purple-200 shadow-sm"
-                        : "bg-gradient-to-r from-purple-200 to-purple-50 text-purple-700 shadow-sm"
-                      : darkMode
-                      ? "text-gray-300 hover:bg-[#4a2f52]"
-                      : "text-gray-500 hover:bg-purple-50")
-                  : "justify-center py-3"
+                  ? `px-3 py-3 rounded-[20px] ${
+                      location.pathname === item.path
+                        ? darkMode
+                          ? "bg-[#4a2f52] text-purple-200 shadow-sm"
+                          : "bg-gradient-to-r from-purple-200 to-purple-50 text-purple-700 shadow-sm"
+                        : darkMode
+                        ? "text-gray-300 hover:bg-[#4a2f52] hover:text-purple-200"
+                        : "text-gray-500 hover:bg-gradient-to-r hover:from-purple-200 hover:to-purple-50 hover:text-purple-700 hover:shadow-sm"
+                    }`
+                  : `justify-center py-3 ${
+                      location.pathname === item.path
+                        ? ""
+                        : darkMode
+                        ? "hover:bg-[#4a2f52]"
+                        : "hover:bg-gradient-to-r hover:from-purple-200 hover:to-purple-50"
+                    }`
               }`}
-            onClick={() => handleNavClick(item)}
           >
             <div
-              className={`flex items-center justify-center min-w-[40px] w-10 h-10 rounded-[20px] flex-shrink-0
+              className={`flex items-center justify-center min-w-[40px] w-10 h-10 rounded-[20px] flex-shrink-0 transition-colors
               ${
-                activeItem === item.name
+                location.pathname === item.path
                   ? darkMode
                     ? "bg-purple-500 text-purple-200"
                     : "bg-gray-800 text-white"
                   : darkMode
-                  ? "bg-gray-300 text-purple-900"
-                  : "bg-white text-gray-500"
+                  ? "bg-gray-300 text-purple-900 group-hover:bg-purple-500 group-hover:text-purple-200"
+                  : "bg-white text-gray-500 group-hover:bg-gray-800 group-hover:text-white"
               }`}
             >
               {item.icon}
             </div>
             {expanded && (
               <span
-                className={`ml-4 font-medium whitespace-nowrap ${
-                  activeItem === item.name
+                className={`ml-4 font-medium whitespace-nowrap transition-colors ${
+                  location.pathname === item.path
                     ? darkMode
                       ? "text-white"
                       : "text-gray-700"
                     : darkMode
-                    ? "text-gray-300"
-                    : "text-gray-600"
+                    ? "text-gray-300 group-hover:text-white"
+                    : "text-gray-600 group-hover:text-gray-700"
                 }`}
               >
                 {item.name}
               </span>
             )}
 
-            {/* Active indicator for collapsed state */}
-            {!expanded && activeItem === item.name && (
+            {!expanded && location.pathname === item.path && (
               <div className="absolute left-0 h-10 w-1 bg-purple-500 rounded-r-md"></div>
             )}
-          </div>
+          </Link>
         ))}
       </div>
 
-      {/* Bottom decoration - subtle gradient accent */}
       <div className="mt-auto mb-6 mx-auto">
         {expanded ? (
           <div
             className={`w-32 h-1 ${
               darkMode
                 ? "bg-gradient-to-r from-purple-400 to-transparent"
-                : "bg-gradient-to-r from-purple-300 to-transparent"
+                : "bg-gradient-to-r from-purple-200 to-transparent"
             } rounded-full`}
           ></div>
         ) : (
@@ -386,7 +389,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
             className={`w-8 h-1 ${
               darkMode
                 ? "bg-gradient-to-r from-purple-400 to-transparent"
-                : "bg-gradient-to-r from-purple-300 to-transparent"
+                : "bg-gradient-to-r from-purple-200 to-transparent"
             } rounded-full`}
           ></div>
         )}
@@ -395,4 +398,4 @@ const TeacherNavbar = ({ onNavToggle }) => {
   );
 };
 
-export default TeacherNavbar;
+export default ParentNavbar;

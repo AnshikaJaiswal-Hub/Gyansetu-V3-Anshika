@@ -652,6 +652,17 @@ export default function AIAssistantIntegration({
                           <button className="mt-3 w-full px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200 flex items-center justify-center">
                             <Wand2 className="w-4 h-4 mr-2" />
                             Adjust to Target Grade Level
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                           </button>
                         </div>
                       </div>

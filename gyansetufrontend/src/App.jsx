@@ -6,12 +6,15 @@ import {
   Route,
   Navigate,
   useLocation,
+  Outlet,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import StudentAssignmentInterface from "./components/students/Assignment/StudentAssignment";
+import StudentAssignmentInterface from "./components/students/Quizs/StudentQuizInterface";
 import NotesApp from "./components/students/notes/NotesApp";
 import ContentApp from "./components/students/Content/Content";
+import StudentProfileForm from "./components/students/studentDashboard/StudentProfile/StudentProfileForm";
+import StudentProgressReport from "./components/Parent/parentDashboard/StudentProgress";
 
 // Auth Pages
 import WelcomePage from "./pages/WelcomePage"; // Import the new welcome page
@@ -25,7 +28,7 @@ import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
 // Role-based Dashboard Pages
 import StudentDashboard from "./pages/dashboards/StudentDashboard";
-import TeacherDashboard from "./pages/dashboards/TeacherDashboard";
+import TeacherDashboard from "./pages/dashboards/TeacherDashBoard";
 import ParentDashboard from "./pages/dashboards/ParentDashboard";
 import InstituteDashboard from "./pages/dashboards/InstituteDashboard";
 
@@ -36,12 +39,18 @@ import TeacherMainCalender from "./components/teacher/calender/MainCalenderTeach
 import TeacherContent from "./components/teacher/contentUploading/TeacherContent";
 import CompleteProfilePage from "./components/teacher/profile/CompleteProfilePage";
 
+//Parent Features
+import AttendanceCalendar from "./components/Parent/parentDashboard/AttendanceCalendar";
+import ParentLayout from "./components/Parent/parentDashboard/ParentLayout";
+
 // Auth Service
 import authService from "./services/api/authService";
 import MainChatbot from "./components/students/Chatbot/MainChatbot";
 
 // Import theme styles
 import "./darkTheme.css";
+import ParentTeacherMeeting from "./components/Parent/parentDashboard/communication/ParentTeacherScheduler";
+import TeacherMeetingManager from "./components/teacher/ParentMeeting/TeacherMeetingManager";
 
 // ThemeWrapper component to apply theme class to body
 const ThemeWrapper = ({ children }) => {
@@ -57,6 +66,33 @@ const ThemeWrapper = ({ children }) => {
   }, [darkMode]);
 
   return <>{children}</>;
+};
+
+// StudentAuth component combines protection and layout
+const StudentAuth = ({ children }) => {
+  const user = authService.getCurrentUser();
+
+  // If not logged in or not a student, redirect appropriately
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user.role !== "student") {
+    // Redirect based on role
+    switch (user.role) {
+      case "teacher":
+        return <Navigate to="/teacher" replace />;
+      case "parent":
+        return <Navigate to="/parent" replace />;
+      case "institute":
+        return <Navigate to="/institute" replace />;
+      default:
+        return <Navigate to="/login" replace />;
+    }
+  }
+
+  // User is authenticated and is a student, show children with layout
+  return children;
 };
 
 // Wrapper component to handle location-based re-rendering
@@ -78,7 +114,7 @@ function AppContent() {
       case "teacher":
         return <Navigate to="/teacher" replace />;
       case "parent":
-        return <Navigate to="/parent" replace />;
+        return <Navigate to="/Parentdashboard" replace />;
       case "institute":
         return <Navigate to="/institute" replace />;
       default:
@@ -195,6 +231,15 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              key={location.pathname}
+              path="/teacher/schedule-meeting"
+              element={
+                <ProtectedRoute allowedRoles={["teacher"]}>
+                  <TeacherMeetingManager />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Student Routes */}
             <Route
@@ -247,14 +292,6 @@ function AppContent() {
             />
 
             <Route
-              path="/parent/*"
-              element={
-                <ProtectedRoute allowedRoles={["parent"]}>
-                  <ParentDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/institute/*"
               element={
                 <ProtectedRoute allowedRoles={["institute"]}>
@@ -262,6 +299,38 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+
+            {/* Parent Routes */}
+            <Route element={<ParentLayout />}>
+              <Route
+                path="/Parentdashboard"
+                element={
+                  <ProtectedRoute allowedRoles={["parent"]}>
+                    <ParentDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/parent/attendance"
+                element={
+                  <ProtectedRoute allowedRoles={["parent"]}>
+                    <AttendanceCalendar />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/parent/schedule-meeting"
+                element={
+                  <ProtectedRoute allowedRoles={["parent"]}>
+                    <ParentTeacherMeeting />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/studentprogress"
+                element={<StudentProgressReport />}
+              />
+            </Route>
 
             {/* Redirect any unknown routes to welcome page or role-based dashboard */}
             <Route
@@ -281,6 +350,7 @@ function AppContent() {
   );
 }
 
+// Main App component
 function App() {
   return (
     <Router>

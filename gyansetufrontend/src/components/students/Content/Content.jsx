@@ -210,11 +210,12 @@ const ContentApp = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-violet-300 to-violet-200 min-h-screen">
+    <div className='bg-gray-100 pt-10 pr-10 pb-10'>
+    <div className="bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl min-h-screen p-6">
       <div className={`container mx-auto px-2 sm:px-4 py-4 ${isNavbarExpanded ? 'ml-0 sm:ml-52 lg:ml-64 transition-all duration-300' : ''}`}>
         {/* Overview Section */}
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-xl sm:text-2xl font-bold text-violet-600 mb-4 sm:mb-6">Content</h1>
+          <h1 className="text-xl sm:text-3xl font-bold text-violet-600 mb-4 sm:mb-6">Content</h1>
           
           {/* Subject cards grid - responsive */}
           <div className={`grid grid-cols-1 ${isNavbarExpanded ? 'sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4' : 'sm:grid-cols-2 lg:grid-cols-4'} gap-2 sm:gap-4`}>
@@ -478,6 +479,7 @@ const ContentApp = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   ArrowUpRight,
   ChevronLeft,
@@ -23,13 +23,13 @@ import {
   LogOut,
 } from "lucide-react";
 import ReactApexChart from "react-apexcharts";
-import RecentAchievements from "../../components/students/studentDasboard/RecentAchievements";
-import StatsSection from "../../components/students/studentDasboard/StatsSection";
-import StudentNavbar from "../../components/students/studentDasboard/StudentNavbar";
-import MiniChatbot from "../../components/students/studentDasboard/MiniChatbot";
-import Cal from "../../components/students/studentDasboard/Calendar";
+import RecentAchievements from "../../components/students/studentDashboard/RecentAchievements";
+import StatsSection from "../../components/students/studentDashboard/StatsSection";
+import MiniChatbot from "../../components/students/studentDashboard/MiniChatbot";
+import Cal from "../../components/students/studentDashboard/Calendar";
 import { useNavigate } from "react-router-dom";
 import authService from '../../services/api/authService';
+import ProfilePopup from "../../components/students/studentDashboard/ProfilePopup";
 
 // Country Bar Chart Component
 const CountryBarChart = ({ darkMode }) => {
@@ -221,9 +221,9 @@ const StudentDashboard = () => {
     }
   }, [darkMode]);
 
-  const handleNavToggle = (expanded) => {
+  const handleNavToggle = useCallback((expanded) => {
     setNavExpanded(expanded);
-  };
+  }, [setNavExpanded]);
 
   // Map icon strings to Lucide components
   const iconMap = {
@@ -275,36 +275,16 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-200 via-white to-purple-300">
+    <div className="bg-gray-100 pt-10 pr-10 pb-10">
+    <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl pl-6">
 
-      <StudentNavbar onNavToggle={handleNavToggle} />
+     
 
-      <div
-        className={`flex-1 transition-all duration-300 pt-[20px] md:pt-0 ${
-          navExpanded ? "ml-0 md:ml-[330px]" : "ml-0 md:ml-[100px]"
-        }`}
-      >
+   
         <header className="px-6 py-4 flex justify-between items-center">
           {/* Profile Section */}
-          <div className="w-full md:w-1/4">
-            <div className="p-1 flex items-center relative">
-              <div className="relative mr-4">
-                <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-purple-300">
-                  <img
-                    src="/profile.png"
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = "https://via.placeholder.com/64";
-                    }}
-                  />
-                </div>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Sadaf</h3>
-                <p className="text-gray-600 dark:text-gray-400">Class 06</p>
-              </div>
-            </div>
+          <div className="w-full  ">
+         <h3 className="text-3xl font-medium left-6">Good Morning , Sadaf !</h3>
           </div>
 
           <div className="flex items-center gap-4">
@@ -359,6 +339,8 @@ const StudentDashboard = () => {
                 <span className="text-white text-xs font-bold">5</span>
               </div>
             </div>
+             {/* Profile dropdown - using our component */}
+    <ProfilePopup />
           </div>
         </header>
 
@@ -414,7 +396,8 @@ const StudentDashboard = () => {
           <StatsSection stats={statsData} />
         </div>
       </div>
-    </div>
+      </div>
+
   );
 };
 
