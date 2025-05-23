@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-<<<<<<<< HEAD:gyansetufrontend/src/components/students/studentDashboard/Layout.jsx
 import StudentNavbar from "./StudentNavbar";
-========
-import ParentNavbar from "./ParentNavbar";
->>>>>>>> 1ae96e9a86748775a0d0be7c45d4907243dec4b8:gyansetufrontend/src/components/Parent/parentDashboard/ParentLayout.jsx
 
 class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
@@ -30,7 +26,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const ParentLayout = () => {
+const Layout = () => {
   const [navExpanded, setNavExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -52,11 +48,7 @@ const ParentLayout = () => {
 
   return (
     <div className="flex min-h-screen">
-<<<<<<<< HEAD:gyansetufrontend/src/components/students/studentDashboard/Layout.jsx
       <StudentNavbar onNavToggle={handleNavToggle} />
-========
-      <ParentNavbar onNavToggle={handleNavToggle} />
->>>>>>>> 1ae96e9a86748775a0d0be7c45d4907243dec4b8:gyansetufrontend/src/components/Parent/parentDashboard/ParentLayout.jsx
       <main
         className={`flex-1 transition-all duration-300 ${
           isMobile ? "mt-16" : navExpanded ? "ml-[330px]" : "ml-[100px]"
@@ -72,4 +64,4 @@ const ParentLayout = () => {
   );
 };
 
-export default ParentLayout;
+export default Layout;
