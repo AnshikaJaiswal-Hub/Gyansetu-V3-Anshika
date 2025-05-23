@@ -1,0 +1,41 @@
+/* Global dark mode styles */
+body.dark-theme {
+  background-color: #5b3a64;
+  color: #e8eaed;
+}
+
+/* Improve scrollbar appearance in dark mode */
+body.dark-theme::-webkit-scrollbar {
+  width: 10px;
+}
+
+body.dark-theme::-webkit-scrollbar-track {
+  background: #231130;
+}
+
+body.dark-theme::-webkit-scrollbar-thumb {
+  background: #341b47;
+  border-radius: 5px;
+}
+
+body.dark-theme::-webkit-scrollbar-thumb:hover {
+  background: #4a2f52;
+}
+
+/* Transitions for smooth theme changes */
+body,
+body * {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Override input and select focus states for dark mode */
+body.dark-theme input:focus,
+body.dark-theme select:focus,
+body.dark-theme button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+}
+
+/* Additional theme-specific styles can be added here */
