@@ -3,12 +3,12 @@ import { Calendar, Clock, Bell, Search, ChevronLeft, ChevronRight } from 'lucide
 
 // Mock data for demonstration purposes
 const mockEvents = [
-  { id: 1, title: 'Physics Exam', date: '2025-05-20', time: '10:00 AM', type: 'exam', priority: 'high' },
-  { id: 2, title: 'Math Assignment Due', date: '2025-05-20', time: '11:30 AM', type: 'assignment', priority: 'medium' },
-  { id: 3, title: 'Annual Sports Day', date: '2025-05-21', time: '9:00 AM', type: 'holiday', priority: 'low' },
-  { id: 4, title: 'Chemistry Lab', date: '2025-05-22', time: '2:00 PM', type: 'class', priority: 'medium' },
-  { id: 5, title: 'Career Counseling', date: '2025-05-23', time: '3:30 PM', type: 'meeting', priority: 'high' },
-  { id: 6, title: 'Gym Training', date: '2025-05-24', time: '5:00 PM', type: 'regular', priority: 'low' },
+  { id: 1, title: 'Morning Assembly', date: new Date().toISOString().split('T')[0], time: '8:00 AM', type: 'regular', priority: 'medium' },
+  { id: 2, title: 'Math Class', date: new Date().toISOString().split('T')[0], time: '9:00 AM', type: 'class', priority: 'high' },
+  { id: 3, title: 'Science Lab', date: new Date().toISOString().split('T')[0], time: '11:00 AM', type: 'class', priority: 'high' },
+  { id: 4, title: 'Lunch Break', date: new Date().toISOString().split('T')[0], time: '1:00 PM', type: 'regular', priority: 'low' },
+  { id: 5, title: 'English Assignment Due', date: new Date().toISOString().split('T')[0], time: '3:00 PM', type: 'assignment', priority: 'high' },
+  { id: 6, title: 'Sports Practice', date: new Date().toISOString().split('T')[0], time: '4:00 PM', type: 'regular', priority: 'medium' },
   { id: 7, title: 'Project Presentation', date: '2025-05-20', time: '2:00 PM', type: 'meeting', priority: 'urgent' },
   { id: 8, title: 'Computer Science Club', date: '2025-05-22', time: '4:00 PM', type: 'regular', priority: 'low' },
   { id: 9, title: 'English Essay Due', date: '2025-05-25', time: '9:00 AM', type: 'assignment', priority: 'high' },
@@ -23,6 +23,7 @@ const mockEvents = [
   { id: 18, title: 'Breakfast with Study Group', date: '2025-05-20', time: '8:00 AM', type: 'meeting', priority: 'medium' },
   { id: 19, title: 'Evening Yoga Session', date: '2025-05-20', time: '6:00 PM', type: 'regular', priority: 'medium' },
   { id: 20, title: 'Research Paper Review', date: '2025-05-20', time: '9:00 AM', type: 'assignment', priority: 'high' },
+  { id: 21, title: 'Late Night Study Session', date: '2025-05-29', time: '2:00 AM', type: 'regular', priority: 'low' },
 ];
 
 const mockTimetable = [
@@ -87,7 +88,7 @@ const generateCalendarDays = (year, month) => {
 const StudentCalendar = () => {
   const [activeTab, setActiveTab] = useState('calendar');
   const [calendarView, setCalendarView] = useState('weekly');
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 4, 20)); // May 20, 2025
+  const [currentDate, setCurrentDate] = useState(new Date()); // Changed to current date
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredAnnouncements, setFilteredAnnouncements] = useState(mockAnnouncements);
   
@@ -118,59 +119,46 @@ const StudentCalendar = () => {
   
   // Hardcoded events for each time slot for May 20, 2025
   const getEventsForTimeSlot = (date, timeSlot) => {
-    // Only show hardcoded events for May 20, 2025
-    if (formatDateForComparison(date) !== '2025-05-20') {
-      return [];
-    }
+    const formattedDate = formatDateForComparison(date);
+    const today = new Date().toISOString().split('T')[0];
     
-    // For 24-hour format
-    const allHourEvents = {
-      '12 AM': [],
-      '1 AM': [],
-      '2 AM': [],
-      '3 AM': [],
-      '4 AM': [],
-      '5 AM': [],
-      '6 AM': [],
-      '7 AM': [{ id: 17, title: 'Morning Meditation', time: '7:00 AM', type: 'regular', priority: 'low' }],
-      '8 AM': [{ id: 18, title: 'Breakfast with Study Group', time: '8:00 AM', type: 'meeting', priority: 'medium' }],
-      '9 AM': [{ id: 20, title: 'Research Paper Review', time: '9:00 AM', type: 'assignment', priority: 'high' }],
-      '10 AM': [{ id: 1, title: 'Physics Exam', time: '10:00 AM', type: 'exam', priority: 'high' }],
-      '11 AM': [{ id: 2, title: 'Math Assignment Due', time: '11:30 AM', type: 'assignment', priority: 'medium' }],
-      '12 PM': [],
-      '1 PM': [],
-      '2 PM': [{ id: 7, title: 'Project Presentation', time: '2:00 PM', type: 'meeting', priority: 'urgent' }],
-      '3 PM': [{ id: 14, title: 'Library Study Session', time: '3:00 PM', type: 'regular', priority: 'low' }],
-      '4 PM': [],
-      '5 PM': [{ id: 16, title: 'School Concert', time: '5:00 PM', type: 'holiday', priority: 'medium' }],
-      '6 PM': [{ id: 19, title: 'Evening Yoga Session', time: '6:00 PM', type: 'regular', priority: 'medium' }],
-      '7 PM': [],
-      '8 PM': [],
-      '9 PM': [],
-      '10 PM': [],
-      '11 PM': []
-    };
-    
-    // For business hours format (used in weekly view)
-    const businessHourEvents = {
-      '8 AM': [{ id: 18, title: 'Breakfast with Study Group', time: '8:00 AM', type: 'meeting', priority: 'medium' }],
-      '9 AM': [{ id: 20, title: 'Research Paper Review', time: '9:00 AM', type: 'assignment', priority: 'high' }],
-      '10 AM': [{ id: 1, title: 'Physics Exam', time: '10:00 AM', type: 'exam', priority: 'high' }],
-      '11 AM': [{ id: 2, title: 'Math Assignment Due', time: '11:30 AM', type: 'assignment', priority: 'medium' }],
-      '12 PM': [],
-      '1 PM': [],
-      '2 PM': [{ id: 7, title: 'Project Presentation', time: '2:00 PM', type: 'meeting', priority: 'urgent' }],
-      '3 PM': [{ id: 14, title: 'Library Study Session', time: '3:00 PM', type: 'regular', priority: 'low' }],
-      '4 PM': [],
-      '5 PM': [{ id: 16, title: 'School Concert', time: '5:00 PM', type: 'holiday', priority: 'medium' }],
-      '6 PM': [{ id: 19, title: 'Evening Yoga Session', time: '6:00 PM', type: 'regular', priority: 'medium' }]
-    };
-    
-    // Use the appropriate events object based on whether it's a timeSlot or fullDayHours format
-    const events = Object.keys(businessHourEvents).includes(timeSlot) ? 
-      businessHourEvents[timeSlot] : allHourEvents[timeSlot] || [];
-    
-    return events;
+    // Return events for the selected date and time slot
+    return mockEvents.filter(event => {
+      const eventDate = event.date;
+      const eventTime = event.time;
+      
+      // Check if event date matches the formatted date
+      if (eventDate !== formattedDate) {
+        return false;
+      }
+      
+      // Check if event time is within the time slot
+      // This assumes timeSlot is like '8 AM', '9 AM', etc.
+      // We need to convert eventTime to a comparable format.
+      const slotParts = timeSlot.split(' ');
+      let slotHour = parseInt(slotParts[0]);
+      const slotModifier = slotParts[1];
+      
+      if (slotModifier && slotModifier.toLowerCase() === 'pm' && slotHour < 12) {
+        slotHour += 12;
+      } else if (slotModifier && slotModifier.toLowerCase() === 'am' && slotHour === 12) {
+        slotHour = 0;
+      }
+      
+      const eventTimeObj = timeTo24Hr(eventTime);
+      
+      // Check if the event hour matches the slot hour
+      if (eventTimeObj.hours === slotHour) {
+          // For 2 AM, check if the hour is 2 and it's AM
+          if (slotHour === 2 && slotModifier && slotModifier.toLowerCase() === 'am') {
+              return eventTimeObj.hours === 2 && event.time.toLowerCase().includes('am');
+          }
+          // For other times, just check the hour
+          return true;
+      }
+      
+      return false;
+    });
   };
   
   // Get event color based on type
@@ -339,7 +327,7 @@ const StudentCalendar = () => {
               </div>
               <div className="flex-1 p-2 min-h-16">
                 {eventsForToday
-                  .filter(event => event.time.includes(timeSlot))
+                  .filter(event => isInTimeSlot(event.time, timeSlot))
                   .map(event => (
                     <div 
                       key={event.id} 
@@ -375,7 +363,7 @@ const StudentCalendar = () => {
             return (
               <div 
                 key={index} 
-                className={`p-2 md:p-3 text-center border-r ${
+                className={`p-2 md:p-3 text-center border-r -ml-2 ${
                   isToday ? 'bg-purple-100 font-bold' : 'bg-gray-50'
                 }`}
               >
@@ -890,39 +878,49 @@ const StudentCalendar = () => {
     <div className='bg-gray-100 pt-10 pr-10 pb-10'>
     <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl p-6">
       <main className="container mx-auto px-3 md:px-4 py-3 md:py-6">
-        <h1 className="text-xl md:text-3xl font-bold text-violet-600 mb-3 md:mb-6"> Calendar</h1>
+        <h1 className="text-3xl text-center font-medium text-black">Calendar</h1>
         {/* Tab navigation */}
-        <div className="bg-white rounded-xl shadow-md mb-4 md:mb-6">
-          <div className="flex flex-wrap md:flex-nowrap border-b">
-            <button
-              className={`flex-1 px-3 py-3 md:px-6 md:py-4 text-sm md:text-base font-medium ${activeTab === 'calendar' ? 'text-purple-600 border-b-2 border-purple-600 bg-purple-50' : 'text-gray-600 hover:text-purple-600'}`}
-              onClick={() => setActiveTab('calendar')}
-            >
-              <Calendar className="inline-block mr-1 md:mr-2" size={16} />
-              Calendar
-            </button>
-            <button
-              className={`flex-1 px-3 py-3 md:px-6 md:py-4 text-sm md:text-base font-medium ${activeTab === 'timetable' ? 'text-purple-600 border-b-2 border-purple-600 bg-purple-50' : 'text-gray-600 hover:text-purple-600'}`}
-              onClick={() => setActiveTab('timetable')}
-            >
-              <Clock className="inline-block mr-1 md:mr-2" size={16} />
-              Timetable
-            </button>
-            <button
-              className={`flex-1 px-3 py-3 md:px-6 md:py-4 text-sm md:text-base font-medium ${activeTab === 'announcements' ? 'text-purple-600 border-b-2 border-purple-600 bg-purple-50' : 'text-gray-600 hover:text-purple-600'}`}
-              onClick={() => setActiveTab('announcements')}
-            >
-              <Bell className="inline-block mr-1 md:mr-2" size={16} />
-              Announcements
-            </button>
-          </div>
+        <div className="flex border-b mb-6">
+          <button
+            className={`px-4 py-2 font-medium text-sm ${
+              activeTab === 'calendar'
+                ? "border-b-2 border-violet-500 text-violet-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab('calendar')}
+          >
+            <Calendar className="inline-block mr-1 md:mr-2" size={16} />
+            Calendar
+          </button>
+          <button
+            className={`px-4 py-2 font-medium text-sm ${
+              activeTab === 'timetable'
+                ? "border-b-2 border-violet-500 text-violet-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab('timetable')}
+          >
+            <Clock className="inline-block mr-1 md:mr-2" size={16} />
+            Timetable
+          </button>
+          <button
+            className={`px-4 py-2 font-medium text-sm ${
+              activeTab === 'announcements'
+                ? "border-b-2 border-violet-500 text-violet-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab('announcements')}
+          >
+            <Bell className="inline-block mr-1 md:mr-2" size={16} />
+            Announcements
+          </button>
         </div>
         
         {/* Calendar view navigation */}
         {activeTab === 'calendar' && (
           <div className="mb-4 md:mb-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0">
-              <div className="flex flex-wrap gap-1 w-full md:w-auto">
+              <div className="flex flex-wrap gap-4 w-full md:w-auto mb-6">
                 <button
                   className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${calendarView === 'daily' ? 'bg-purple-600 text-white font-medium' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
                   onClick={() => setCalendarView('daily')}
@@ -977,7 +975,7 @@ const StudentCalendar = () => {
                 </button>
                 <button
                   className="px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm bg-purple-600 text-white rounded-md border hover:bg-purple-700"
-                  onClick={() => setCurrentDate(new Date(2025, 4, 20))}
+                  onClick={() => setCurrentDate(new Date())}
                 >
                   Today
                 </button>

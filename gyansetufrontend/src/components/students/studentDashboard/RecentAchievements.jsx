@@ -56,7 +56,7 @@ const RecentAchievements = ({
   };
 
   return (
-    <div className="max-w-3xl ">
+    <div className="max-w-3xl">
       {/* Recent Achievements Section */}
       <div className="bg-gray-200 rounded-2xl p-4 mb-8">
         <div className="grid grid-cols-2 gap-6 mt-5 mb-1 mx-1">
@@ -64,17 +64,20 @@ const RecentAchievements = ({
             const IconComponent = iconComponents[achievement.icon];
             
             return ( 
-              <div key={achievement.id} className="bg-white rounded-xl border border-gray-100 p-4 relative">
+              <div 
+                key={achievement.id} 
+                className="bg-white rounded-xl p-4 relative transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:z-10 group"
+              >
                 <div className="flex justify-between items-start mb-8">
-                  <div className="bg-gray-900 p-3 rounded-full">
-                    {IconComponent && <IconComponent className="text-white" size={24} />}
+                  <div className="bg-gray-900 p-3 rounded-full transition-colors duration-300 group-hover:bg-purple-500">
+                    {IconComponent && <IconComponent className="text-white transition-colors duration-300 group-hover:text-violet-100" size={24} />}
                   </div>
-                  <div className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium transition-colors duration-300 group-hover:bg-violet-100 group-hover:text-violet-700">
                     +{achievement.points} pts
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2">{achievement.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400">{achievement.description}</p>
+                <h3 className="text-xl font-bold mb-2 transition-colors duration-300 group-hover:text-violet-700">{achievement.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 transition-colors duration-300 group-hover:text-gray-800">{achievement.description}</p>
               </div>
             );
           })}

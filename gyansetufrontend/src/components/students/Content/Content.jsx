@@ -18,7 +18,6 @@ const ContentApp = () => {
   const [allContents, setAllContents] = useState([
     { id: 'fres2uf4sws', name: 'Physics Mechanics', subject: 'Physics', uploadDate: '7/18/2023', uploadedBy: 'Dr. Smith', status: 'Completed' },
     { id: 'css32uf43E', name: 'Linear Algebra', subject: 'Maths', uploadDate: '8/21/2023', uploadedBy: 'Prof. Johnson', status: 'In Process' },
-    { id: 'asws4uf433', name: 'World War II', subject: 'History', uploadDate: '5/30/2023', uploadedBy: 'Dr. Williams', status: 'In Process' },
     { id: 'ssw32uf4sd', name: 'Shakespeare', subject: 'English', uploadDate: '4/21/2023', uploadedBy: 'Prof. Davis', status: 'Need More Info' },
     { id: 'sws2uf43y6', name: 'Chemistry Basics', subject: 'Chemistry', uploadDate: '12/10/2023', uploadedBy: 'Dr. Miller', status: 'Unassigned' },
     { id: 'dsw32uf34fr', name: 'Calculus', subject: 'Maths', uploadDate: '8/30/2023', uploadedBy: 'Prof. Wilson', status: 'Completed' },
@@ -215,7 +214,7 @@ const ContentApp = () => {
       <div className={`container mx-auto px-2 sm:px-4 py-4 ${isNavbarExpanded ? 'ml-0 sm:ml-52 lg:ml-64 transition-all duration-300' : ''}`}>
         {/* Overview Section */}
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-xl sm:text-3xl font-bold text-violet-600 mb-4 sm:mb-6">Content</h1>
+          <h1 className="text-3xl text-center font-medium text-black mb-4 sm:mb-6">Content</h1>
           
           {/* Subject cards grid - responsive */}
           <div className={`grid grid-cols-1 ${isNavbarExpanded ? 'sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4' : 'sm:grid-cols-2 lg:grid-cols-4'} gap-2 sm:gap-4`}>

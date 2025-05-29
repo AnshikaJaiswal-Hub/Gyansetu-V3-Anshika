@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { User, LayoutDashboard, KeyRound, LogOut, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import authService from '../../../services/api/authService';
 
 const ProfilePopup = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,6 +50,12 @@ const ProfilePopup = () => {
   const handleNavigation = (path) => {
     navigate(path); // Use the navigate function to change routes
     setIsOpen(false);
+  };
+
+  // Add handleLogout function
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/login');
   };
 
   return (
@@ -116,19 +123,10 @@ const ProfilePopup = () => {
                 <span className="text-black text-lg md:text-base">Profile</span>
               </button>
               
-              {/* Dashboard */}
-              <button 
-                className="flex items-center px-6 md:px-4 py-4 md:py-3 w-full hover:bg-gray-200 rounded-2xl transition-colors text-left"
-                onClick={() => handleNavigation('/dashboard')}
-              >
-                <LayoutDashboard className="text-black mr-4 md:mr-3" size={24} />
-                <span className="text-black text-lg md:text-base">Dashboard</span>
-              </button>
-              
               {/* Change Password */}
               <button 
                 className="flex items-center px-6 md:px-4 py-4 md:py-3 w-full hover:bg-gray-200 rounded-2xl transition-colors text-left"
-                onClick={() => handleNavigation('/change-password')}
+                onClick={() => handleNavigation('/changepassword')}
               >
                 <KeyRound className="text-black mr-4 md:mr-3" size={24} />
                 <span className="text-black text-lg md:text-base">Change Password</span>
@@ -137,7 +135,7 @@ const ProfilePopup = () => {
               {/* Logout */}
               <button 
                 className="flex items-center px-6 md:px-4 py-4 md:py-3 w-full hover:bg-gray-200 rounded-2xl transition-colors text-left"
-                onClick={() => handleNavigation('/logout')}
+                onClick={handleLogout}
               >
                 <LogOut className="text-black mr-4 md:mr-3" size={24} />
                 <span className="text-black text-lg md:text-base">Logout</span>

@@ -20,7 +20,6 @@ import {
   Crown,
   Users,
   Atom,
-  LogOut,
 } from "lucide-react";
 import ReactApexChart from "react-apexcharts";
 import RecentAchievements from "../../components/students/studentDashboard/RecentAchievements";
@@ -28,8 +27,8 @@ import StatsSection from "../../components/students/studentDashboard/StatsSectio
 import MiniChatbot from "../../components/students/studentDashboard/MiniChatbot";
 import Cal from "../../components/students/studentDashboard/Calendar";
 import { useNavigate } from "react-router-dom";
-import authService from '../../services/api/authService';
 import ProfilePopup from "../../components/students/studentDashboard/ProfilePopup";
+import PopNotifications from "../../components/students/studentDashboard/PopNotifications";
 
 // Country Bar Chart Component
 const CountryBarChart = ({ darkMode }) => {
@@ -202,7 +201,25 @@ const StudentDashboard = () => {
   const [statusEnabled, setStatusEnabled] = useState(true);
   const [navExpanded, setNavExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [userName, setUserName] = useState(""); // Initialize as empty string
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Get user data from localStorage
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (userData && userData.firstName) {
+      setUserName(userData.firstName);
+    }
+  }, []);
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    if (hour < 21) return "Good Evening";
+    return "Good Night";
+  };
 
   useEffect(() => {
     const checkMobile = () => {
@@ -269,22 +286,13 @@ const StudentDashboard = () => {
 
   const statsData = { quizzesCompleted: 14, hoursSpent: 6 };
 
-  const handleLogout = () => {
-    authService.logout();
-    navigate('/login');
-  };
-
   return (
     <div className="bg-gray-100 pt-10 pr-10 pb-10">
-    <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl pl-6">
-
-     
-
-   
+      <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl pl-6">
         <header className="px-6 py-4 flex justify-between items-center">
           {/* Profile Section */}
-          <div className="w-full  ">
-         <h3 className="text-3xl font-medium left-6">Good Morning , Sadaf !</h3>
+          <div className="w-full">
+            <h3 className="text-4xl font-medium left-6 bg-gradient-to-r from-violet-600 to-purple-300 bg-clip-text text-transparent pb-1 leading-tight">{getGreeting()}, {userName}!</h3>
           </div>
 
           <div className="flex items-center gap-4">
@@ -308,17 +316,10 @@ const StudentDashboard = () => {
                 />
               </button>
             </div>
-            <button
-              onClick={handleLogout}
-              className="p-2 rounded-full bg-red-100 hover:bg-red-200 text-red-600 shadow-md flex items-center justify-center"
-              title="Logout"
+            <div 
+              className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md relative cursor-pointer"
+              onClick={() => setShowNotifications(!showNotifications)}
             >
-              <LogOut size={18} />
-            </button>
-            <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center shadow-md">
-              <span className="text-gray-700 font-medium">EN</span>
-            </div>
-            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md relative">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path
                   d="M18 8C18 6.4087 17.3679 4.88258 16.2426 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.88258 2.63214 7.75736 3.75736C6.63214 4.88258 6 6.4087 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z"
@@ -339,8 +340,11 @@ const StudentDashboard = () => {
                 <span className="text-white text-xs font-bold">5</span>
               </div>
             </div>
-             {/* Profile dropdown - using our component */}
-    <ProfilePopup />
+            <PopNotifications 
+              isOpen={showNotifications} 
+              onClose={() => setShowNotifications(false)} 
+            />
+            <ProfilePopup />
           </div>
         </header>
 
@@ -371,7 +375,7 @@ const StudentDashboard = () => {
             </div>
 
             <div className="w-full md:w-2/3">
-              <div className="bg-white rounded-2xl shadow-md overflow-hidden p-5">
+              <div className="bg-white rounded-2xl shadow-md overflow-hidden p-5 transition-all duration-300 hover:scale-105 hover:shadow-lg">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="font-semibold text-lg">Time spend</h3>
@@ -396,8 +400,7 @@ const StudentDashboard = () => {
           <StatsSection stats={statsData} />
         </div>
       </div>
-      </div>
-
+    </div>
   );
 };
 

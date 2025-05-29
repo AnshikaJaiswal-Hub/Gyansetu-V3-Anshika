@@ -16,6 +16,7 @@
     "chart.js": "^4.4.9",
     "firebase": "^11.6.1",
     "framer-motion": "^12.9.2",
+    "gyan2": "file:",
     "lucide-react": "^0.503.0",
     "nodemon": "^3.1.10",
     "react": "^19.0.0",

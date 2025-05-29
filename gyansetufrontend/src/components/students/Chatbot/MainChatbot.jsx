@@ -103,6 +103,16 @@ const MainChatbot = () => {
   const chatContainerRef = useRef(null);
   const sidebarRef = useRef(null);
 
+  // Load messages from localStorage on mount
+  useEffect(() => {
+    const savedMessages = localStorage.getItem('chatbotMessages');
+    if (savedMessages) {
+      setMessages(JSON.parse(savedMessages));
+      // Clear the saved messages after loading them
+      localStorage.removeItem('chatbotMessages');
+    }
+  }, []);
+
   const sidebarLinks = [
     {
       icon: <BookOpen className="w-5 h-5" />,
@@ -332,7 +342,7 @@ sendButton.addEventListener("click", function() {
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-violet-100 via-white to-violet-400 overflow-hidden">
+    <div className="flex h-screen bg-gradient-to-br from-gray-100 via-white to-violet-500 overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div
@@ -342,72 +352,7 @@ sendButton.addEventListener("click", function() {
       )}
 
       {/* Sidebar */}
-      <div
-        ref={sidebarRef}
-        className={`${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 fixed md:static z-30 h-full md:w-48 lg:w-64 bg-white flex flex-col transition-transform duration-300 ease-in-out`}
-      >
-        <div className="p-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="bg-purple-800 w-8 h-8 rounded-md flex items-center justify-center mr-2">
-              <span className="text-white font-bold">G</span>
-            </div>
-            <span className="font-semibold text-lg">Gyansetu</span>
-          </div>
-          <button
-            className="md:hidden text-gray-500 hover:text-gray-800"
-            onClick={() => setIsSidebarOpen(false)}
-            aria-label="Close sidebar"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="overflow-y-auto flex-1">
-          <nav className="px-2 py-6">
-            <div className="space-y-7">
-              {sidebarLinks.map((link, index) => (
-                <NavLink
-                  key={index}
-                  to={link.path}
-                  className={({ isActive }) =>
-                    `flex items-center px-4 py-3 mb-3 rounded-md w-full md:w-11/12 mx-auto ${
-                      isActive
-                        ? "bg-purple-100 text-purple-800"
-                        : "bg-gray-100 text-purple-700 hover:bg-gradient-to-r hover:from-purple-300 hover:to-purple-100 hover:text-purple-800"
-                    }`
-                  }
-                  onClick={() => setIsSidebarOpen(false)}
-                >
-                  <div className="text-gray-400">{link.icon}</div>
-                  <span className="ml-3 text-sm">{link.label}</span>
-                  {link.pro && (
-                    <span className="ml-auto text-xs bg-purple-200 text-purple-800 rounded px-1">
-                      Pro
-                    </span>
-                  )}
-                </NavLink>
-              ))}
-            </div>
-          </nav>
-        </div>
-
-        <div className="p-4 mt-auto">
-          <div className="bg-gradient-to-r from-violet-500 to-purple-300 rounded-lg p-4">
-            <h3 className="font-bold text-white">
-              Knowledge is your superpower
-            </h3>
-            <p className="text-sm text-white opacity-90 mt-1">
-              Keep powering up!
-            </p>
-          </div>
-          <button className="flex items-center w-full mt-6 text-purple-700 hover:text-purple-800">
-            <LogOut className="w-5 h-5 mr-2" />
-            <span>Exit</span>
-          </button>
-        </div>
-      </div>
+    
 
       {/* Main Content Area with Routes */}
       <div className="flex-1 flex overflow-hidden bg-gray-300 m-2 sm:m-4 md:m-6 rounded-2xl md:rounded-4xl">
@@ -468,6 +413,15 @@ sendButton.addEventListener("click", function() {
                   className="flex-1 overflow-y-auto p-2 md:p-4 relative flex flex-col"
                   ref={chatContainerRef}
                 >
+                  {messages.length === 0 && (
+                    <div className="flex-1 flex items-center justify-center">
+                      <img
+                        src="/gyansetu.png"
+                        alt="Chatbot Image"
+                        className="w-[150px] h-[150px] object-cover rounded-full"
+                      />
+                    </div>
+                  )}
                   {messages.map((message) => (
                     <div key={message.id} className="mb-4 md:mb-6 w-full flex">
                       {message.role === "assistant" && (

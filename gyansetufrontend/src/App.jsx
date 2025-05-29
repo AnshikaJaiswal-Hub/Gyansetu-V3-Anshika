@@ -34,6 +34,9 @@ import ContentApp from "./components/students/Content/Content";
 import StudentQuizInterface from "./components/students/Quizs/StudentQuizInterface";
 import StudentCalendar from "./components/students/Calendar/StudentCalendar";
 import MainChatbot from "./components/students/Chatbot/MainChatbot";
+import StudentAssignmentDashboard from "./components/students/studentDashboard/Assignment";
+import StudentProject from "./components/students/studentDashboard/Project";
+import ChangePassword from "./components/students/studentDashboard/ChangePassword";
 
 // Teacher Features
 import AssignmentPage from "./components/teacher/Assignments/createAssignment/AssignmentPage";
@@ -175,7 +178,10 @@ function AppContent() {
             <Route path="/content" element={<ContentApp />} />
             <Route path="/quiz" element={<StudentQuizInterface />} />
             <Route path="/StudentCalendar" element={<StudentCalendar />} />
-          
+             <Route path="/assignment" element={<StudentAssignmentDashboard />} />
+             <Route path="/projects" element={<StudentProject/>} />
+            <Route path="/chatbot" element={<MainChatbot />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
 
           </Route>
            <Route path="/chatbot" element={<MainChatbot />} />

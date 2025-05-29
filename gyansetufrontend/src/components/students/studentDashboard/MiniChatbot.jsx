@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoExpandOutline } from "react-icons/io5";
 import { Send } from "lucide-react";
 
@@ -8,6 +8,7 @@ const MiniChatbot = () => {
     { id: 1, text: "Ask me anything!", sender: "bot" },
   ]);
   const [input, setInput] = useState("");
+  const navigate = useNavigate();
 
   const handleSend = () => {
     if (input.trim()) {
@@ -18,20 +19,38 @@ const MiniChatbot = () => {
         { id: prev.length + 2, text: `Echo: ${input}`, sender: "bot" },
       ]);
       setInput("");
+
+      // Convert messages to the format expected by MainChatbot
+      const mainChatbotMessages = [
+        ...messages,
+        { id: messages.length + 1, text: input, sender: "user" },
+        { id: messages.length + 2, text: `Echo: ${input}`, sender: "bot" }
+      ].map(msg => ({
+        id: msg.id,
+        role: msg.sender === "user" ? "user" : "assistant",
+        content: msg.text,
+        timestamp: new Date().toISOString()
+      }));
+      
+      // Store messages in localStorage
+      localStorage.setItem('chatbotMessages', JSON.stringify(mainChatbotMessages));
+      
+      // Navigate to main chatbot
+      navigate('/chatbot');
     }
   };
 
   return (
-    <div className="w-[400px] h-[425px] bg-gradient-to-r from-violet-300 to-violet-200 rounded-2xl shadow-lg flex flex-col ring-4 ring-gray-300 ring-offset-3 ring-offset-transparent animate-pulse-slow">
+    <div className="w-[400px] h-[425px] bg-gradient-to-r from-violet-300 to-violet-200 rounded-2xl shadow-[0_0_15px_rgba(147,51,234,0.4)] flex flex-col animate-pulse-slow transition-all duration-300 hover:shadow-[0_0_30px_rgba(147,51,234,0.8)] hover:scale-105">
       {/* Header with Title and Expand Icon */}
       <div className="flex items-center justify-between px-4 py-2 rounded-2xl">
         <span className="font-medium text-gray-700">Your AI Chatbot</span>
-        <Link to="/chatbot">
+        <button onClick={() => navigate('/chatbot')}>
           <IoExpandOutline
             className="text-gray-600 hover:text-purple-700 cursor-pointer"
             size={20}
           />
-        </Link>
+        </button>
       </div>
 
       {/* Chat Messages */}

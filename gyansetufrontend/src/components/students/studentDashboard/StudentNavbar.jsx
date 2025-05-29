@@ -7,7 +7,9 @@ import {
   IoHelpBuoyOutline,
   IoBookOutline,
   IoCalendarClearOutline,
+  IoBriefcaseOutline,
 } from "react-icons/io5";
+
 
 const StudentNavbar = ({ onNavToggle }) => {
   const navigate = useNavigate();
@@ -68,7 +70,7 @@ const StudentNavbar = ({ onNavToggle }) => {
     {
       name: "Assignment",
       icon: <IoDocumentTextOutline className="text-lg" />,
-      path: "/StudentAssignment",
+      path: "/assignment",
     },
     {
       name: "Quiz",
@@ -84,6 +86,11 @@ const StudentNavbar = ({ onNavToggle }) => {
       name: "Calendar",
       icon: <IoCalendarClearOutline className="text-lg" />,
       path: "/StudentCalendar",
+    },
+       {
+      name: "Projects",
+      icon: <IoBriefcaseOutline className="text-lg"/>,
+      path: "/projects",
     },
   ];
 
