@@ -16,6 +16,7 @@
     "chart.js": "^4.4.9",
     "firebase": "^11.6.1",
     "framer-motion": "^12.9.2",
+    "gyan2": "file:",
     "lucide-react": "^0.503.0",
     "nodemon": "^3.1.10",
     "react": "^19.0.0",
@@ -26,6 +27,7 @@
     "react-router-dom": "^7.5.3",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.3",
+    "styled-components": "^6.1.18",
     "tailwindcss": "^4.1.4"
   },
   "devDependencies": {

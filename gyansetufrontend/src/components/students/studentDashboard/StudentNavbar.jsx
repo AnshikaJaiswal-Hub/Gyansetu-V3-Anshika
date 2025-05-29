@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   IoHomeOutline,
   IoChatboxOutline,
@@ -7,9 +7,12 @@ import {
   IoHelpBuoyOutline,
   IoBookOutline,
   IoCalendarClearOutline,
+  IoBriefcaseOutline,
 } from "react-icons/io5";
 
+
 const StudentNavbar = ({ onNavToggle }) => {
+  const navigate = useNavigate();
   // Initialize expanded state from localStorage or default to false
   const [expanded, setExpanded] = useState(() => {
     const savedState = localStorage.getItem("navbarExpanded");
@@ -45,13 +48,12 @@ const StudentNavbar = ({ onNavToggle }) => {
   };
 
   // Handle navigation item click
-  const handleNavClick = (e) => {
-    // Don't collapse navbar when navigation items are clicked
-    // Just let the Link component handle the navigation
+  const handleNavClick = (e, path) => {
+    e.preventDefault();
     if (isMobile) {
-      setExpanded(false); // Only collapse on mobile when a link is clicked
+      setExpanded(false);
     }
-    // On desktop, we maintain the current expanded state
+    navigate(path);
   };
 
   const navItems = [
@@ -68,7 +70,7 @@ const StudentNavbar = ({ onNavToggle }) => {
     {
       name: "Assignment",
       icon: <IoDocumentTextOutline className="text-lg" />,
-      path: "/StudentAssignment",
+      path: "/assignment",
     },
     {
       name: "Quiz",
@@ -84,6 +86,11 @@ const StudentNavbar = ({ onNavToggle }) => {
       name: "Calendar",
       icon: <IoCalendarClearOutline className="text-lg" />,
       path: "/StudentCalendar",
+    },
+       {
+      name: "Projects",
+      icon: <IoBriefcaseOutline className="text-lg"/>,
+      path: "/projects",
     },
   ];
 
@@ -179,10 +186,9 @@ const StudentNavbar = ({ onNavToggle }) => {
         }`}
       >
         {navItems.map((item) => (
-          <Link
+          <div
             key={item.name}
-            to={item.path}
-            onClick={handleNavClick}
+            onClick={(e) => handleNavClick(e, item.path)}
             className={`relative flex items-center cursor-pointer transition-all duration-200 group
               ${
                 expanded
@@ -223,7 +229,7 @@ const StudentNavbar = ({ onNavToggle }) => {
             {!expanded && location.pathname === item.path && (
               <div className="absolute left-0 h-10 w-1 bg-purple-500 rounded-r-md"></div>
             )}
-          </Link>
+          </div>
         ))}
       </div>
 

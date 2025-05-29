@@ -10,11 +10,12 @@ const Cal = ({ src, alt = "Image", className = "" }) => {
 
   return (
     <div className="flex flex-col items-center space-y-2">
-      <Link to="/cal">
+      <h1 className="text-3xl text-center font-medium text-black">Calendar</h1>
+      <Link to="/StudentCalendar">
         <img
           src={src}
           alt={alt}
-          className={`w-[300px] h-[300px] object-cover ml-7 rounded-2xl transition-transform duration-300 ease-in-out hover:scale-105 ring-10 ring-gray-200 ${
+          className={`w-[300px] h-[300px] object-cover ml-7 rounded-2xl transition-transform duration-300 ease-in-out hover:scale-105 ${
             isClicked ? "scale-150" : "scale-100"
           } ${className}`}
           onClick={handleClick}

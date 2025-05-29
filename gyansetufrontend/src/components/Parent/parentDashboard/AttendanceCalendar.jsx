@@ -6,23 +6,27 @@ const AttendanceCalendar = () => {
   
   // State variables
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [academicYear, setAcademicYear] = useState('2024-2025');
   const [attendanceData, setAttendanceData] = useState({});
   
-  // Generate attendance data for all days in the month
+  // Generate attendance data for all days in the month - restricted to academic year
   useEffect(() => {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const currentDate = new Date();
     
+    // Define academic year start and end dates (typically September to June)
+    const academicYearStartDate = new Date(2024, 8, 1); // September 1, 2024
+    const academicYearEndDate = new Date(2025, 5, 30);  // June 30, 2025
+    
     // Create attendance data for each day in the month
     const mockData = {};
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       
-      // Only add attendance for past days (compare with current date)
-      if (date < currentDate) {
+      // Only add attendance for past days that are within the academic year
+      if (date < currentDate && date >= academicYearStartDate && date <= academicYearEndDate) {
         // Mark weekends as not-attended for demonstration purposes
         const dayOfWeek = date.getDay(); // 0 is Sunday, 6 is Saturday
         let status;
@@ -69,17 +73,11 @@ const AttendanceCalendar = () => {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
   };
   
-  // Handling year change
-  const handleYearChange = (e) => {
-    setSelectedYear(parseInt(e.target.value));
-    setCurrentMonth(new Date(parseInt(e.target.value), currentMonth.getMonth(), 1));
-  };
-  
   // Get attendance status color
   const getAttendanceStatusColor = (status) => {
     switch(status) {
       case 'attended':
-        return 'bg-emerald-400';
+        return 'bg-[#c1d956]';
       case 'not-attended':
         return 'bg-violet-500';
       default:
@@ -97,7 +95,7 @@ const AttendanceCalendar = () => {
     // Create blank days for beginning of month
     for (let i = 0; i < firstDayOfMonth; i++) {
       days.push(
-        <div key={`empty-${i}`} className="h-16 w-full"></div>
+        <div key={`empty-${i}`} className="h-12 sm:h-16 w-full"></div>
       );
     }
     
@@ -112,15 +110,15 @@ const AttendanceCalendar = () => {
                       date.getFullYear() === today.getFullYear();
       
       days.push(
-        <div key={day} className="flex flex-col items-center h-16">
-          <div className={`h-8 w-8 mb-1 rounded-full flex items-center justify-center 
-                          ${isToday ? 'border-3 border-violet-600' : ''}`}>
+        <div key={day} className="flex flex-col items-center h-12 sm:h-16">
+          <div className={`h-6 w-6 sm:h-8 sm:w-8 mb-1 rounded-full flex items-center justify-center text-sm sm:text-base
+                          ${isToday ? 'border-2 border-black' : ''}`}>
             {day}
           </div>
-          <div className={`w-8 h-8 rounded ${
+          <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded ${
             isPastDay 
               ? (attendanceStatus ? getAttendanceStatusColor(attendanceStatus) : 'bg-gray-100')
-              : 'bg-gray-300'
+              : 'bg-gray-100'
           }`}></div>
         </div>
       );
@@ -134,31 +132,26 @@ const AttendanceCalendar = () => {
     return date.toLocaleString('default', { month: 'long' });
   };
   
-  // Available years for dropdown
-  const years = [2021, 2022, 2023, 2024, 2025];
-  
   // Weekday headers
   const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   
   return (
-    <div className='bg-gray-100 pt-10 pb-10 pr-10'>
-      <div className="bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-2xl sm:rounded-3xl md:rounded-4xl shadow-md p-4 sm:p-5 md:p-6">
-        <h1 className="text-2xl sm:text-2xl md:text-3xl font-bold mb-4 text-center sm:text-left text-violet-600">Attendance Calendar</h1>
-      
-        <div className="border-violet-500 bg-gray-100 rounded-2xl sm:rounded-3xl md:rounded-4xl p-3 sm:p-4 md:p-6 m-0 sm:m-2 md:m-4 mb-1 mt-2">
-          <h2 className="text-base sm:text-lg font-semibold mb-4 text-center sm:text-left">{studentName}</h2>
+    <div className='bg-gray-100 p-4 sm:p-6 md:p-10'>
+      <div className="bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl min-h-screen p-4 sm:p-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-violet-600 mb-4 ml-2 sm:ml-6">Attendance</h1>
+        
+        <div className="bg-gray-100 rounded-4xl p-4 sm:p-6 mt-4">
+          <h2 className="text-base sm:text-lg font-semibold mb-4 ml-2 sm:ml-3">{studentName}</h2>
           
-          <div className="flex flex-col sm:flex-row flex-wrap gap-2 mb-4 justify-center sm:justify-start">
-            {/* Year selector */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 mb-4">
+            {/* Academic year selector */}
             <div className="relative w-full sm:w-auto">
               <select 
-                value={selectedYear} 
-                onChange={handleYearChange}
-                className="w-full sm:w-auto appearance-none rounded-xl bg-white py-2 pl-3 pr-10 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                value={academicYear} 
+                onChange={(e) => setAcademicYear(e.target.value)}
+                className="w-full sm:w-auto appearance-none rounded-2xl py-2 pl-3 pr-10 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm sm:text-base"
               >
-                {years.map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
+                <option value="2024-2025">Academic Year 2024-2025</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -168,15 +161,15 @@ const AttendanceCalendar = () => {
             </div>
             
             {/* Month navigation */}
-            <div className="flex items-center bg-white rounded-xl w-full sm:w-auto justify-center sm:justify-start">
-              <button onClick={prevMonth} className="px-3 py-2 hover:bg-gray-200 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="flex items-center bg-white rounded-2xl w-full sm:w-auto">
+              <button onClick={prevMonth} className="px-2 sm:px-3 py-2 rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <div className="px-4 py-2 font-medium">{getMonthName(currentMonth)}</div>
-              <button onClick={nextMonth} className="px-3 py-2 hover:bg-gray-200 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="px-2 sm:px-4 py-2 font-medium text-sm sm:text-base">{getMonthName(currentMonth)}</div>
+              <button onClick={nextMonth} className="px-2 sm:px-3 py-2 rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
@@ -185,8 +178,8 @@ const AttendanceCalendar = () => {
           
           {/* Calendar */}
           <div className="mt-4">
-            {/* Weekday headers - single row */}
-            <div className="grid grid-cols-7 gap-1 sm:gap-2 text-center text-sm sm:text-base md:text-lg text-gray-500 mb-2">
+            {/* Weekday headers */}
+            <div className="grid grid-cols-7 gap-1 sm:gap-2 text-center text-xs sm:text-sm text-gray-500 mb-2">
               {weekdays.map((day, index) => (
                 <div key={index}>{day}</div>
               ))}
@@ -198,9 +191,9 @@ const AttendanceCalendar = () => {
             </div>
             
             {/* Legend */}
-            <div className="flex flex-wrap gap-4 mt-6 sm:mt-8 justify-center sm:justify-start">
+            <div className="flex flex-wrap gap-4 mt-6 sm:mt-8">
               <div className="flex items-center">
-                <div className="h-3 w-3 sm:h-4 sm:w-4 bg-emerald-400 rounded mr-2"></div>
+                <div className="h-3 w-3 sm:h-4 sm:w-4 bg-[#c1d956] rounded mr-2"></div>
                 <span className="text-xs sm:text-sm">Attended</span>
               </div>
               <div className="flex items-center">

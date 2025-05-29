@@ -5,7 +5,7 @@ import { formatDateTimeRange, isQuizAvailable, subjectColors } from "./utils";
 const QuizCard = ({ quiz, handleSelectQuiz, isAttempted }) => {
   if (isAttempted) {
     return (
-      <div className="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl mx-auto">
+      <div className="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl mx-auto transition-transform duration-300 hover:scale-105">
         <div className="p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-0 mb-2">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800">{quiz.title}</h2>
@@ -71,7 +71,7 @@ const QuizCard = ({ quiz, handleSelectQuiz, isAttempted }) => {
       <div
         className={`${
           subjectColors[quiz.subject] || subjectColors.default
-        } rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl mx-auto`}
+        } rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl mx-auto transition-transform duration-300 hover:scale-105`}
       >
         <div className="p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-0 mb-2">
