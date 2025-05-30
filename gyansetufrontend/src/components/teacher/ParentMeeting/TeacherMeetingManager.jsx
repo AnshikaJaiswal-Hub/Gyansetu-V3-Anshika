@@ -15,14 +15,21 @@ import {
   Sun,
   UserCircle,
 } from "lucide-react";
+import Navbar from "../../teacher/TeacherNavbar";
+import { useNavigate } from "react-router-dom";
+import authService from "../../../services/api/authService";
+import { useTheme } from "../../../context/ThemeContext";
 
 const TeacherMeetingManager = () => {
-  // Mock theme context - replace with actual theme hook
-  const [darkMode, setDarkMode] = useState(false);
-  const toggleTheme = () => setDarkMode(!darkMode);
+  // Add navbar state
+  const [navExpanded, setNavExpanded] = useState(false);
+  const navigate = useNavigate();
+  const user = authService.getCurrentUser();
+
+  // Use the theme context instead of local state
+  const { darkMode, toggleTheme } = useTheme();
 
   const [activeTab, setActiveTab] = useState("requests");
-  const [profileImage, setProfileImage] = useState(null);
   const [showRequestDetails, setShowRequestDetails] = useState(null);
   const [showResponseModal, setShowResponseModal] = useState(false);
   const [responseType, setResponseType] = useState("");
@@ -371,22 +378,7 @@ const TeacherMeetingManager = () => {
     },
   ]);
 
-  const handleProfileClick = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setProfileImage(event.target.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    fileInput.click();
-  };
+  
 
   const handleRequestResponse = (requestId, action) => {
     setMeetingRequests((prev) =>
@@ -1351,251 +1343,244 @@ const TeacherMeetingManager = () => {
     </div>
   );
 
+  const handleNavToggle = (expanded) => {
+    setNavExpanded(expanded);
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate("/login");
+  };
+
   return (
-    <div
-      className={`min-h-screen transition-colors duration-300 ${
-        darkMode ? "bg-[#5b3a64]" : "bg-gray-100"
-      } pt-10 pr-10 pb-10 pl-10 md:pl-0`}
-      style={{
-        scrollBehavior: "smooth",
-        overflowX: "hidden",
-      }}
-    >
-      <div
-        className={`${
-          darkMode
-            ? "bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]"
-            : "bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400"
-        } rounded-[30px] min-h-screen p-1 pl-6 transition-colors duration-300 mx-auto max-w-full`}
-      >
-        {/* Header */}
-        <div className="mb-8 pt-6 pr-6 relative">
-          <div className="pr-24">
-            <h1
-              className={`text-2xl md:text-3xl font-bold ${
-                darkMode ? "text-white" : "text-gray-900"
-              } mb-2 transition-colors duration-300`}
-            >
-              Teacher Meeting Manager
-            </h1>
-            <p
-              className={`${
-                darkMode ? "text-gray-300" : "text-gray-600"
-              } transition-colors duration-300 text-sm md:text-base`}
-            >
-              Manage parent meeting requests and view your scheduled
-              appointments with students' families.
-            </p>
-            <div
-              className={`mt-2 text-sm ${
-                darkMode ? "text-gray-400" : "text-gray-600"
-              } transition-colors duration-300`}
-            >
-              <span className="font-medium">{teacherInfo.name}</span> -{" "}
-              {teacherInfo.subject} Teacher
-            </div>
-          </div>
-
-          {/* Utility Icons */}
-          <div className="absolute top-6 right-6 flex items-center space-x-4">
-            <button
-              onClick={toggleTheme}
-              className={`p-2 rounded-full ${
-                darkMode
-                  ? "hover:bg-[#341b47] text-white"
-                  : "hover:bg-violet-200 text-violet-700"
-              } transition-colors duration-300`}
-            >
-              {darkMode ? (
-                <Sun className="text-xl" />
-              ) : (
-                <Moon className="text-xl" />
-              )}
-            </button>
-            <button
-              onClick={handleProfileClick}
-              className={`p-2 rounded-full ${
-                darkMode
-                  ? "hover:bg-[#341b47] text-white"
-                  : "hover:bg-violet-200 text-violet-700"
-              } transition-colors duration-300`}
-            >
-              {profileImage ? (
-                <img
-                  src={profileImage}
-                  alt="Profile"
-                  className="w-6 h-6 rounded-full"
-                />
-              ) : (
-                <UserCircle className="text-xl" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Navigation Tabs */}
+    <div className={`min-h-screen ${darkMode ? "bg-[#5b3a64]" : "bg-gray-100"} transition-colors duration-300`}>
+      <div className="flex flex-col md:flex-row">
+        <Navbar onNavToggle={handleNavToggle} />
         <div
-          className={`flex space-x-1 ${
-            darkMode ? "bg-[#2a0c2e]" : "bg-gray-100"
-          } p-1 rounded-lg mb-6 mr-6 ml-0 md:ml-0 transition-colors duration-300`}
+          className={`transition-all duration-300 ${
+            navExpanded ? "ml-0 md:ml-[300px]" : "ml-0 md:ml-[70px]"
+          } flex-1 px-4 md:px-8 py-6`}
         >
-          <button
-            onClick={() => setActiveTab("requests")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-300 ${
-              activeTab === "requests"
-                ? darkMode
-                  ? "bg-[#341b47] text-purple-300 shadow-sm"
-                  : "bg-white text-blue-600 shadow-sm"
-                : darkMode
-                ? "text-gray-300 hover:text-white"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
+          <div
+            className={`${
+              darkMode
+                ? "bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]"
+                : "bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400"
+            } rounded-[30px] min-h-screen p-1 pl-6 transition-colors duration-300 mx-auto max-w-full`}
           >
-            <MessageSquare className="inline h-4 w-4 mr-2" />
-            Meeting Requests
-            {meetingRequests.filter((r) => r.status === "pending").length >
-              0 && (
-              <span
-                className={`ml-2 px-1.5 py-0.5 rounded-full text-xs ${
+            {/* Header */}
+            <div className="mb-8 pt-6 pr-6 relative">
+              <div className="pr-24">
+                <h1
+                  className={`text-2xl md:text-3xl font-bold ${
+                    darkMode ? "text-white" : "text-gray-900"
+                  } mb-2 transition-colors duration-300`}
+                >
+                  Teacher Meeting Manager
+                </h1>
+                <p
+                  className={`${
+                    darkMode ? "text-gray-300" : "text-gray-600"
+                  } transition-colors duration-300 text-sm md:text-base`}
+                >
+                  Manage parent meeting requests and view your scheduled
+                  appointments with students' families.
+                </p>
+                <div
+                  className={`mt-2 text-sm ${
+                    darkMode ? "text-gray-400" : "text-gray-600"
+                  } transition-colors duration-300`}
+                >
+                  <span className="font-medium">{teacherInfo.name}</span> -{" "}
+                  {teacherInfo.subject} Teacher
+                </div>
+              </div>
+
+              {/* Utility Icons */}
+              <div className="absolute top-6 right-6 flex items-center space-x-4">
+                <button
+                  onClick={toggleTheme}
+                  className={`p-2 rounded-full ${
+                    darkMode
+                      ? "hover:bg-[#341b47] text-white"
+                      : "hover:bg-violet-200 text-violet-700"
+                  } transition-colors duration-300`}
+                >
+                  {darkMode ? (
+                    <Sun className="text-xl" />
+                  ) : (
+                    <Moon className="text-xl" />
+                  )}
+                </button>
+                
+              </div>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div
+              className={`flex space-x-1 ${
+                darkMode ? "bg-[#2a0c2e]" : "bg-gray-100"
+              } p-1 rounded-lg mb-6 mr-6 ml-0 md:ml-0 transition-colors duration-300`}
+            >
+              <button
+                onClick={() => setActiveTab("requests")}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-300 ${
                   activeTab === "requests"
                     ? darkMode
-                      ? "bg-purple-600 text-white"
-                      : "bg-blue-600 text-white"
+                      ? "bg-[#341b47] text-purple-300 shadow-sm"
+                      : "bg-white text-blue-600 shadow-sm"
                     : darkMode
-                    ? "bg-red-900 text-red-300"
-                    : "bg-red-100 text-red-800"
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
                 }`}
               >
-                {meetingRequests.filter((r) => r.status === "pending").length}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("create")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-300 ${
-              activeTab === "create"
-                ? darkMode
-                  ? "bg-[#341b47] text-purple-300 shadow-sm"
-                  : "bg-white text-blue-600 shadow-sm"
-                : darkMode
-                ? "text-gray-300 hover:text-white"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <Calendar className="inline h-4 w-4 mr-2" />
-            Create Meeting
-          </button>
-          <button
-            onClick={() => setActiveTab("confirmed")}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-300 ${
-              activeTab === "confirmed"
-                ? darkMode
-                  ? "bg-[#341b47] text-purple-300 shadow-sm"
-                  : "bg-white text-blue-600 shadow-sm"
-                : darkMode
-                ? "text-gray-300 hover:text-white"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <Bell className="inline h-4 w-4 mr-2" />
-            Confirmed Meetings
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="mr-6 ml-0 md:ml-0">
-          {activeTab === "requests" ? (
-            <MeetingRequests />
-          ) : activeTab === "create" ? (
-            <CreateMeetingForm />
-          ) : (
-            <ConfirmedMeetings />
-          )}
-        </div>
-
-        {/* Create Meeting Success Modal */}
-        {showCreateSuccess && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div
-              className={`${
-                darkMode ? "bg-[#100e10]" : "bg-white"
-              } rounded-lg p-6 max-w-sm mx-4 transition-colors duration-300`}
-            >
-              <div className="text-center">
-                <CheckCircle
-                  className={`mx-auto h-12 w-12 ${
-                    darkMode ? "text-green-400" : "text-green-500"
-                  } mb-4 transition-colors duration-300`}
-                />
-                <h3
-                  className={`text-lg font-semibold ${
-                    darkMode ? "text-white" : "text-gray-900"
-                  } mb-2 transition-colors duration-300`}
-                >
-                  Meeting Created!
-                </h3>
-                <p
-                  className={`${
-                    darkMode ? "text-gray-300" : "text-gray-600"
-                  } mb-4 transition-colors duration-300`}
-                >
-                  The meeting has been scheduled successfully. The parent will
-                  be notified.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Request Details Modal */}
-        {showRequestDetails && (
-          <RequestDetailsModal request={showRequestDetails} />
-        )}
-
-        {/* Response Success Modal */}
-        {showResponseModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div
-              className={`${
-                darkMode ? "bg-[#100e10]" : "bg-white"
-              } rounded-lg p-6 max-w-sm mx-4 transition-colors duration-300`}
-            >
-              <div className="text-center">
-                {responseType === "approved" ? (
-                  <CheckCircle
-                    className={`mx-auto h-12 w-12 ${
-                      darkMode ? "text-green-400" : "text-green-500"
-                    } mb-4 transition-colors duration-300`}
-                  />
-                ) : (
-                  <X
-                    className={`mx-auto h-12 w-12 ${
-                      darkMode ? "text-red-400" : "text-red-500"
-                    } mb-4 transition-colors duration-300`}
-                  />
+                <MessageSquare className="inline h-4 w-4 mr-2" />
+                Meeting Requests
+                {meetingRequests.filter((r) => r.status === "pending").length >
+                  0 && (
+                  <span
+                    className={`ml-2 px-1.5 py-0.5 rounded-full text-xs ${
+                      activeTab === "requests"
+                        ? darkMode
+                          ? "bg-purple-600 text-white"
+                          : "bg-blue-600 text-white"
+                        : darkMode
+                        ? "bg-red-900 text-red-300"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {meetingRequests.filter((r) => r.status === "pending").length}
+                  </span>
                 )}
-                <h3
-                  className={`text-lg font-semibold ${
-                    darkMode ? "text-white" : "text-gray-900"
-                  } mb-2 transition-colors duration-300`}
-                >
-                  {responseType === "approved"
-                    ? "Meeting Approved!"
-                    : "Meeting Declined"}
-                </h3>
-                <p
-                  className={`${
-                    darkMode ? "text-gray-300" : "text-gray-600"
-                  } mb-4 transition-colors duration-300`}
-                >
-                  {responseType === "approved"
-                    ? "The parent has been notified about the approved meeting."
-                    : "The parent has been notified about the declined meeting."}
-                </p>
-              </div>
+              </button>
+              <button
+                onClick={() => setActiveTab("create")}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-300 ${
+                  activeTab === "create"
+                    ? darkMode
+                      ? "bg-[#341b47] text-purple-300 shadow-sm"
+                      : "bg-white text-blue-600 shadow-sm"
+                    : darkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <Calendar className="inline h-4 w-4 mr-2" />
+                Create Meeting
+              </button>
+              <button
+                onClick={() => setActiveTab("confirmed")}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-300 ${
+                  activeTab === "confirmed"
+                    ? darkMode
+                      ? "bg-[#341b47] text-purple-300 shadow-sm"
+                      : "bg-white text-blue-600 shadow-sm"
+                    : darkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <Bell className="inline h-4 w-4 mr-2" />
+                Confirmed Meetings
+              </button>
             </div>
+
+            {/* Content */}
+            <div className="mr-6 ml-0 md:ml-0">
+              {activeTab === "requests" ? (
+                <MeetingRequests />
+              ) : activeTab === "create" ? (
+                <CreateMeetingForm />
+              ) : (
+                <ConfirmedMeetings />
+              )}
+            </div>
+
+            {/* Create Meeting Success Modal */}
+            {showCreateSuccess && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div
+                  className={`${
+                    darkMode ? "bg-[#100e10]" : "bg-white"
+                  } rounded-lg p-6 max-w-sm mx-4 transition-colors duration-300`}
+                >
+                  <div className="text-center">
+                    <CheckCircle
+                      className={`mx-auto h-12 w-12 ${
+                        darkMode ? "text-green-400" : "text-green-500"
+                      } mb-4 transition-colors duration-300`}
+                    />
+                    <h3
+                      className={`text-lg font-semibold ${
+                        darkMode ? "text-white" : "text-gray-900"
+                      } mb-2 transition-colors duration-300`}
+                    >
+                      Meeting Created!
+                    </h3>
+                    <p
+                      className={`${
+                        darkMode ? "text-gray-300" : "text-gray-600"
+                      } mb-4 transition-colors duration-300`}
+                    >
+                      The meeting has been scheduled successfully. The parent will
+                      be notified.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Request Details Modal */}
+            {showRequestDetails && (
+              <RequestDetailsModal request={showRequestDetails} />
+            )}
+
+            {/* Response Success Modal */}
+            {showResponseModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div
+                  className={`${
+                    darkMode ? "bg-[#100e10]" : "bg-white"
+                  } rounded-lg p-6 max-w-sm mx-4 transition-colors duration-300`}
+                >
+                  <div className="text-center">
+                    {responseType === "approved" ? (
+                      <CheckCircle
+                        className={`mx-auto h-12 w-12 ${
+                          darkMode ? "text-green-400" : "text-green-500"
+                        } mb-4 transition-colors duration-300`}
+                      />
+                    ) : (
+                      <X
+                        className={`mx-auto h-12 w-12 ${
+                          darkMode ? "text-red-400" : "text-red-500"
+                        } mb-4 transition-colors duration-300`}
+                      />
+                    )}
+                    <h3
+                      className={`text-lg font-semibold ${
+                        darkMode ? "text-white" : "text-gray-900"
+                      } mb-2 transition-colors duration-300`}
+                    >
+                      {responseType === "approved"
+                        ? "Meeting Approved!"
+                        : "Meeting Declined"}
+                    </h3>
+                    <p
+                      className={`${
+                        darkMode ? "text-gray-300" : "text-gray-600"
+                      } mb-4 transition-colors duration-300`}
+                    >
+                      {responseType === "approved"
+                        ? "The parent has been notified about the approved meeting."
+                        : "The parent has been notified about the declined meeting."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

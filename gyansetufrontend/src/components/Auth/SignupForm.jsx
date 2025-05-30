@@ -32,6 +32,20 @@ const SignupForm = ({ switchToLogin }) => {
   const [resendTimer, setResendTimer] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Dark theme colors to match TeacherDashboard and LoginForm
+  const themeColors = {
+    bgColor: "#231130",
+    cardBg: "#341b47",
+    primaryColor: "#8A2BE2",
+    borderColor: "#c3abd6",
+    buttonBg: "#341b47",
+    buttonHover: "#4a1f67",
+    textPrimary: "#ffffff",
+    textSecondary: "#e2e8f0",
+    errorColor: "#ff6b6b",
+    successColor: "#4CAF50",
+  };
+
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     if (name === 'phone') {
@@ -303,43 +317,48 @@ const SignupForm = ({ switchToLogin }) => {
   };
 
   return (
-    <div className="flex flex-col items-center text-center space-y-0 mt-0">
+    <div 
+      className="flex flex-col items-center text-center space-y-0 mt-0"
+      style={{ backgroundColor: themeColors.bgColor }}
+    >
       <ToastContainer position="top-right" autoClose={7000} />
       {loading && <SignupOverlay progress={progress} />}
       {quickLoading && <SimpleLoader />}
 
-      <h1 className="font-primary font-secondary text-lg md:text-4xl font-thin mt-2 text-purple-900">
+      <h1 
+        className="font-primary font-secondary text-lg md:text-4xl font-thin mt-0"
+        style={{ color: themeColors.textPrimary }}
+      >
         Sign up account
       </h1>
-      <p className="hidden md:block md:mt-3 font-primary font-secondary text-purple-700 md:text-xs font-montserrat mb-2">
+      <p 
+        className="hidden md:block md:mt-3 font-primary font-secondary md:text-xs font-montserrat mb-2"
+        style={{ color: themeColors.textSecondary, marginBottom: 0 }}
+      >
         Enter your personal data to create your account
       </p>
 
-      <div className="h-6 mb-2">
+      <div className="h-6 mb-0">
         {error && <p className="text-red-500 text-sm">{error}</p>}
       </div>
 
-      <div className="flex space-x-2 md:space-x-4 my-3 mb-1 md:my-0">
+      <div className="flex space-x-2 md:space-x-4 mt-1 mb-1 md:my-0">
         <button
-          className="text-white px-3 md:px-4 py-1 md:py-2 rounded-[15px] border border-purple-300 transition-colors cursor-pointer flex items-center justify-center"
-          style={{ backgroundColor: "#9f7aea" }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = "#805ad5";
-            e.target.style.cursor = "pointer";
+          className="text-white px-3 md:px-4 py-1 md:py-2 rounded-[15px] border transition-colors cursor-pointer flex items-center justify-center hover:bg-[#4a1f67]"
+          style={{
+            backgroundColor: themeColors.buttonBg,
+            borderColor: themeColors.borderColor,
           }}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "#9f7aea")}
           onClick={handleGoogleLogin}
         >
           <FaGoogle className="text-xs md:text-lg bg-transparent" />
         </button>
         <button
-          className="text-white px-3 md:px-4 py-1 md:py-2 rounded-[15px] border border-purple-300 transition-colors cursor-pointer flex items-center justify-center"
-          style={{ backgroundColor: "#9f7aea" }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = "#805ad5";
-            e.target.style.cursor = "pointer";
+          className="text-white px-3 md:px-4 py-1 md:py-2 rounded-[15px] border transition-colors cursor-pointer flex items-center justify-center hover:bg-[#4a1f67]"
+          style={{
+            backgroundColor: themeColors.buttonBg,
+            borderColor: themeColors.borderColor,
           }}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "#9f7aea")}
           onClick={handleAppleLogin}
         >
           <FaApple className="text-xs md:text-lg bg-transparent" />
@@ -347,19 +366,51 @@ const SignupForm = ({ switchToLogin }) => {
       </div>
 
       <div className="flex items-center justify-center my-2 md:my-4 w-full">
-        <div className="h-px bg-purple-300 w-48"></div>
-        <span className="px-2 text-purple-600">or</span>
-        <div className="h-px bg-purple-300 w-48"></div>
+        <div className="h-px w-48" style={{ backgroundColor: themeColors.borderColor }}></div>
+        <span className="px-2" style={{ color: themeColors.textSecondary }}>or</span>
+        <div className="h-px w-48" style={{ backgroundColor: themeColors.borderColor }}></div>
       </div>
 
-      <form className="w-80 space-y-4" onSubmit={handleSubmit}>
+      <form className="w-full max-w-2xl space-y-4 pb-8" onSubmit={handleSubmit}>
+        <div className="flex gap-3">
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            className="w-full flex-1 border rounded-[24px] px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[#8A2BE2]"
+            style={{
+              backgroundColor: themeColors.cardBg,
+              borderColor: themeColors.borderColor,
+              color: themeColors.textPrimary,
+            }}
+            value={formData.firstName}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            className="w-full flex-1 border rounded-[24px] px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[#8A2BE2]"
+            style={{
+              backgroundColor: themeColors.cardBg,
+              borderColor: themeColors.borderColor,
+              color: themeColors.textPrimary,
+            }}
+            value={formData.lastName}
+            onChange={handleChange}
+          />
+        </div>
+
         <select
           name="role"
           value={formData.role}
           onChange={handleChange}
-          className="w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus:outline-none focus:border-purple-500 appearance-none cursor-pointer"
+          className="w-full h-12 border rounded-[24px] px-4 focus:outline-none focus:ring-2 focus:ring-[#8A2BE2] appearance-none cursor-pointer"
           style={{
-            backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20' stroke='%236b46c1'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E\")",
+            backgroundColor: themeColors.cardBg,
+            borderColor: themeColors.borderColor,
+            color: themeColors.textPrimary,
+            backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20' stroke='%23c3abd6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E\")",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "right 1rem center",
             backgroundSize: "1.5rem",
@@ -371,36 +422,23 @@ const SignupForm = ({ switchToLogin }) => {
           <option value="parent">Parent</option>
         </select>
 
-        <input
-          type="text"
-          name="firstName"
-          placeholder="First Name"
-          className="w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus:outline-none focus:border-purple-500"
-          value={formData.firstName}
-          onChange={handleChange}
-        />
-
-        <input
-          type="text"
-          name="lastName"
-          placeholder="Last Name"
-          className="w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus:outline-none focus:border-purple-500"
-          value={formData.lastName}
-          onChange={handleChange}
-        />
-
         <div className="relative">
           <input
             type="email"
             name="email"
             placeholder="Email address"
-            className="w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus:outline-none focus:border-purple-500"
+            className="w-full border rounded-[24px] px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[#8A2BE2]"
+            style={{
+              backgroundColor: themeColors.cardBg,
+              borderColor: themeColors.borderColor,
+              color: themeColors.textPrimary,
+            }}
             value={formData.email}
             onChange={handleChange}
             disabled={otpVerified}
           />
           {otpVerified ? (
-            <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-500 text-sm bg-green-100 px-2 py-1 rounded-full">
+            <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-500 text-sm bg-green-900/30 px-2 py-1 rounded-full">
               Verified ✓
             </span>
           ) : (
@@ -410,8 +448,8 @@ const SignupForm = ({ switchToLogin }) => {
               disabled={resendDisabled}
               className={`absolute right-3 top-1/2 transform -translate-y-1/2 px-2 py-1 rounded-full text-xs ${
                 resendDisabled
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-purple-200 text-purple-700 hover:bg-purple-300"
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-[#4a1f67] text-white hover:bg-[#5b3a64]"
               }`}
             >
               {resendDisabled
@@ -422,34 +460,18 @@ const SignupForm = ({ switchToLogin }) => {
             </button>
           )}
         </div>
-
-        {/* OTP input field, only shown after OTP is sent */}
-        {otpSent && !otpVerified && (
-          <div className="relative">
-            <input
-              type="text"
-              name="otp"
-              placeholder="Enter 6-digit verification code"
-              className="w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus:outline-none focus:border-purple-500"
-              value={formData.otp}
-              onChange={handleChange}
-              maxLength={6}
-            />
-            <button
-              type="button"
-              onClick={handleVerifyOTP}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-green-200 text-green-700 hover:bg-green-300 rounded-full text-xs"
-            >
-              Verify
-            </button>
-          </div>
-        )}
-
-        <div className="flex items-center w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 focus-within:border-purple-500">
+        <div className="flex items-center border rounded-[24px] px-4 h-12 focus-within:ring-2 focus-within:ring-[#8A2BE2]"
+          style={{
+            backgroundColor: themeColors.cardBg,
+            borderColor: themeColors.borderColor,
+          }}>
           <select
             value={countryCode}
             onChange={(e) => setCountryCode(e.target.value)}
-            className="bg-purple-50 text-purple-900 border-none focus:outline-none cursor-pointer mr-2"
+            className="border-none focus:outline-none cursor-pointer mr-2 bg-transparent"
+            style={{
+              color: themeColors.textPrimary,
+            }}
           >
             <option value="+1">🇺🇸 +1</option>
             <option value="+44">🇬🇧 +44</option>
@@ -457,30 +479,64 @@ const SignupForm = ({ switchToLogin }) => {
             <option value="+61">🇦🇺 +61</option>
             <option value="+81">🇯🇵 +81</option>
           </select>
-
           <input
             type="text"
             name="phone"
             placeholder="Phone number"
-            className="w-full bg-purple-50 text-purple-900 focus:outline-none"
+            className="w-full focus:outline-none bg-transparent"
+            style={{
+              color: themeColors.textPrimary,
+            }}
             value={formData.phone}
             onChange={handleChange}
           />
         </div>
+
+        {otpSent && !otpVerified && (
+          <div className="relative">
+            <input
+              type="text"
+              name="otp"
+              placeholder="Enter 6-digit verification code"
+              className="w-full h-12 border rounded-[24px] px-4 focus:outline-none focus:ring-2 focus:ring-[#8A2BE2]"
+              style={{
+                backgroundColor: themeColors.cardBg,
+                borderColor: themeColors.borderColor,
+                color: themeColors.textPrimary,
+              }}
+              value={formData.otp}
+              onChange={handleChange}
+              maxLength={6}
+            />
+            <button
+              type="button"
+              onClick={handleVerifyOTP}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-green-900/30 text-green-400 hover:bg-green-900/50 rounded-full text-xs"
+            >
+              Verify
+            </button>
+          </div>
+        )}
 
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
             name="password"
             placeholder="Enter your password"
-            className="w-full h-12 bg-purple-50 text-purple-900 border border-purple-300 rounded-[24px] px-4 pr-12 focus:outline-none focus:border-purple-500"
+            className="w-full h-12 border rounded-[24px] px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-[#8A2BE2]"
+            style={{
+              backgroundColor: themeColors.cardBg,
+              borderColor: themeColors.borderColor,
+              color: themeColors.textPrimary,
+            }}
             value={formData.password}
             onChange={handleChange}
           />
           <button
             type="button"
             onClick={togglePassword}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-purple-700"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2"
+            style={{ color: themeColors.textSecondary }}
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
@@ -488,34 +544,34 @@ const SignupForm = ({ switchToLogin }) => {
 
         <button
           type="submit"
-          className={`font-primary font-secondary w-full h-12 text-white transition-colors mt-6 rounded-[24px] ${
+          className={`font-primary font-secondary w-full h-12 text-white transition-colors mt-2 rounded-[24px] ${
             otpVerified
-              ? "bg-purple-800 hover:bg-purple-600 cursor-pointer"
+              ? "hover:bg-[#341b47] cursor-pointer"
               : "bg-purple-400 cursor-not-allowed"
           }`}
+          style={{
+            backgroundColor: otpVerified ? themeColors.buttonBg : undefined,
+          }}
           disabled={!otpVerified}
         >
           {loading ? "Signing up..." : "Sign up →"}
         </button>
+        <div className="login-foot text-xs" style={{ color: themeColors.textSecondary }}>
+          <span className="mr-2 font-primary font-secondary">
+            Already have an account?
+          </span>
+          <button
+            onClick={switchToLogin}
+            className="text-white mt-3 md:mt-0 font-primary font-secondary cursor-pointer px-2 py-1 rounded-[8px] text-[0.85rem] border transition-colors hover:bg-[#4a1f67]"
+            style={{
+              backgroundColor: themeColors.buttonBg,
+              borderColor: themeColors.borderColor,
+            }}
+          >
+            Sign in
+          </button>
+        </div>
       </form>
-
-      <div className="login-foot mt-8 text-xs text-purple-700">
-        <span className="mr-2 font-primary font-secondary">
-          Already have an account?
-        </span>
-        <button
-          onClick={switchToLogin}
-          className="text-white mt-3 md:mt-0 font-primary font-secondary cursor-pointer px-2 py-1 rounded-[8px] text-[0.85rem] border border-purple-300 transition-colors cursor-pointer bg-purple-600"
-          style={{
-            backgroundColor: "#8a70d6",
-            transition: "background-color 0.2s ease",
-          }}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "#7c3aed")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "#8a70d6")}
-        >
-          Sign in
-        </button>
-      </div>
     </div>
   );
 };

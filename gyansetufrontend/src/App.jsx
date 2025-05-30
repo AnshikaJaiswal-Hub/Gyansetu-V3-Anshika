@@ -39,7 +39,8 @@ import MainChatbot from "./components/students/Chatbot/MainChatbot";
 import AssignmentPage from "./components/teacher/Assignments/createAssignment/AssignmentPage";
 import AIGenerate from "./components/teacher/Assignments/generateAssignment/AIAssistantantIntegration";
 import TeacherContent from "./components/teacher/contentUploading/TeacherContent";
-import CompleteProfilePage from "./components/teacher/profile/CompleteProfilePage";
+import ProfileCard from "./components/teacher/profile/CompleteProfilePage";
+import TeacherCalendarView from "./components/teacher/calender/MainCalenderTeacher";
 
 // Parent Features
 import AttendanceCalendar from "./components/Parent/parentDashboard/AttendanceCalendar";
@@ -228,10 +229,19 @@ function AppContent() {
           />
           <Route
             key={location.pathname}
+            path="/teacher/calender"
+            element={
+              <ProtectedRoute allowedRoles={["teacher"]}>
+                <TeacherCalendarView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            key={location.pathname}
             path="/teacher/profile"
             element={
               <ProtectedRoute allowedRoles={["teacher"]}>
-                <CompleteProfilePage />
+                <ProfileCard />
               </ProtectedRoute>
             }
           />
@@ -311,9 +321,11 @@ function AppContent() {
 // Main App component
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </ThemeProvider>
   );
 }
 

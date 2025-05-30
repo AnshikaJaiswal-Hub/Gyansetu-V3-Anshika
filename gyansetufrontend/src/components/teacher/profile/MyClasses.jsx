@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Edit, Users } from 'lucide-react';
+import { useTheme } from '../../../context/ThemeContext';
 
 // Classes the teacher teaches
 const teacherClasses = [
@@ -24,7 +25,7 @@ const studentsData = [
   { id: 10, name: "Mia Anderson", class: "Class 10", section: "Section B", attendance: "94%", grade: "A" }
 ];
 
-// Example class analytics data
+// Example class analytics data 
 const classAnalytics = {
   "Class 6-Section A": {
     attendance: 90,
@@ -71,6 +72,7 @@ const classAnalytics = {
 const ClassesComponent = () => {
   const [selectedClass, setSelectedClass] = useState(null);
   const [showClassDetails, setShowClassDetails] = useState(false);
+  const { darkMode } = useTheme();
   
   // Function to handle class click
   const handleClassClick = (classItem) => {
@@ -94,20 +96,15 @@ const ClassesComponent = () => {
 
   // Class List View
   const ClassesListView = () => (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className={`${darkMode ? 'bg-[#231130]' : 'bg-gray-200'} p-4 md:p-6 rounded-2xl w-full`}>
+
+    <div className={`${darkMode ? 'bg-[#341B47]' : 'bg-white'} rounded-lg shadow-lg p-6`}>
       <div className="flex justify-between items-center mb-6">
-        <div className="text-xl font-bold">My Classes</div>
-        <div className="bg-gray-200 rounded-full p-2 flex items-center">
-          <Search size={16} className="text-gray-500" />
-          <input 
-            type="text" 
-            placeholder="Search" 
-            className="bg-transparent border-none outline-none text-sm ml-2 w-20"
-          />
+        <div className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>My Classes</div>
+        <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-gray-200'} rounded-full p-2 flex items-center`}>
+          
         </div>
-        <button className="text-gray-500 px-3 py-1 text-sm rounded-md border border-gray-300">
-          Edit
-        </button>
+        
       </div>
       
       <div className="space-y-4">
@@ -115,16 +112,16 @@ const ClassesComponent = () => {
           <div 
             key={cls.id}
             onClick={() => handleClassClick(cls)}
-            className="flex justify-between items-center p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition duration-200"
+            className={`flex justify-between items-center p-3 rounded-lg border ${darkMode ? 'border-purple-200 hover:bg-[#513159]' : 'border-gray-100 hover:bg-purple-100'} cursor-pointer transition duration-200`}
           >
             <div className="flex items-center">
               <div 
-                className="w-3 h-3 rounded-full mr-3" 
+                className="w-3 h-3 rounded-full mr-6" 
                 style={{ backgroundColor: cls.color }}
               />
               <div>
-                <p className="font-medium">{cls.name}</p>
-                <p className="text-xs text-gray-500">{cls.section}</p>
+                <p className={`font-medium ${darkMode ? 'text-white' : 'text-gray-800'}`}>{cls.name}</p>
+                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{cls.section}</p>
               </div>
             </div>
             <button 
@@ -137,6 +134,7 @@ const ClassesComponent = () => {
         ))}
       </div>
     </div>
+    </div>
   );
 
   // Class Detail View
@@ -148,29 +146,31 @@ const ClassesComponent = () => {
     
     return (
       <div>
+        <div className={`${darkMode ? 'bg-[#231130]' : 'bg-gray-200'} p-4 md:p-6 rounded-2xl w-full`}>
+
         <div className="flex items-center mb-6">
           <button 
             onClick={handleBackToClasses}
-            className="mr-4 bg-gray-200 hover:bg-gray-300 p-2 rounded-full transition duration-200"
+            className={`mr-4 ${darkMode ? 'bg-[#341B47] hover:bg-[#2a0c2e] text-white' : 'bg-gray-100 hover:bg-gray-300'} w-10 h-10 rounded-full transition font-bold text-2xl duration-200`}
           >
             ←
           </button>
-          <h2 className="text-xl font-bold">
+          <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
             {selectedClass.name} - {selectedClass.section}
           </h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Students List */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className={`${darkMode ? 'bg-[#341B47]' : 'bg-white'} rounded-lg shadow-lg p-6`}>
             <div className="flex justify-between items-center mb-6">
-              <div className="text-lg font-bold">Students</div>
-              <div className="bg-gray-200 rounded-full p-2 flex items-center">
-                <Search size={16} className="text-gray-500" />
+              <div className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Students</div>
+              <div className={`${darkMode ? 'bg-[#231130]' : 'bg-gray-100'} rounded-full p-2 flex items-center`}>
+                <Search size={16} className={`${darkMode ? 'text-gray-300' : 'text-gray-500'}`} />
                 <input 
                   type="text" 
                   placeholder="Search students" 
-                  className="bg-transparent border-none outline-none text-sm ml-2 w-32"
+                  className={`bg-transparent border-none outline-none text-sm ml-2 w-32 ${darkMode ? 'text-white placeholder-gray-400' : 'text-gray-800'}`}
                 />
               </div>
             </div>
@@ -179,13 +179,13 @@ const ClassesComponent = () => {
               {students.map((student) => (
                 <div 
                   key={student.id}
-                  className="flex justify-between items-center p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition duration-200"
+                  className={`flex justify-between items-center p-3 rounded-lg border ${darkMode ? 'bg-[#231130] border-gray-700 hover:bg-[#513159]' : 'bg-gray-100 border-gray-100 hover:bg-gray-50'} transition duration-200`}
                 >
                   <div>
-                    <p className="font-medium">{student.name}</p>
+                    <p className={`font-medium ${darkMode ? 'text-white' : 'text-gray-800'}`}>{student.name}</p>
                     <div className="flex items-center mt-1">
-                      <span className="text-xs text-gray-500 mr-3">Attendance: {student.attendance}</span>
-                      <span className="text-xs text-gray-500">Grade: {student.grade}</span>
+                      <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} mr-3`}>Attendance: {student.attendance}</span>
+                      <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Grade: {student.grade}</span>
                     </div>
                   </div>
                   <div 
@@ -198,7 +198,7 @@ const ClassesComponent = () => {
               ))}
               
               {students.length === 0 && (
-                <div className="text-center py-6 text-gray-500">
+                <div className={`text-center py-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   No students found for this class
                 </div>
               )}
@@ -206,25 +206,25 @@ const ClassesComponent = () => {
           </div>
           
           {/* Class Analytics */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="text-lg font-bold mb-6">Class Analytics</div>
+          <div className={`${darkMode ? 'bg-[#341B47]' : 'bg-white'} rounded-lg shadow-lg p-6`}>
+            <div className={`text-lg font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Class Analytics</div>
             
             {analytics ? (
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-sm text-gray-500">Total Students</p>
-                    <p className="text-2xl font-bold">{analytics.studentCount}</p>
+                  <div className={`${darkMode ? 'bg-[#231130]' : 'bg-gray-100'} p-4 rounded-lg`}>
+                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Total Students</p>
+                    <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>{analytics.studentCount}</p>
                   </div>
-                  <div className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-sm text-gray-500">Average Grade</p>
-                    <p className="text-2xl font-bold">{analytics.avgGrade}</p>
+                  <div className={`${darkMode ? 'bg-[#231130]' : 'bg-gray-100'} p-4 rounded-lg`}>
+                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Average Grade</p>
+                    <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>{analytics.avgGrade}</p>
                   </div>
                 </div>
                 
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Attendance Rate</p>
-                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                  <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} mb-2`}>Attendance Rate</p>
+                  <div className={`w-full h-3 ${darkMode ? 'bg-[#341b47]' : 'bg-gray-200'} rounded-full overflow-hidden`}>
                     <div 
                       className="h-full rounded-full" 
                       style={{ 
@@ -234,15 +234,15 @@ const ClassesComponent = () => {
                     />
                   </div>
                   <div className="flex justify-between text-xs mt-1">
-                    <span>0%</span>
-                    <span>{analytics.attendance}%</span>
-                    <span>100%</span>
+                    <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>0%</span>
+                    <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>{analytics.attendance}%</span>
+                    <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>100%</span>
                   </div>
                 </div>
                 
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Homework Completion</p>
-                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                  <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} mb-2`}>Homework Completion</p>
+                  <div className={`w-full h-3 ${darkMode ? 'bg-[#341b47]' : 'bg-gray-200'} rounded-full overflow-hidden`}>
                     <div 
                       className="h-full rounded-full" 
                       style={{ 
@@ -252,33 +252,34 @@ const ClassesComponent = () => {
                     />
                   </div>
                   <div className="flex justify-between text-xs mt-1">
-                    <span>0%</span>
-                    <span>{analytics.homeworkCompletion}%</span>
-                    <span>100%</span>
+                    <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>0%</span>
+                    <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>{analytics.homeworkCompletion}%</span>
+                    <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>100%</span>
                   </div>
                 </div>
                 
                 <div>
-                  <p className="font-medium mb-2">Quick Stats</p>
+                  <p className={`font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Quick Stats</p>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-sm">Top Performer:</span>
-                      <span className="text-sm font-medium">{analytics.topPerformer}</span>
+                      <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Top Performer:</span>
+                      <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-800'}`}>{analytics.topPerformer}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm">Students Needing Attention:</span>
-                      <span className="text-sm font-medium">{analytics.needsAttention}</span>
+                      <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Students Needing Attention:</span>
+                      <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-800'}`}>{analytics.needsAttention}</span>
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="text-center py-6 text-gray-500">
+              <div className={`text-center py-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                 No analytics available for this class
               </div>
             )}
           </div>
         </div>
+      </div>
       </div>
     );
   };

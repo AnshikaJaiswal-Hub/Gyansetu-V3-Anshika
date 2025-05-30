@@ -24,6 +24,7 @@ import {
   Folder,
   X,
 } from "lucide-react";
+import { useTheme } from "../../../../context/ThemeContext"; // Import theme context
 
 // --- Helper Functions ---
 
@@ -153,6 +154,9 @@ const getTemplateInfo = (assignment) => {
 
 // --- Component ---
 export default function EnhancedReview({ onPrevious, onPublish, finalAssignment }) {
+  // Use the theme context
+  const { darkMode } = useTheme();
+
   // Ensure assignment and settings are always objects
   const assignment = finalAssignment || {};
   const settings = assignment.settings || {};
@@ -334,29 +338,27 @@ export default function EnhancedReview({ onPrevious, onPublish, finalAssignment 
 
   // --- Main JSX ---
   return (
-    <div className="bg-white p-6 md:p-8 rounded-lg shadow-md border-t-4 border-purple-500 max-w-5xl mx-auto">
+    <div className={`${darkMode ? "bg-[#100e10]" : "bg-white"} p-6 md:p-8 rounded-lg shadow-md  max-w-full mx-auto transition-colors duration-300`}>
       {/* Header */}
-      <h2 className="text-2xl font-bold mb-1 text-purple-800">
+      <h2 className={`text-2xl font-bold mb-1 ${darkMode ? "text-purple-300" : "text-purple-800"} transition-colors duration-300`}>
         Review Assignment
       </h2>
-      <p className="text-gray-500 mb-8">
+      <p className={`${darkMode ? "text-gray-400" : "text-gray-500"} mb-8 transition-colors duration-300`}>
         Check all the details below before publishing or saving.
       </p>
 
       {/* Section 1: Overview */}
-      <div className="mb-8 p-6 bg-purple-50 rounded-lg border border-purple-100">
+      <div className={`mb-8 p-6 ${darkMode ? "bg-[#2a0c2e]" : "bg-purple-50"} rounded-lg border ${darkMode ? "border-purple-800" : "border-purple-100"} transition-colors duration-300`}>
         <div className="flex justify-between items-start mb-4">
-          <h3 className="text-xl font-semibold text-purple-800 flex items-center">
-             {/* Dynamically render icon based on template */}
-             {React.createElement(templateInfo.icon, { className: "w-6 h-6 mr-2 text-purple-600 flex-shrink-0"})}
+          <h3 className={`text-xl font-semibold ${darkMode ? "text-purple-300" : "text-purple-800"} flex items-center transition-colors duration-300`}>
+            {React.createElement(templateInfo.icon, { className: `w-6 h-6 mr-2 ${darkMode ? "text-purple-400" : "text-purple-600"} flex-shrink-0 transition-colors duration-300`})}
             {renderValue(assignment.title, "Untitled Assignment")}
           </h3>
-          {/* Add Edit button logic if needed (e.g., onClick={() => onPrevious('overview')}) */}
         </div>
 
         <div className="mb-4">
-          <h4 className="text-sm font-medium text-gray-500 mb-1">Description/Instructions</h4>
-          <div className="text-gray-700 bg-white p-3 rounded-md border border-gray-200 text-sm min-h-[4em]"> {/* Added min-height */}
+          <h4 className={`text-sm font-medium ${darkMode ? "text-gray-400" : "text-gray-500"} mb-1 transition-colors duration-300`}>Description/Instructions</h4>
+          <div className={`${darkMode ? "bg-[#341b47] text-gray-300" : "bg-white text-gray-700"} p-3 rounded-md border ${darkMode ? "border-purple-800" : "border-gray-200"} text-sm min-h-[4em] transition-colors duration-300`}>
             {renderValue(assignment.description, "No description provided.")}
           </div>
         </div>
@@ -364,34 +366,34 @@ export default function EnhancedReview({ onPrevious, onPublish, finalAssignment 
         {/* Overview Details Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
            {/* Subject */}
-           <div className="bg-white p-3 rounded-md border border-gray-200">
-             <h5 className="text-xs font-medium text-gray-500 mb-1">Subject</h5>
-             <p className="font-medium flex items-center">
-               <Award className="w-4 h-4 text-purple-500 mr-1.5 flex-shrink-0" />
+           <div className={`${darkMode ? "bg-[#341b47]" : "bg-white"} p-3 rounded-md border ${darkMode ? "border-purple-800" : "border-gray-200"} transition-colors duration-300`}>
+             <h5 className={`text-xs font-medium ${darkMode ? "text-gray-400" : "text-gray-500"} mb-1 transition-colors duration-300`}>Subject</h5>
+             <p className={`font-medium flex items-center ${darkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-300`}>
+               <Award className={`w-4 h-4 ${darkMode ? "text-purple-400" : "text-purple-500"} mr-1.5 flex-shrink-0 transition-colors duration-300`} />
                {renderValue(settings.subject)}
              </p>
            </div>
            {/* Start Time */}
-           <div className="bg-white p-3 rounded-md border border-gray-200">
-             <h5 className="text-xs font-medium text-gray-500 mb-1">Start Time</h5>
-             <p className="font-medium flex items-center">
-               <Calendar className="w-4 h-4 text-green-500 mr-1.5 flex-shrink-0" />
+           <div className={`${darkMode ? "bg-[#341b47]" : "bg-white"} p-3 rounded-md border ${darkMode ? "border-purple-800" : "border-gray-200"} transition-colors duration-300`}>
+             <h5 className={`text-xs font-medium ${darkMode ? "text-gray-400" : "text-gray-500"} mb-1 transition-colors duration-300`}>Start Time</h5>
+             <p className={`font-medium flex items-center ${darkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-300`}>
+               <Calendar className={`w-4 h-4 ${darkMode ? "text-purple-400" : "text-purple-500"} mr-1.5 flex-shrink-0 transition-colors duration-300`} />
                {renderValue(formatDateTime(assignment.dueDate, { hour: assignment.startTimeHour, minute: assignment.startTimeMinute, amPm: assignment.startTimeAmPm }), "Not set")}
             </p>
           </div>
           {/* End Time / Due */}
-           <div className="bg-white p-3 rounded-md border border-gray-200">
-             <h5 className="text-xs font-medium text-gray-500 mb-1">End Time / Due</h5>
-             <p className="font-medium flex items-center">
-               <Calendar className="w-4 h-4 text-red-500 mr-1.5 flex-shrink-0" />
+           <div className={`${darkMode ? "bg-[#341b47]" : "bg-white"} p-3 rounded-md border ${darkMode ? "border-purple-800" : "border-gray-200"} transition-colors duration-300`}>
+             <h5 className={`text-xs font-medium ${darkMode ? "text-gray-400" : "text-gray-500"} mb-1 transition-colors duration-300`}>End Time / Due</h5>
+             <p className={`font-medium flex items-center ${darkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-300`}>
+               <Calendar className={`w-4 h-4 ${darkMode ? "text-purple-400" : "text-purple-500"} mr-1.5 flex-shrink-0 transition-colors duration-300`} />
                {renderValue(formatDateTime(assignment.dueDate, { hour: assignment.endTimeHour, minute: assignment.endTimeMinute, amPm: assignment.endTimeAmPm }), "Not set")}
              </p>
           </div>
           {/* Time Limit */}
-          <div className="bg-white p-3 rounded-md border border-gray-200">
-             <h5 className="text-xs font-medium text-gray-500 mb-1">Time Limit</h5>
-             <p className="font-medium flex items-center">
-               <Clock className="w-4 h-4 text-blue-500 mr-1.5 flex-shrink-0" />
+          <div className={`${darkMode ? "bg-[#341b47]" : "bg-white"} p-3 rounded-md border ${darkMode ? "border-purple-800" : "border-gray-200"} transition-colors duration-300`}>
+             <h5 className={`text-xs font-medium ${darkMode ? "text-gray-400" : "text-gray-500"} mb-1 transition-colors duration-300`}>Time Limit</h5>
+             <p className={`font-medium flex items-center ${darkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-300`}>
+               <Clock className={`w-4 h-4 ${darkMode ? "text-purple-400" : "text-purple-500"} mr-1.5 flex-shrink-0 transition-colors duration-300`} />
                {renderValue(assignment.timeLimit ? `${assignment.timeLimit} minutes` : null, "No limit")}
              </p>
           </div>
@@ -399,19 +401,19 @@ export default function EnhancedReview({ onPrevious, onPublish, finalAssignment 
       </div>
 
        {/* Section 2: Content Details */}
-       <div className="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-100">
-         <h3 className="text-xl font-semibold text-blue-800 mb-4 flex items-center">
-           <List className="w-6 h-6 mr-2"/> Content Details ({templateInfo.name})
+       <div className={`mb-8 p-6 ${darkMode ? "bg-[#2a0c2e]" : "bg-purple-50"} rounded-lg border ${darkMode ? "border-purple-800" : "border-blue-100"} transition-colors duration-300`}>
+         <h3 className={`text-xl font-semibold ${darkMode ? "text-purple-300" : "text-blue-800"} mb-4 flex items-center transition-colors duration-300`}>
+           <List className={`w-6 h-6 mr-2 ${darkMode ? "text-purple-400" : "text-blue-600"} transition-colors duration-300`}/> Content Details ({templateInfo.name})
          </h3>
-         <div className="text-sm text-gray-800 bg-white p-4 rounded border border-blue-200">
+         <div className={`text-sm ${darkMode ? "bg-[#341b47] text-gray-300" : "bg-white text-gray-800"} p-4 rounded border ${darkMode ? "border-purple-800" : "border-blue-200"} transition-colors duration-300`}>
            {renderContentDetails()}
          </div>
        </div>
 
       {/* Section 3: Settings */}
-      <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-          <SettingsIcon className="w-6 h-6 mr-2"/> Configuration Settings
+      <div className={`mb-8 p-6 ${darkMode ? "bg-[#2a0c2e]" : "bg-gray-50"} rounded-lg border ${darkMode ? "border-gray-700" : "border-gray-200"} transition-colors duration-300`}>
+        <h3 className={`text-xl font-semibold ${darkMode ? "text-gray-300" : "text-gray-800"} mb-4 flex items-center transition-colors duration-300`}>
+          <SettingsIcon className={`w-6 h-6 mr-2 ${darkMode ? "text-gray-400" : "text-gray-600"} transition-colors duration-300`}/> Configuration Settings
         </h3>
         {/* Settings Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 text-sm">
@@ -482,7 +484,7 @@ export default function EnhancedReview({ onPrevious, onPublish, finalAssignment 
         {/* Back Button */}
         <button
           onClick={onPrevious}
-          className="px-6 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200 text-sm font-medium"
+          className={`px-6 py-2 ${darkMode ? "bg-[#341b47] text-gray-300 hover:bg-[#4a2458]" : "bg-gray-100 text-gray-700 hover:bg-gray-200"} rounded-md transition-colors duration-200 text-sm font-medium`}
         >
           Back to Settings
         </button>
@@ -490,13 +492,13 @@ export default function EnhancedReview({ onPrevious, onPublish, finalAssignment 
         <div className="space-x-4">
            <button
              onClick={handleSaveDraft}
-             className="px-6 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors duration-200 font-medium text-sm"
+             className={`px-6 py-2 ${darkMode ? "bg-blue-900 text-blue-300 hover:bg-blue-800" : "bg-blue-100 text-blue-700 hover:bg-blue-200"} rounded-md transition-colors duration-200 font-medium text-sm`}
            >
              Save Draft
            </button>
            <button
              onClick={handlePublish}
-             className="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200 font-medium shadow-sm text-sm"
+             className={`px-6 py-2 ${darkMode ? "bg-purple-700 text-white hover:bg-purple-800" : "bg-purple-600 text-white hover:bg-purple-700"} rounded-md transition-colors duration-200 font-medium shadow-sm text-sm`}
            >
              Publish Assignment
            </button>

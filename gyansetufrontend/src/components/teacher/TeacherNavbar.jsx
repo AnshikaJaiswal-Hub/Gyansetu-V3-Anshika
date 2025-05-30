@@ -46,7 +46,7 @@ const TeacherNavbar = ({ onNavToggle }) => {
     {
       name: "Calendar",
       icon: <IoChatbubbleOutline className="text-lg" />,
-      path: "/teacher/calendar",
+      path: "/teacher/calender",
     },
   ];
 
