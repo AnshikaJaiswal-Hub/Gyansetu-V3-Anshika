@@ -10,7 +10,7 @@ const Cal = ({ src, alt = "Image", className = "" }) => {
 
   return (
     <div className="flex flex-col items-center space-y-2">
-      <h1 className="text-3xl text-center font-medium text-black">Calendar</h1>
+    
       <Link to="/StudentCalendar">
         <img
           src={src}

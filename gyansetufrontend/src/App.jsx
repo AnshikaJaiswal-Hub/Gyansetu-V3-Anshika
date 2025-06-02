@@ -21,6 +21,7 @@ import ResetPasswordPage from "./pages/ResetPassword";
 // Protected Routes Component
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import { InstituteProvider } from "./context/InstituteContext";
 
 // Role-based Dashboard Pages
 import StudentDashboard from "./pages/dashboards/StudentDashboard";
@@ -37,6 +38,8 @@ import MainChatbot from "./components/students/Chatbot/MainChatbot";
 import StudentAssignmentDashboard from "./components/students/studentDashboard/Assignment";
 import StudentProject from "./components/students/studentDashboard/Project";
 import ChangePassword from "./components/students/studentDashboard/ChangePassword";
+import PopNotifications from "./components/students/studentDashboard/PopNotification";
+import Notes from "./components/students/Chatbot/Notes";
 
 // Teacher Features
 import AssignmentPage from "./components/teacher/Assignments/createAssignment/AssignmentPage";
@@ -50,12 +53,24 @@ import ParentLayout from "./components/Parent/parentDashboard/ParentLayout";
 import StudentProgressReport from "./components/Parent/parentDashboard/StudentProgress";
 import ParentTeacherMeeting from "./components/Parent/parentDashboard/communication/ParentTeacherScheduler";
 import TeacherMeetingManager from "./components/teacher/ParentMeeting/TeacherMeetingManager";
+import ParentCalendar from "./components/Parent/ParentCalendar";
+
+// Institute Dashboard
+import ILayout from "./components/Institute/Layout";
+import OverviewPage from "./components/Institute/OverviewPage";
+import Students from "./components/Institute/Students";
+import Teachers from "./components/Institute/Teachers";
+import Classes from "./components/Institute/Classes";
+import Finances from "./components/Institute/Attendance";
+import Reports from "./components/Institute/Reports";
+import Settings from "./components/Institute/Settings";
+import AttendanceDashboard from "./components/Institute/Attendance";
 
 // Auth Service
 import authService from "./services/api/authService";
 
 // Import theme styles
-import "./darkTheme.css";
+import "./DarkTheme.css";
 
 // ThemeWrapper component to apply theme class to body
 const ThemeWrapper = ({ children }) => {
@@ -173,18 +188,18 @@ function AppContent() {
               </StudentAuth>
             }
           >
-            <Route path="/Studentdashboard/*" element={<StudentDashboard />} />
+            <Route path="/studentdashboard/*" element={<StudentDashboard />} />
             <Route path="/profile" element={<StudentProfileForm />} />
             <Route path="/content" element={<ContentApp />} />
             <Route path="/quiz" element={<StudentQuizInterface />} />
             <Route path="/StudentCalendar" element={<StudentCalendar />} />
-             <Route path="/assignment" element={<StudentAssignmentDashboard />} />
-             <Route path="/projects" element={<StudentProject/>} />
+            <Route path="/assignment" element={<StudentAssignmentDashboard />} />
+            <Route path="/projects" element={<StudentProject/>} />
             <Route path="/chatbot" element={<MainChatbot />} />
             <Route path="/changepassword" element={<ChangePassword />} />
-
+            <Route path="/notifications" element={<PopNotifications/>} />
+            <Route path="/notes" element={<Notes />} />
           </Route>
-           <Route path="/chatbot" element={<MainChatbot />} />
 
           {/* Teacher Routes */}
           <Route
@@ -252,14 +267,15 @@ function AppContent() {
           />
 
           {/* Institute Routes */}
-          <Route
-            path="/institute/*"
-            element={
-              <ProtectedRoute allowedRoles={["institute"]}>
-                <InstituteDashboard />
-              </ProtectedRoute>
-            }
-          />
+          <Route element={<ILayout />}>
+            <Route path="/institute" element={<OverviewPage/>} />
+            <Route path="/institute/teachers" element={<Teachers/>} />
+            <Route path="/institute/students" element={<Students/>} />
+            <Route path="/institute/classes" element={<Classes/>} />
+            <Route path="/institute/attendance" element={<AttendanceDashboard/>} />
+            <Route path="/institute/reports" element={<Reports/>} />
+            <Route path="/institute/settings" element={<Settings/>} />
+          </Route>
 
           {/* Parent Routes */}
           <Route element={<ParentLayout />}>
@@ -276,6 +292,14 @@ function AppContent() {
               element={
                 <ProtectedRoute allowedRoles={["parent"]}>
                   <AttendanceCalendar />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/parent/calendar"
+              element={
+                <ProtectedRoute allowedRoles={["parent"]}>
+                  <ParentCalendar />
                 </ProtectedRoute>
               }
             />
@@ -318,7 +342,11 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AppContent />
+      <ThemeProvider>
+        <InstituteProvider>
+          <AppContent />
+        </InstituteProvider>
+      </ThemeProvider>
     </Router>
   );
 }

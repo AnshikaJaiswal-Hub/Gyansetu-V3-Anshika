@@ -10,7 +10,7 @@ const mockAssignments = [
     timeLimit: 120, // minutes
     dueDate: "2025-05-30T23:59:00",
     startTime: "2025-05-26T09:00:00",
-    endTime: "2025-05-30T23:59:00",
+    endTime: "2025-06-31T23:59:00",
     hasGrading: true,
     totalPoints: 100,
     status: "active",
@@ -305,7 +305,7 @@ const StudentAssignmentDashboard = () => {
 
   return (
     <div className="bg-gray-100 pt-4 sm:pt-6 md:pt-8 px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8">
-      <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl">
+      <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-6 pt-8">

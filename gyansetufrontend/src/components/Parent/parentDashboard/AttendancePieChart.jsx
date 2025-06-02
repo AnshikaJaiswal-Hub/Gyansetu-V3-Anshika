@@ -48,7 +48,7 @@ const AttendancePieChart = ({ academicYear = "2024-2025", studentId }) => {
   };
 
   return (
-    <div className="bg-white rounded-4xl shadow-2xl p-4 w-full">
+    <div className="bg-white rounded-[30px] shadow-2xl p-4 w-full">
       <div className="flex flex-col md:flex-row items-center">
         <div className="w-full md:w-3/5 h-64">
           <ResponsiveContainer width="100%" height="100%">

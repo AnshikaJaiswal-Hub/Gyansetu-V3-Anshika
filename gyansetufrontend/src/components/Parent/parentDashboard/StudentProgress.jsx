@@ -170,7 +170,7 @@ const StudentProgressReport = () => {
 
   return (
     <div className="bg-gray-100 p-2 sm:p-4 md:p-6 lg:pt-10  lg:pr-10 lg:pb-10">
-      <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl p-3 sm:p-4 md:p-6 lg:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-[30px] p-3 sm:p-4 md:p-6 lg:p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex flex-col space-y-4 sm:flex-row sm:items-start sm:justify-between sm:space-y-0 md:space-y-0 mb-4 sm:mb-6 lg:mb-3 lg:flex-row">
