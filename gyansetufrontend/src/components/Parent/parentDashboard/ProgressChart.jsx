@@ -75,7 +75,7 @@ const StudentProgressChart = ({
   };
 
   return (
-    <div className={`bg-white rounded-4xl shadow-lg p-6 ${className}`}>
+    <div className={`bg-white rounded-[30px] shadow-lg p-6 ${className}`}>
       {/* Title */}
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-gray-900">{title}</h3>

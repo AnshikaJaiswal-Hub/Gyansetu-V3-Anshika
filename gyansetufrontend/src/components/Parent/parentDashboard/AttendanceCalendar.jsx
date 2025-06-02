@@ -137,10 +137,10 @@ const AttendanceCalendar = () => {
   
   return (
     <div className='bg-gray-100 p-4 sm:p-6 md:p-10'>
-      <div className="bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl min-h-screen p-4 sm:p-6">
+      <div className="bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px] min-h-screen p-4 sm:p-6">
         <h1 className="text-2xl sm:text-3xl font-bold text-violet-600 mb-4 ml-2 sm:ml-6">Attendance</h1>
         
-        <div className="bg-gray-100 rounded-4xl p-4 sm:p-6 mt-4">
+        <div className="bg-gray-100 rounded-[30px] p-4 sm:p-6 mt-4">
           <h2 className="text-base sm:text-lg font-semibold mb-4 ml-2 sm:ml-3">{studentName}</h2>
           
           <div className="flex flex-col sm:flex-row flex-wrap gap-2 mb-4">

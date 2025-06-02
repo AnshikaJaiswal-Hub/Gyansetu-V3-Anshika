@@ -41,6 +41,100 @@ api.interceptors.response.use(
 );
 
 const authService = {
+  // Get current user from localStorage
+  getCurrentUser: () => {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  },
+
+  // Check if user is authenticated
+  isAuthenticated: () => {
+    return !!localStorage.getItem('token');
+  },
+
+  // Login method
+  login: async (credentials) => {
+    try {
+      // Map frontend field names to backend field names if needed
+      const mappedData = {
+        email: credentials.email,
+        password: credentials.password,
+        role: credentials.role
+      };
+
+      // Handle Google token if present
+      if (credentials.googleToken) {
+        return authService.googleLogin(credentials);
+      }
+
+      // Handle Apple token if present
+      if (credentials.appleToken) {
+        return authService.appleLogin(credentials);
+      }
+
+      const response = await api.post('/login', mappedData);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        // Check for role mismatch
+        if (error.response.status === 403 && error.response.data.detail === "Role mismatch") {
+          const user = await authService.getUserByEmail(credentials.email);
+          if (user) {
+            error.response.data = {
+              actualRole: user.role
+            };
+          }
+        }
+        throw error.response;
+      } else if (error.request) {
+        throw { message: 'No response from server. Please try again.' };
+      } else {
+        throw { message: 'Error occurred during login.' };
+      }
+    }
+  },
+
+  // Logout method
+  logout: () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  },
+
+  // Signup method
+  signup: async (userData) => {
+    try {
+      // Map frontend field names to backend field names
+      const mappedData = {
+        email: userData.email,
+        password: userData.password,
+        phone: userData.phone || '',
+        role: userData.role,
+        first_name: userData.firstName || '',
+        last_name: userData.lastName || ''
+      };
+
+      const response = await api.post('/signup', mappedData);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw error.response.data;
+      } else if (error.request) {
+        throw { message: 'No response from server. Please try again.' };
+      } else {
+        throw { message: 'Error occurred during signup.' };
+      }
+    }
+  },
+
   // Step 1: Send verification OTP to email
   preSignup: async (email, role) => {
     try {
@@ -98,88 +192,9 @@ const authService = {
     }
   },
 
-  // Combined method for backwards compatibility
-  signup: async (userData) => {
-    try {
-      // Map frontend field names to backend field names
-      const mappedData = {
-        email: userData.email,
-        password: userData.password,
-        phone: userData.phone || '',
-        role: userData.role,
-        first_name: userData.firstName || '',
-        last_name: userData.lastName || ''
-      };
-
-      const response = await api.post('/signup', mappedData);
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
-      return response.data;
-    } catch (error) {
-      if (error.response) {
-        // The server responded with a status code outside the 2xx range
-        throw error.response.data;
-      } else if (error.request) {
-        // The request was made but no response was received
-        throw { message: 'No response from server. Please try again.' };
-      } else {
-        // Something happened in setting up the request
-        throw { message: 'Error occurred during signup.' };
-      }
-    }
-  },
-
-  login: async (credentials) => {
-    try {
-      // Map frontend field names to backend field names if needed
-      const mappedData = {
-        email: credentials.email,
-        password: credentials.password,
-        role: credentials.role
-      };
-
-      // Handle Google token if present
-      if (credentials.googleToken) {
-        return authService.googleLogin(credentials);
-      }
-
-      // Handle Apple token if present
-      if (credentials.appleToken) {
-        return authService.appleLogin(credentials);
-      }
-
-      const response = await api.post('/login', mappedData);
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
-      return response.data;
-    } catch (error) {
-      if (error.response) {
-        // Check for role mismatch
-        if (error.response.status === 403 && error.response.data.detail === "Role mismatch") {
-          const user = await authService.getUserByEmail(credentials.email);
-          if (user) {
-            error.response.data = {
-              actualRole: user.role
-            };
-          }
-        }
-        throw error.response;
-      } else if (error.request) {
-        throw { message: 'No response from server. Please try again.' };
-      } else {
-        throw { message: 'Error occurred during login.' };
-      }
-    }
-  },
-
   // Method to get user by email (for handling role mismatch errors)
   getUserByEmail: async (email) => {
     try {
-      // This endpoint would need to be implemented on the backend
       const response = await api.get(`/user-by-email?email=${email}`);
       return response.data;
     } catch (error) {
@@ -188,6 +203,7 @@ const authService = {
     }
   },
 
+  // Google login method
   googleLogin: async (credentials) => {
     try {
       const response = await api.post('/google-login', {
@@ -206,7 +222,6 @@ const authService = {
       return response.data;
     } catch (error) {
       if (error.response) {
-        // Handle role mismatch for Google login
         if (error.response.status === 403 && error.response.data.detail === "Role mismatch") {
           error.response.data = {
             actualRole: error.response.data.actualRole || "unknown"
@@ -219,6 +234,7 @@ const authService = {
     }
   },
 
+  // Apple login method
   appleLogin: async (credentials) => {
     try {
       const response = await api.post('/apple-login', {
@@ -237,7 +253,6 @@ const authService = {
       return response.data;
     } catch (error) {
       if (error.response) {
-        // Handle role mismatch for Apple login
         if (error.response.status === 403 && error.response.data.detail === "Role mismatch") {
           error.response.data = {
             actualRole: error.response.data.actualRole || "unknown"
@@ -292,32 +307,6 @@ const authService = {
         throw { message: 'Error occurred during password reset.' };
       }
     }
-  },
-
-  logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/login';
-  },
-
-  getCurrentUser: () => {
-    try {
-      const user = localStorage.getItem('user');
-      return user ? JSON.parse(user) : null;
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      return null;
-    }
-  },
-
-  getToken: () => {
-    return localStorage.getItem('token');
-  },
-
-  isAuthenticated: () => {
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
-    return !!(token && user);
   },
 
   // Verify if user has required role

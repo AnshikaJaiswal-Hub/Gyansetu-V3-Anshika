@@ -20,7 +20,6 @@ import {
   Share2,
   Edit,
   BookOpen,
-  Notebook,
   Bookmark,
   Info,
   Menu,
@@ -120,7 +119,7 @@ const MainChatbot = () => {
       pro: true,
       path: "/quiz",
     },
-    { icon: <Notebook className="w-5 h-5" />, label: "Notes", path: "/notes" },
+    { icon: <FileText className="w-5 h-5" />, label: "Notes", path: "/notes" },
     {
       icon: <Bookmark className="w-5 h-5" />,
       label: "Chat History",
@@ -355,7 +354,7 @@ sendButton.addEventListener("click", function() {
     
 
       {/* Main Content Area with Routes */}
-      <div className="flex-1 flex overflow-hidden bg-gray-300 m-2 sm:m-4 md:m-6 rounded-2xl md:rounded-4xl">
+      <div className="flex-1 flex overflow-hidden bg-gray-300 m-2 sm:m-4 md:m-6 rounded-[30px] md:rounded-4xl">
         <Routes>
           <Route
             path="/"

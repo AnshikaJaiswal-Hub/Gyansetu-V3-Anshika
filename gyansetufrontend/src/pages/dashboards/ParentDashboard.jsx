@@ -11,6 +11,7 @@ import AttendancePieChart from "../../components/Parent/parentDashboard/Attendan
 import { useTheme } from "../../context/ThemeContext"; // Import the theme hook
 import StudentProgressChart from "../../components/Parent/parentDashboard/ProgressChart";
 
+
 const ParentDashboard = () => {
   const [greeting, setGreeting] = useState("");
   const [profileImage, setProfileImage] = useState(null);
@@ -73,7 +74,7 @@ const ParentDashboard = () => {
           darkMode
             ? "bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]"
             : "bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400"
-        } rounded-4xl p-1 pl-6 pr-6 pb-6 transition-colors duration-300`}
+        } rounded-[30px] p-1 pl-6 pr-6 pb-6 transition-colors duration-300`}
       >
         {/* Header with greeting and utility icons */}
         <div className="flex justify-between items-start pt-6 pr-6">

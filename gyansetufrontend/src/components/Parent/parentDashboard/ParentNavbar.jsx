@@ -12,6 +12,7 @@ import {
 import AttendanceCalendar from "./AttendanceCalendar";
 import { useTheme } from "../../../context/ThemeContext"; // Import the theme hook
 
+
 const ParentNavbar = ({ onNavToggle }) => {
   // Initialize expanded state from localStorage or default to false
   const [expanded, setExpanded] = useState(() => {
@@ -77,8 +78,8 @@ const ParentNavbar = ({ onNavToggle }) => {
       path: "/parent/studentprogress",
     },
     {
-      name: "calendar",
-      icon: <IoHelpBuoyOutline className="text-lg" />,
+      name: "Calendar",
+      icon: <IoCalendarClearOutline className="text-lg" />,
       path: "/parent/calendar",
     },
     {

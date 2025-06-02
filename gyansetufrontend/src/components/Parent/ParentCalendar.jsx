@@ -85,7 +85,7 @@ const generateCalendarDays = (year, month) => {
 };
 
 // Main component
-const StudentCalendar = () => {
+const ParentCalendar = () => {
   const [activeTab, setActiveTab] = useState('calendar');
   const [calendarView, setCalendarView] = useState('weekly');
   const [currentDate, setCurrentDate] = useState(new Date()); // Changed to current date
@@ -1001,4 +1001,4 @@ const StudentCalendar = () => {
   );
 };
 
-export default StudentCalendar;
+export default ParentCalendar;

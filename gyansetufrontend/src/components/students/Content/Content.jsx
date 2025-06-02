@@ -210,7 +210,7 @@ const ContentApp = () => {
 
   return (
     <div className='bg-gray-100 pt-10 pr-10 pb-10'>
-    <div className="bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl min-h-screen p-6">
+    <div className="bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px] min-h-screen p-6">
       <div className={`container mx-auto px-2 sm:px-4 py-4 ${isNavbarExpanded ? 'ml-0 sm:ml-52 lg:ml-64 transition-all duration-300' : ''}`}>
         {/* Overview Section */}
         <div className="mb-6 sm:mb-8">

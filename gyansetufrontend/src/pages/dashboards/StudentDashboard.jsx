@@ -288,7 +288,7 @@ const StudentDashboard = () => {
 
   return (
     <div className="bg-gray-100 pt-10 pr-10 pb-10">
-      <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl pl-6">
+      <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px] pl-6">
         <header className="px-6 py-4 flex justify-between items-center">
           {/* Profile Section */}
           <div className="w-full">
@@ -375,7 +375,7 @@ const StudentDashboard = () => {
             </div>
 
             <div className="w-full md:w-2/3">
-              <div className="bg-white rounded-2xl shadow-md overflow-hidden p-5 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+              <div className="bg-white rounded-2xl shadow-md overflow-hidden p-5 transition-all duration-300 hover:scale-105 hover:shadow-lg ml-8">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="font-semibold text-lg">Time spend</h3>

@@ -32,7 +32,7 @@ const StudentQuizInterface = () => {
       section: "B",
       dueDate: "2025-05-27T23:59:59",
       startDate: "2025-05-20T01:00:00",
-      endDate: "2025-05-28T03:50:59",
+      endDate: "2025-06-01T03:50:59",
       duration: 60, // in minutes
       totalMarks: 30,
       passingScore: 15,
@@ -594,7 +594,7 @@ const StudentQuizInterface = () => {
 
   return (
     <div className="bg-gray-100 p-10">
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px]">
         <div className="p-4 md:p-8">
           {!activeQuiz ? (
             <QuizList
