@@ -321,7 +321,7 @@ const TeacherDashboard = () => {
             className={`${
               darkMode
                 ? "bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]"
-                : "bg-gradient-to-br from-purple-200 via-white to-purple-300"
+                : "bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400"
             } rounded-[30px] shadow-lg w-full transition-colors duration-300`}
           >
             <div className="p-6 md:p-8">

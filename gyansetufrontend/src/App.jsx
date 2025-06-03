@@ -57,7 +57,6 @@ import ParentCalendar from "./components/Parent/ParentCalendar";
 
 // Institute Dashboard
 import ILayout from "./components/Institute/Layout";
-import OverviewPage from "./components/Institute/OverviewPage";
 import Students from "./components/Institute/Students";
 import Teachers from "./components/Institute/Teachers";
 import Classes from "./components/Institute/Classes";
@@ -268,7 +267,7 @@ function AppContent() {
 
           {/* Institute Routes */}
           <Route element={<ILayout />}>
-            <Route path="/institute" element={<OverviewPage/>} />
+            <Route path="/institute" element={<InstituteDashboard/>} />
             <Route path="/institute/teachers" element={<Teachers/>} />
             <Route path="/institute/students" element={<Students/>} />
             <Route path="/institute/classes" element={<Classes/>} />
