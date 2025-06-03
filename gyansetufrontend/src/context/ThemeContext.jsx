@@ -5,10 +5,11 @@ export const ThemeContext = createContext();
 
 // Create a theme provider component
 export const ThemeProvider = ({ children }) => {
-  // Check if there's a saved theme preference in localStorage
+  // Check if there's a saved theme preference in localStorage, default to dark mode
   const [darkMode, setDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem("darkMode");
-    return savedTheme === "true";
+    // If no saved theme, default to dark mode (true)
+    return savedTheme === null ? true : savedTheme === "true";
   });
 
   // Update localStorage when theme changes
