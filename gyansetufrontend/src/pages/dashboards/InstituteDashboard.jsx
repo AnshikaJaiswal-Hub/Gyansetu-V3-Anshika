@@ -20,18 +20,25 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { IoMoonOutline, IoSunnyOutline, IoPersonCircleOutline } from "react-icons/io5";
 import { useTheme } from "../../context/ThemeContext";
+import { useInstitute } from "../../context/InstituteContext";
 
 const InstituteDashboard = () => {
   const navigate = useNavigate();
   const user = authService.getCurrentUser();
   const { darkMode, toggleTheme } = useTheme();
+  const instituteContext = useInstitute();
+  
+  // Add null checks for classes and teachers
+  const classes = instituteContext?.classes || [];
+  const teachers = instituteContext?.teachers || [];
+  
   const [profileImage, setProfileImage] = useState(null);
   const [greeting, setGreeting] = useState("");
   const [stats, setStats] = useState({
-    totalStudents: 1247,
-    totalTeachers: 89,
+    totalStudents: classes.reduce((acc, curr) => acc + (curr.students?.length || 0), 0),
+    totalTeachers: teachers.length,
     totalParents: 1156,
-    totalClasses: 45,
+    totalClasses: classes.length,
     totalRevenue: 125000,
     completionRate: 87
   });

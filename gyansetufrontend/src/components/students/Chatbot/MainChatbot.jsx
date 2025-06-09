@@ -24,6 +24,7 @@ import {
   Info,
   Menu,
 } from "lucide-react";
+import { useTheme } from "../../../context/ThemeContext";
 
 
 // Placeholder components for routes
@@ -59,6 +60,7 @@ const UpdatesFAQ = () => (
 );
 
 const MainChatbot = () => {
+  const { darkMode } = useTheme();
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [activeTab, setActiveTab] = useState("HTML");
@@ -341,7 +343,11 @@ sendButton.addEventListener("click", function() {
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-gray-100 via-white to-violet-500 overflow-hidden">
+    <div className={`flex h-screen ${
+      darkMode 
+        ? "bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]" 
+        : "bg-gradient-to-br from-gray-100 via-white to-violet-500"
+    } overflow-hidden transition-colors duration-300`}>
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div
@@ -354,16 +360,22 @@ sendButton.addEventListener("click", function() {
     
 
       {/* Main Content Area with Routes */}
-      <div className="flex-1 flex overflow-hidden bg-gray-300 m-2 sm:m-4 md:m-6 rounded-[30px] md:rounded-4xl">
+      <div className={`flex-1 flex overflow-hidden ${
+        darkMode ? "bg-[#341b47]" : "bg-gray-300"
+      } m-2 sm:m-4 md:m-6 rounded-[30px] md:rounded-4xl transition-colors duration-300`}>
         <Routes>
           <Route
             path="/"
             element={
-              <div className="flex-1 flex flex-col rounded-xl md:rounded-2xl m-2 md:m-3 overflow-hidden text-gray-900">
+              <div className={`flex-1 flex flex-col rounded-xl md:rounded-2xl m-2 md:m-3 overflow-hidden ${
+                darkMode ? "text-gray-100" : "text-gray-900"
+              } transition-colors duration-300`}>
                 <div className="p-2 md:p-4 flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <button
-                      className="p-2 text-gray-500 hover:text-gray-800 md:hidden"
+                      className={`p-2 ${
+                        darkMode ? "text-gray-300 hover:text-white" : "text-gray-500 hover:text-gray-800"
+                      } md:hidden transition-colors duration-300`}
                       onClick={toggleSidebar}
                       aria-label="Open sidebar menu"
                     >
@@ -371,38 +383,52 @@ sendButton.addEventListener("click", function() {
                     </button>
                     <div className="relative group">
                       <button
-                        className="p-1 md:p-2 bg-white rounded-full text-sm hover:bg-transparent group-hover:bg-gray-300"
+                        className={`p-1 md:p-2 ${
+                          darkMode ? "bg-[#5b3a64] hover:bg-[#4a2d52]" : "bg-white hover:bg-gray-300"
+                        } rounded-full text-sm transition-colors duration-300`}
                         onClick={handleNewChat}
                       >
                         <Edit className="w-4 h-4 md:w-5 md:h-5" />
                       </button>
-                      <span className="absolute left-1/2 transform -translate-x-1/4 top-10 bg-white text-black text-xs rounded py-1 px-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      <span className={`absolute left-1/2 transform -translate-x-1/4 top-10 ${
+                        darkMode ? "bg-[#5b3a64] text-white" : "bg-white text-black"
+                      } text-xs rounded py-1 px-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap`}>
                         Create new chat
                       </span>
                     </div>
                     <div className="relative group">
                       <button
-                        className="p-1 md:p-2 bg-white rounded-full text-sm hover:bg-transparent group-hover:bg-gray-300"
+                        className={`p-1 md:p-2 ${
+                          darkMode ? "bg-[#5b3a64] hover:bg-[#4a2d52]" : "bg-white hover:bg-gray-300"
+                        } rounded-full text-sm transition-colors duration-300`}
                         onClick={() => setIsQuizPopupOpen(true)}
                       >
                         <BookOpen className="w-4 h-4 md:w-5 md:h-5" />
                       </button>
-                      <span className="absolute left-1/2 transform -translate-x-1/2 top-10 bg-white text-black text-xs rounded py-1 px-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      <span className={`absolute left-1/2 transform -translate-x-1/2 top-10 ${
+                        darkMode ? "bg-[#5b3a64] text-white" : "bg-white text-black"
+                      } text-xs rounded py-1 px-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap`}>
                         Attempt a quiz
                       </span>
                     </div>
                   </div>
-                  <h3 className="text-md md:text-xl font-semibold mx-2 md:mx-4 text-violet-800">
+                  <h3 className={`text-md md:text-xl font-semibold mx-2 md:mx-4 ${
+                    darkMode ? "text-violet-300" : "text-violet-800"
+                  } transition-colors duration-300`}>
                     Your AI Chatbot
                   </h3>
                   <div className="flex items-center">
                     <button
-                      className="p-1 md:p-2 text-gray-500 hover:text-gray-700"
+                      className={`p-1 md:p-2 ${
+                        darkMode ? "text-gray-300 hover:text-white" : "text-gray-500 hover:text-gray-700"
+                      } transition-colors duration-300`}
                       onClick={() => setIsSharePopupOpen(true)}
                     >
                       <Share2 className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
-                    <button className="p-1 md:p-2 text-gray-500 hover:text-gray-700 ml-1 md:ml-2">
+                    <button className={`p-1 md:p-2 ${
+                      darkMode ? "text-gray-300 hover:text-white" : "text-gray-500 hover:text-gray-700"
+                    } ml-1 md:ml-2 transition-colors duration-300`}>
                       <Bell className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
                   </div>
@@ -426,53 +452,71 @@ sendButton.addEventListener("click", function() {
                       {message.role === "assistant" && (
                         <div className="mb-2 md:mb-4 w-full md:w-1/2">
                           <div className="flex items-start">
-                            <div className="bg-white p-2 md:p-4 rounded-lg w-full">
-                              <p className="text-sm md:text-base text-gray-800">
+                            <div className={`${
+                              darkMode ? "bg-[#5b3a64]" : "bg-white"
+                            } p-2 md:p-4 rounded-lg w-full transition-colors duration-300`}>
+                              <p className={`text-sm md:text-base ${
+                                darkMode ? "text-gray-100" : "text-gray-800"
+                              } transition-colors duration-300`}>
                                 {message.content}
                               </p>
 
                               {message.id === 1 && (
                                 <div className="mt-4 md:mt-6">
-                                  <div className="bg-gray-100 rounded-lg overflow-hidden">
+                                  <div className={`${
+                                    darkMode ? "bg-[#341b47]" : "bg-gray-100"
+                                  } rounded-lg overflow-hidden transition-colors duration-300`}>
                                     <div className="flex border-b">
                                       {["HTML", "CSS", "JS"].map((tab) => (
                                         <button
                                           key={tab}
                                           className={`px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm ${
                                             activeTab === tab
-                                              ? "text-blue-600"
-                                              : "text-gray-600"
-                                          }`}
+                                              ? darkMode ? "text-violet-300" : "text-blue-600"
+                                              : darkMode ? "text-gray-400" : "text-gray-600"
+                                          } transition-colors duration-300`}
                                           onClick={() => setActiveTab(tab)}
                                         >
                                           {tab}
                                         </button>
                                       ))}
                                       <div className="ml-auto px-2 md:px-4 py-1 md:py-2">
-                                        <button className="text-gray-500 text-xs md:text-sm flex items-center">
+                                        <button className={`${
+                                          darkMode ? "text-gray-400" : "text-gray-500"
+                                        } text-xs md:text-sm flex items-center transition-colors duration-300`}>
                                           <Copy className="w-3 h-3 md:w-4 md:h-4 mr-1" />
                                           Copy code
                                         </button>
                                       </div>
                                     </div>
-                                    <div className="p-2 md:p-4 bg-gray-50 overflow-x-auto text-xs md:text-sm font-mono">
+                                    <div className={`p-2 md:p-4 ${
+                                      darkMode ? "bg-[#2a0c2e]" : "bg-gray-50"
+                                    } overflow-x-auto text-xs md:text-sm font-mono transition-colors duration-300`}>
                                       {formatCode(codeExample)}
                                     </div>
                                   </div>
-                                  <p className="mt-2 md:mt-4 text-xs md:text-sm text-gray-600">
+                                  <p className={`mt-2 md:mt-4 text-xs md:text-sm ${
+                                    darkMode ? "text-gray-400" : "text-gray-600"
+                                  } transition-colors duration-300`}>
                                     Note: This is just an example of a simple
                                     HTML form. In a real-world scenario, you
                                     would also want to include proper validation
                                     and handling of the form data on the server
                                     side.
                                   </p>
-                                  <div className="mt-2 md:mt-4 p-2 md:p-4 bg-gray-100 rounded-lg">
-                                    <p className="text-xs md:text-sm text-gray-800">
+                                  <div className={`mt-2 md:mt-4 p-2 md:p-4 ${
+                                    darkMode ? "bg-[#341b47]" : "bg-gray-100"
+                                  } rounded-lg transition-colors duration-300`}>
+                                    <p className={`text-xs md:text-sm ${
+                                      darkMode ? "text-gray-100" : "text-gray-800"
+                                    } transition-colors duration-300`}>
                                       I have created a project in your Codepen
                                       account
                                     </p>
                                     <div className="flex justify-end mt-1 md:mt-2">
-                                      <button className="text-blue-600 flex items-center text-xs md:text-sm">
+                                      <button className={`${
+                                        darkMode ? "text-violet-300" : "text-blue-600"
+                                      } flex items-center text-xs md:text-sm transition-colors duration-300`}>
                                         View
                                       </button>
                                     </div>
@@ -485,13 +529,13 @@ sendButton.addEventListener("click", function() {
                             <button
                               className={`p-1 ${
                                 likedMessages.has(message.id)
-                                  ? "text-violet-600"
-                                  : "text-gray-400"
+                                  ? "text-violet-400"
+                                  : darkMode ? "text-gray-500" : "text-gray-400"
                               } hover:text-${
                                 likedMessages.has(message.id)
-                                  ? "violet-700"
-                                  : "gray-600"
-                              }`}
+                                  ? "violet-300"
+                                  : darkMode ? "gray-300" : "gray-600"
+                              } transition-colors duration-300`}
                               onClick={() => toggleLike(message.id)}
                             >
                               <ThumbsUp className="w-4 h-4 md:w-5 md:h-5" />
@@ -499,13 +543,13 @@ sendButton.addEventListener("click", function() {
                             <button
                               className={`p-1 ml-1 ${
                                 dislikedMessages.has(message.id)
-                                  ? "text-violet-600"
-                                  : "text-gray-400"
+                                  ? "text-violet-400"
+                                  : darkMode ? "text-gray-500" : "text-gray-400"
                               } hover:text-${
                                 dislikedMessages.has(message.id)
-                                  ? "violet-700"
-                                  : "gray-600"
-                              }`}
+                                  ? "violet-300"
+                                  : darkMode ? "gray-300" : "gray-600"
+                              } transition-colors duration-300`}
                               onClick={() => toggleDislike(message.id)}
                             >
                               <ThumbsDown className="w-4 h-4 md:w-5 md:h-5" />
@@ -513,9 +557,9 @@ sendButton.addEventListener("click", function() {
                             <button
                               className={`p-1 ml-1 ${
                                 copiedMessages.has(message.id)
-                                  ? "text-violet-600"
-                                  : "text-gray-400"
-                              } hover:text-violet-700`}
+                                  ? "text-violet-400"
+                                  : darkMode ? "text-gray-500" : "text-gray-400"
+                              } hover:text-violet-300 transition-colors duration-300`}
                               onClick={() => handleCopy(message.id)}
                             >
                               <Copy className="w-4 h-4 md:w-5 md:h-5" />
@@ -526,12 +570,18 @@ sendButton.addEventListener("click", function() {
 
                       {message.role === "user" && (
                         <div className="ml-auto w-full md:w-1/2 md:pl-6">
-                          <div className="bg-blue-50 rounded-lg p-2 md:p-3">
-                            <p className="text-sm md:text-base text-gray-800">
+                          <div className={`${
+                            darkMode ? "bg-[#5b3a64]" : "bg-blue-50"
+                          } rounded-lg p-2 md:p-3 transition-colors duration-300`}>
+                            <p className={`text-sm md:text-base ${
+                              darkMode ? "text-gray-100" : "text-gray-800"
+                            } transition-colors duration-300`}>
                               {message.content}
                             </p>
                             {message.files && message.files.length > 0 && (
-                              <div className="text-xs md:text-sm text-gray-600 mt-1">
+                              <div className={`text-xs md:text-sm ${
+                                darkMode ? "text-gray-400" : "text-gray-600"
+                              } mt-1 transition-colors duration-300`}>
                                 Files:{" "}
                                 {message.files.map((file, index) => (
                                   <div key={index}>
@@ -550,14 +600,16 @@ sendButton.addEventListener("click", function() {
 
                 {/* Modified Input Area */}
                 <div className="p-2 md:p-4">
-                  <div className="flex flex-wrap md:flex-nowrap items-center rounded-xl md:rounded-4xl bg-white px-2 md:px-3 py-1 md:py-2 relative w-full">
+                  <div className={`flex flex-wrap md:flex-nowrap items-center rounded-xl md:rounded-4xl ${
+                    darkMode ? "bg-[#5b3a64]" : "bg-white"
+                  } px-2 md:px-3 py-1 md:py-2 relative w-full transition-colors duration-300`}>
                     <div className="flex items-center w-full md:w-auto mb-2 md:mb-0 order-1 md:order-none">
                       <button
                         className={`px-2 md:px-3 py-1 md:py-2 rounded-full text-xs md:text-sm ${
                           isCreateImageActive
                             ? "bg-violet-500 text-white"
-                            : "bg-gray-200 text-gray-700"
-                        } `}
+                            : darkMode ? "bg-[#341b47] text-gray-300" : "bg-gray-200 text-gray-700"
+                        } transition-colors duration-300`}
                         onClick={() => {
                           setIsCreateImageActive(true);
                           handleSendMessage();
@@ -567,17 +619,23 @@ sendButton.addEventListener("click", function() {
                         Create image
                       </button>
                       <button
-                        className="text-gray-400 p-1 ml-1 md:ml-2"
+                        className={`${
+                          darkMode ? "text-gray-400" : "text-gray-400"
+                        } p-1 ml-1 md:ml-2 transition-colors duration-300`}
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                       >
-                        <Plus className="w-4 h-4 md:w-5 md:h-5 hover:text-violet-600" />
+                        <Plus className="w-4 h-4 md:w-5 md:h-5 hover:text-violet-400" />
                       </button>
                       {isMenuOpen && (
                         <div
                           ref={menuRef}
-                          className="absolute left-10 top-[-85px] bg-gray-200 rounded-lg shadow-xl p-2 z-10"
+                          className={`absolute left-10 top-[-85px] ${
+                            darkMode ? "bg-[#341b47]" : "bg-gray-200"
+                          } rounded-lg shadow-xl p-2 z-10 transition-colors duration-300`}
                         >
-                          <label className="block px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm text-black hover:bg-gray-100 hover:rounded-md cursor-pointer">
+                          <label className={`block px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm ${
+                            darkMode ? "text-gray-300 hover:bg-[#5b3a64]" : "text-black hover:bg-gray-100"
+                          } hover:rounded-md cursor-pointer transition-colors duration-300`}>
                             Upload Image
                             <input
                               type="file"
@@ -587,7 +645,9 @@ sendButton.addEventListener("click", function() {
                               className="hidden"
                             />
                           </label>
-                          <label className="block px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm text-black hover:bg-gray-100 hover:rounded-lg cursor-pointer">
+                          <label className={`block px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm ${
+                            darkMode ? "text-gray-300 hover:bg-[#5b3a64]" : "text-black hover:bg-gray-100"
+                          } hover:rounded-lg cursor-pointer transition-colors duration-300`}>
                             Upload File
                             <input
                               type="file"
@@ -606,7 +666,9 @@ sendButton.addEventListener("click", function() {
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         placeholder="Start typing"
-                        className="w-full px-2 py-1 md:py-2 rounded-lg outline-none text-sm md:text-base text-gray-800"
+                        className={`w-full px-2 py-1 md:py-2 rounded-lg outline-none text-sm md:text-base ${
+                          darkMode ? "bg-[#341b47] text-gray-100 placeholder-gray-400" : "text-gray-800"
+                        } transition-colors duration-300`}
                         onKeyPress={(e) => {
                           if (e.key === "Enter") {
                             handleSendMessage();
@@ -619,13 +681,19 @@ sendButton.addEventListener("click", function() {
                         {attachedFiles.map((file, index) => (
                           <div
                             key={index}
-                            className="flex items-center bg-gray-200 rounded-full px-2 md:px-3 py-1"
+                            className={`flex items-center ${
+                              darkMode ? "bg-[#341b47]" : "bg-gray-200"
+                            } rounded-full px-2 md:px-3 py-1 transition-colors duration-300`}
                           >
-                            <span className="text-xs md:text-sm text-gray-800 mr-1 md:mr-2 truncate max-w-24 md:max-w-32">
+                            <span className={`text-xs md:text-sm ${
+                              darkMode ? "text-gray-300" : "text-gray-800"
+                            } mr-1 md:mr-2 truncate max-w-24 md:max-w-32 transition-colors duration-300`}>
                               {file.name}
                             </span>
                             <button
-                              className="text-gray-500 hover:text-gray-700 p-1"
+                              className={`${
+                                darkMode ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"
+                              } p-1 transition-colors duration-300`}
                               onClick={() => removeAttachedFile(file)}
                             >
                               <X className="w-3 h-3 md:w-4 md:h-4" />
@@ -635,14 +703,18 @@ sendButton.addEventListener("click", function() {
                       </div>
                     )}
                     <button
-                      className="bg-violet-500 text-white p-2 md:p-3 rounded-md md:ml-2 order-4 md:order-none"
+                      className={`${
+                        darkMode ? "bg-violet-600 hover:bg-violet-700" : "bg-violet-500 hover:bg-violet-600"
+                      } text-white p-2 md:p-3 rounded-md md:ml-2 order-4 md:order-none transition-colors duration-300`}
                       onClick={handleSendMessage}
                     >
                       <Send className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
-                <div className="pb-1 md:pb-2 text-xs text-gray-500 text-center">
+                <div className={`pb-1 md:pb-2 text-xs ${
+                  darkMode ? "text-gray-400" : "text-gray-500"
+                } text-center transition-colors duration-300`}>
                   Gyansetu - Personalized AI learning for Indian students.
                   Aligned with education boards for grades 5-12.
                 </div>
@@ -657,11 +729,17 @@ sendButton.addEventListener("click", function() {
         </Routes>
 
         {/* History Panel */}
-        <div className="hidden lg:flex w-64 xl:w-72 bg-white rounded-3xl lg:rounded-4xl m-3 mr-3 ml-4 overflow-hidden flex-col text-gray-900">
+        <div className={`hidden lg:flex w-64 xl:w-72 ${
+          darkMode ? "bg-[#341b47]" : "bg-white"
+        } rounded-3xl lg:rounded-4xl m-3 mr-3 ml-4 overflow-hidden flex-col ${
+          darkMode ? "text-gray-100" : "text-gray-900"
+        } transition-colors duration-300`}>
           <div className="p-3 md:p-4">
             <h2 className="font-semibold flex items-center justify-between">
               History
-              <span className="text-xs text-gray-500">
+              <span className={`text-xs ${
+                darkMode ? "text-gray-400" : "text-gray-500"
+              } transition-colors duration-300`}>
                 {historyItems.length}/50
               </span>
             </h2>
@@ -671,22 +749,30 @@ sendButton.addEventListener("click", function() {
             {historyItems.map((item) => (
               <div
                 key={item.id}
-                className="p-3 md:p-4 hover:bg-gray-200 rounded-3xl lg:rounded-4xl m-2 cursor-pointer group"
+                className={`p-3 md:p-4 hover:${
+                  darkMode ? "bg-[#5b3a64]" : "bg-gray-200"
+                } rounded-3xl lg:rounded-4xl m-2 cursor-pointer group transition-colors duration-300`}
               >
                 <div className="flex items-start">
                   <button
                     className="p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => handleDeleteHistoryItem(item.id)}
                   >
-                    <div className="bg-gray-100 rounded-full p-2 hover:bg-gray-200 mr-3 md:mr-4">
-                      <Trash2 className="w-3 h-3 md:w-4 md:h-4 text-violet-400 hover:text-black" />
+                    <div className={`${
+                      darkMode ? "bg-[#2a0c2e] hover:bg-[#5b3a64]" : "bg-gray-100 hover:bg-gray-200"
+                    } rounded-full p-2 mr-3 md:mr-4 transition-colors duration-300`}>
+                      <Trash2 className={`w-3 h-3 md:w-4 md:h-4 ${
+                        darkMode ? "text-violet-400 hover:text-violet-300" : "text-violet-400 hover:text-black"
+                      } transition-colors duration-300`} />
                     </div>
                   </button>
                   <div>
                     <h3 className="font-medium text-sm md:text-base">
                       {item.title}
                     </h3>
-                    <p className="text-xs md:text-sm text-gray-500 mt-1">
+                    <p className={`text-xs md:text-sm ${
+                      darkMode ? "text-gray-400" : "text-gray-500"
+                    } mt-1 transition-colors duration-300`}>
                       {item.description}
                     </p>
                   </div>
@@ -705,17 +791,25 @@ sendButton.addEventListener("click", function() {
         >
           <div
             ref={sharePopupRef}
-            className="bg-white p-4 md:p-6 rounded-lg shadow-lg relative m-4 w-11/12 md:w-auto"
+            className={`${
+              darkMode ? "bg-[#341b47]" : "bg-white"
+            } p-4 md:p-6 rounded-lg shadow-lg relative m-4 w-11/12 md:w-auto transition-colors duration-300`}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">
+            <h3 className={`text-base md:text-lg font-semibold mb-3 md:mb-4 ${
+              darkMode ? "text-gray-100" : "text-gray-900"
+            } transition-colors duration-300`}>
               Share Chat
             </h3>
-            <p className="mb-3 md:mb-4 text-sm md:text-base">
-              Link: <span className="text-blue-500">{handleShareChat()}</span>
+            <p className={`mb-3 md:mb-4 text-sm md:text-base ${
+              darkMode ? "text-gray-300" : "text-gray-900"
+            } transition-colors duration-300`}>
+              Link: <span className="text-violet-400">{handleShareChat()}</span>
             </p>
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              className={`absolute top-2 right-2 ${
+                darkMode ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"
+              } transition-colors duration-300`}
               onClick={() => setIsSharePopupOpen(false)}
             >
               <X className="w-4 h-4 md:w-5 md:h-5" />
@@ -732,18 +826,26 @@ sendButton.addEventListener("click", function() {
         >
           <div
             ref={quizPopupRef}
-            className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 lg:w-1/2 h-3/4 md:h-1/2 relative overflow-y-auto m-4"
+            className={`${
+              darkMode ? "bg-[#341b47]" : "bg-white"
+            } p-4 md:p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 lg:w-1/2 h-3/4 md:h-1/2 relative overflow-y-auto m-4 transition-colors duration-300`}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">
+            <h3 className={`text-base md:text-lg font-semibold mb-3 md:mb-4 ${
+              darkMode ? "text-gray-100" : "text-gray-900"
+            } transition-colors duration-300`}>
               Attempt a Quiz
             </h3>
-            <p className="mb-3 md:mb-4 text-sm md:text-base">
+            <p className={`mb-3 md:mb-4 text-sm md:text-base ${
+              darkMode ? "text-gray-300" : "text-gray-900"
+            } transition-colors duration-300`}>
               This is a placeholder for the quiz content. Add your quiz
               questions here!
             </p>
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              className={`absolute top-2 right-2 ${
+                darkMode ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"
+              } transition-colors duration-300`}
               onClick={() => setIsQuizPopupOpen(false)}
             >
               <X className="w-4 h-4 md:w-5 md:h-5" />

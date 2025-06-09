@@ -270,22 +270,10 @@ const TeacherDashboard = () => {
 
   // No longer need a local toggleTheme function as we're using the context version
 
-  const handleProfileClick = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setProfileImage(event.target.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    fileInput.click();
+  const handleProfileIconClick = () => {
+    navigate("/teacher/profile");
   };
+
 
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value);
@@ -362,7 +350,7 @@ const TeacherDashboard = () => {
                     )}
                   </button>
                   <button
-                    onClick={handleProfileClick}
+                    onClick={handleProfileIconClick}
                     className={`p-2 rounded-full ${
                       darkMode
                         ? "hover:bg-[#341b47] text-white"
@@ -379,6 +367,8 @@ const TeacherDashboard = () => {
                       <IoPersonCircleOutline className="text-xl" />
                     )}
                   </button>
+                    
+                  
                   <button
                     onClick={handleLogout}
                     className={`px-4 py-2 ${

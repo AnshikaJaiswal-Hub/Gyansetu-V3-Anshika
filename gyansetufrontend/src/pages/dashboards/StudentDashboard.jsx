@@ -25,10 +25,11 @@ import ReactApexChart from "react-apexcharts";
 import RecentAchievements from "../../components/students/studentDashboard/RecentAchievements";
 import StatsSection from "../../components/students/studentDashboard/StatsSection";
 import MiniChatbot from "../../components/students/studentDashboard/MiniChatbot";
-import Cal from "../../components/students/studentDashboard/Calendar";
 import { useNavigate } from "react-router-dom";
 import ProfilePopup from "../../components/students/studentDashboard/ProfilePopup";
 import PopNotifications from "../../components/students/studentDashboard/PopNotifications";
+import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
+import { useTheme } from "../../context/ThemeContext";
 
 // Country Bar Chart Component
 const CountryBarChart = ({ darkMode }) => {
@@ -45,6 +46,7 @@ const CountryBarChart = ({ darkMode }) => {
         height: 350,
         fontFamily:
           "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif",
+        background: darkMode ? "#341b47" : "#f3e8ff",
       },
       plotOptions: {
         bar: {
@@ -95,7 +97,7 @@ const CountryBarChart = ({ darkMode }) => {
           },
         },
       },
-      colors: ["#b6d238"],
+      colors: darkMode ? ["#A855F7", "#EC4899", "#F472B6"] : ["#b6d238", "#b6d238", "#b6d238"],
       tooltip: {
         y: {
           formatter: function (val) {
@@ -194,16 +196,116 @@ const CountryBarChart = ({ darkMode }) => {
   );
 };
 
+// Attendance Pie Chart Component
+const AttendancePieChart = ({ darkMode }) => {
+  const [state] = useState({
+    series: [75, 25], // 75% present, 25% absent
+    options: {
+      chart: {
+        type: 'donut',
+        height: 350,
+        background: darkMode ? "#341b47" : "#f3e8ff",
+      },
+      labels: ['Present', 'Absent'],
+      colors: darkMode ? ['#A855F7', '#6366F1'] : ['#b6d238', '#8B5CF6'],
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '70%',
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                fontSize: '22px',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 600,
+                color: darkMode ? '#fff' : '#1F2937',
+              },
+              value: {
+                show: true,
+                fontSize: '16px',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 400,
+                color: darkMode ? '#fff' : '#1F2937',
+                formatter: function (val) {
+                  return val + '%';
+                }
+              },
+              total: {
+                show: true,
+                label: 'Attendance',
+                fontSize: '16px',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 600,
+                color: darkMode ? '#fff' : '#1F2937',
+                formatter: function (w) {
+                  return w.globals.seriesTotals.reduce((a, b) => a + b, 0) / w.globals.seriesTotals.length + '%';
+                }
+              }
+            }
+          }
+        }
+      },
+      stroke: {
+        width: 0
+      },
+      legend: {
+        position: 'bottom',
+        fontFamily: 'Inter, sans-serif',
+        labels: {
+          colors: darkMode ? '#fff' : '#1F2937'
+        }
+      },
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            height: 300
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }]
+    }
+  });
+
+  return (
+    <div className="w-full">
+      <div className={`rounded-2xl shadow-md overflow-hidden p-5 transition-all duration-300 hover:shadow-lg ${
+        darkMode ? "bg-[#341b47]" : "bg-white"
+      }`}>
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h3 className={`font-semibold text-lg ${darkMode ? "text-white" : ""}`}>Attendance</h3>
+            <p className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
+              Overall attendance rate
+            </p>
+          </div>
+        </div>
+        <div className="h-[350px]">
+          <ReactApexChart
+            options={state.options}
+            series={state.series}
+            type="donut"
+            height={350}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Dashboard Component
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState("home");
-  const [darkMode, setDarkMode] = useState(false);
   const [statusEnabled, setStatusEnabled] = useState(true);
   const [navExpanded, setNavExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [userName, setUserName] = useState(""); // Initialize as empty string
   const navigate = useNavigate();
+  const { darkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     // Get user data from localStorage
@@ -229,14 +331,6 @@ const StudentDashboard = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
 
   const handleNavToggle = useCallback((expanded) => {
     setNavExpanded(expanded);
@@ -287,37 +381,43 @@ const StudentDashboard = () => {
   const statsData = { quizzesCompleted: 14, hoursSpent: 6 };
 
   return (
-    <div className="bg-gray-100 pt-10 pr-10 pb-10">
-      <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px] pl-6">
-        <header className="px-6 py-4 flex justify-between items-center">
+    <div className={`min-h-screen ${darkMode ? "bg-[#5b3a64]" : "bg-gray-100"} transition-colors duration-300 p-4`}>
+      <div className={`min-h-screen ${
+        darkMode
+          ? "bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]"
+          : "bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400"
+      } rounded-[30px] p-4 transition-colors duration-300`}>
+        <header className="flex justify-between items-center">
           {/* Profile Section */}
           <div className="w-full">
-            <h3 className="text-4xl font-medium left-6 bg-gradient-to-r from-violet-600 to-purple-300 bg-clip-text text-transparent pb-1 leading-tight">{getGreeting()}, {userName}!</h3>
+            <h3 className={`text-4xl font-medium left-6 ${
+              darkMode 
+                ? "bg-gradient-to-r from-purple-400 via-violet-500 to-indigo-500 bg-clip-text text-transparent" 
+                : "bg-gradient-to-r from-violet-600 to-purple-300 bg-clip-text text-transparent"
+            } pb-1 leading-tight transition-colors duration-300`}>
+              {getGreeting()}, {userName}!
+            </h3>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center bg-white rounded-full py-2 px-3 shadow-md">
-              <button
-                className="p-1 rounded-full"
-                onClick={() => setDarkMode(false)}
-              >
-                <Sun
-                  size={18}
-                  className={!darkMode ? "text-purple-600" : "text-gray-400"}
-                />
-              </button>
-              <button
-                className="p-1 rounded-full"
-                onClick={() => setDarkMode(true)}
-              >
-                <Moon
-                  size={18}
-                  className={darkMode ? "text-purple-600" : "text-gray-400"}
-                />
-              </button>
-            </div>
+            <button
+              onClick={toggleTheme}
+              className={`p-2 rounded-full ${
+                darkMode
+                  ? "hover:bg-[#341b47] text-white"
+                  : "hover:bg-gray-200 text-gray-800"
+              } transition-colors duration-300`}
+            >
+              {darkMode ? (
+                <IoSunnyOutline className="text-xl" />
+              ) : (
+                <IoMoonOutline className="text-xl" />
+              )}
+            </button>
             <div 
-              className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md relative cursor-pointer"
+              className={`w-10 h-10 rounded-full ${
+                darkMode ? "bg-[#341b47]" : "bg-white"
+              } flex items-center justify-center shadow-md relative cursor-pointer transition-colors duration-300`}
               onClick={() => setShowNotifications(!showNotifications)}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -364,28 +464,27 @@ const StudentDashboard = () => {
           </div>
 
           {/* Time Analysis and Calendar */}
-          <div className="mb-8 flex flex-col md:flex-row gap-15">
-            <div className="flex justify-center py-2">
-              {/* Assuming Cal is a custom component; ensure it accepts src and alt props */}
-              <Cal
-                src="/calendar.png"
-                alt="Chatbot Image"
-                className="transform translate-y-12"
-              />
+          <div className="mb-8 flex flex-col md:flex-row gap-4">
+            <div className="w-full md:w-1/3">
+              <AttendancePieChart darkMode={darkMode} />
             </div>
 
             <div className="w-full md:w-2/3">
-              <div className="bg-white rounded-2xl shadow-md overflow-hidden p-5 transition-all duration-300 hover:scale-105 hover:shadow-lg ml-8">
+              <div className={`rounded-2xl shadow-md overflow-hidden p-5 transition-all duration-300 hover:shadow-lg ${
+                darkMode ? "bg-[#341b47]" : "bg-white"
+              }`}>
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="font-semibold text-lg">Time spend</h3>
-                    <p className="text-gray-500 text-sm">
+                    <h3 className={`font-semibold text-lg ${darkMode ? "text-white" : ""}`}>Time spend</h3>
+                    <p className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
                       Weekly time analysis
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <button className="w-7 h-7 rounded-full bg-purple-50 dark:bg-gray-700 flex items-center justify-center">
-                      <ArrowUpRight size={16} className="dark:text-gray-300" />
+                    <button className={`w-7 h-7 rounded-full flex items-center justify-center ${
+                      darkMode ? "bg-[#5b3a64]" : "bg-purple-50"
+                    }`}>
+                      <ArrowUpRight size={16} className={darkMode ? "text-gray-300" : "dark:text-gray-300"} />
                     </button>
                   </div>
                 </div>
@@ -406,9 +505,9 @@ const StudentDashboard = () => {
 
 const StudentDashboardPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-200 via-white to-purple-300">
+   
       <StudentDashboard />
-    </div>
+
   );
 };
 

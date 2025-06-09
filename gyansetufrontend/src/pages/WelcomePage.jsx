@@ -19,14 +19,14 @@ const WelcomePage = () => {
     navigate("/login");
   };
 
-  // Violet theme colors to match existing UI
+  // Dark theme colors to match TeacherDashboard
   const themeColors = {
-    primaryColor: "#8A2BE2",
-    textPrimary: "#4B0082",
-    textSecondary: "#663399",
-    buttonBg: "#9370DB",
-    buttonHover: "#7B68EE",
-    borderColor: "#4B0082", // Darker purple for border
+    primaryColor: "#5b3a64",
+    textPrimary: "#ffffff",
+    textSecondary: "#e2e8f0",
+    buttonBg: "#341b47",
+    buttonHover: "#4a1f63",
+    borderColor: "#8A2BE2",
   };
 
   return (
@@ -34,8 +34,7 @@ const WelcomePage = () => {
       <div
         className="flex flex-col items-center justify-center h-full text-center px-6 py-8 space-y-8 rounded-lg"
         style={{
-          background:
-            "linear-gradient(to bottom right,rgb(208, 158, 255), white,rgb(242, 229, 255))",
+          background: "linear-gradient(to bottom right, #100e10, #5b3a64, #2a0c2e)",
         }}
       >
         {/* Logo - Using image from public folder */}
@@ -60,7 +59,7 @@ const WelcomePage = () => {
         {/* Description */}
         <p
           className="font-primary text-sm md:text-base max-w-md"
-          style={{ color: themeColors.textPrimary }}
+          style={{ color: themeColors.textSecondary }}
         >
           Welcome to the future of learning! Our AI-based Learning Management
           System (LMS) revolutionizes the way you learn, providing personalized
@@ -74,22 +73,21 @@ const WelcomePage = () => {
           onClick={handleGetStarted}
           className="w-full md:w-2/3 h-12 font-bold cursor-pointer rounded-full flex items-center justify-center uppercase tracking-wide relative overflow-hidden"
           style={{
-            border: "3px solid #4B0082", // Darker purple, thicker border
-            color: "#4B0082", // Start with purple text
-            background: "transparent", // Start with transparent background
-            backgroundImage:
-              "linear-gradient(to left, transparent 50%, #9370DB 50%)", // The fill animation
+            border: "3px solid #c3abd6",
+            color: "#ffffff",
+            background: "transparent",
+            backgroundImage: "linear-gradient(to left, transparent 50%, #231130 50%)",
             backgroundSize: "200% 100%",
             backgroundPosition: "right bottom",
             transition: "all 0.3s ease-out",
           }}
           onMouseOver={(e) => {
-            e.currentTarget.style.backgroundPosition = "left bottom"; // Move background position to show color
-            e.currentTarget.style.color = "white"; // Change text to white on hover
+            e.currentTarget.style.backgroundPosition = "left bottom";
+            e.currentTarget.style.color = "#ffffff";
           }}
           onMouseOut={(e) => {
-            e.currentTarget.style.backgroundPosition = "right bottom"; // Reset position
-            e.currentTarget.style.color = "#4B0082"; // Reset text color
+            e.currentTarget.style.backgroundPosition = "right bottom";
+            e.currentTarget.style.color = "#ffffff";
           }}
         >
           <span>GET STARTED</span>

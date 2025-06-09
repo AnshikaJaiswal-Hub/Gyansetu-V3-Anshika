@@ -17,8 +17,7 @@ const ButtonsDemo = () => {
   };
 
   const handleScheduleClick = () => {
-    setShowScheduleOptions(!showScheduleOptions);
-    setShowContactOptions(false);
+    navigate("/teacher/schedule-meeting");
   };
 
   const handleCreateAssignmentClick = () => {
@@ -67,24 +66,7 @@ const ButtonsDemo = () => {
         </div>
       </button>
 
-      {/* Contact Button */}
-      <div className="relative w-full md:w-auto">
-        <button className={actionButtonClass} onClick={handleContactClick}>
-          <div className="flex items-center">
-            <MessageCircle className="mr-2" size={20} />
-            <span>Contact</span>
-          </div>
-          <div className={circleIconClass}>
-            <ChevronRight size={16} />
-          </div>
-        </button>
-        {showContactOptions && (
-          <div className={dropdownClass}>
-            <button className={dropdownItemClass}>Student</button>
-            <button className={dropdownItemClass}>Parent</button>
-          </div>
-        )}
-      </div>
+      
 
       {/* Schedule Meeting Button */}
       <div className="relative w-full md:w-auto">
@@ -97,12 +79,7 @@ const ButtonsDemo = () => {
             <ChevronRight size={16} />
           </div>
         </button>
-        {showScheduleOptions && (
-          <div className={dropdownClass}>
-            <button className={dropdownItemClass}>Student</button>
-            <button className={dropdownItemClass}>Parent</button>
-          </div>
-        )}
+        
       </div>
     </div>
   );

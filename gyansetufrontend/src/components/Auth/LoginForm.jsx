@@ -26,18 +26,18 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
   const [roleError, setRoleError] = useState(null);
   const [suggestedRole, setSuggestedRole] = useState(null);
 
-  // Violet theme colors
+  // Dark theme colors to match TeacherDashboard and WelcomePage
   const themeColors = {
-    bgColor: "#F8F5FF",
-    cardBg: "#F0E6FF",
+    bgColor: "#231130",
+    cardBg: "#341b47",
     primaryColor: "#8A2BE2",
-    borderColor: "#D1C2F0",
-    buttonBg: "#9370DB",
-    buttonHover: "#7B68EE",
-    textPrimary: "#4B0082",
-    textSecondary: "#663399",
-    errorColor: "#FF3333", // Bright red for errors
-    successColor: "#4CAF50", // Green for success
+    borderColor: "#c3abd6",
+    buttonBg: "#341b47",
+    buttonHover: "#4a1f67",
+    textPrimary: "#ffffff",
+    textSecondary: "#e2e8f0",
+    errorColor: "#ff6b6b",
+    successColor: "#4CAF50",
   };
 
   const togglePassword = () => {
@@ -233,7 +233,10 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
   };
 
   return (
-    <div className="flex flex-col items-center text-center h-full overflow-y-auto px-6">
+    <div 
+      className="flex flex-col items-center text-center h-full overflow-y-auto px-6"
+      style={{ backgroundColor: themeColors.bgColor }}
+    >
       <ToastContainer position="top-right" autoClose={7000} />
       {loading && <LoginOverlay progress={progress} />}
       {quickLoading && <SimpleLoader />}
@@ -241,13 +244,13 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
       {/* Top Badge */}
       <h1
         className="font-primary text-4xl font-thin mt-4"
-        style={{ color: themeColors.primaryColor }}
+        style={{ color: themeColors.textPrimary }}
       >
         Sign In
       </h1>
       <p
         className="font-primary text-base mb-4"
-        style={{ color: themeColors.textPrimary }}
+        style={{ color: themeColors.textSecondary }}
       >
         Hey, let's sign in to your account
       </p>
@@ -255,7 +258,7 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
       {/* Social Buttons */}
       <div className="flex space-x-4 my-2">
         <button
-          className="px-3 py-2 rounded-[15px] border transition-colors cursor-pointer flex items-center justify-center"
+          className="px-3 py-2 rounded-[15px] border transition-colors cursor-pointer flex items-center justify-center hover:bg-[#341b47]"
           style={{
             backgroundColor: themeColors.cardBg,
             borderColor: themeColors.borderColor,
@@ -266,7 +269,7 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
           <FaGoogle size={18} />
         </button>
         <button
-          className="px-3 py-0 rounded-[15px] border transition-colors cursor-pointer flex items-center justify-center"
+          className="px-3 py-0 rounded-[15px] border transition-colors cursor-pointer flex items-center justify-center hover:bg-[#341b47]"
           style={{
             backgroundColor: themeColors.cardBg,
             borderColor: themeColors.borderColor,
@@ -299,7 +302,7 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
             type="email"
             name="email"
             placeholder="Email address"
-            className="w-full h-12 border rounded-full px-4 focus:outline-none"
+            className="w-full h-12 border rounded-full px-4 focus:outline-none focus:ring-2 focus:ring-[#8A2BE2]"
             style={{
               backgroundColor: themeColors.cardBg,
               borderColor:
@@ -320,7 +323,7 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               name="password"
-              className="w-full h-12 border rounded-full px-4 pr-12 focus:outline-none"
+              className="w-full h-12 border rounded-full px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-[#8A2BE2]"
               style={{
                 backgroundColor: themeColors.cardBg,
                 borderColor: authError
@@ -377,7 +380,7 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
 
         <button
           type="submit"
-          className="w-full h-12 text-white cursor-pointer transition-colors rounded-full border"
+          className="w-full h-12 text-white cursor-pointer transition-colors rounded-full border hover:bg-[#4a1f63]"
           style={{
             backgroundColor: themeColors.buttonBg,
             borderColor: themeColors.borderColor,
@@ -394,9 +397,9 @@ const LoginForm = ({ switchToSignup, onSuccessfulLogin }) => {
         </span>
         <button
           onClick={switchToSignup}
-          className="text-white px-2 py-1 rounded-md text-xs border"
+          className="text-white px-2 py-1 rounded-md text-xs border hover:bg-[#4a1f63]"
           style={{
-            backgroundColor: themeColors.primaryColor,
+            backgroundColor: themeColors.buttonBg,
             borderColor: themeColors.borderColor,
           }}
         >

@@ -1,41 +1,36 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Create a theme context
-export const ThemeContext = createContext();
+const ThemeContext = createContext();
 
-// Create a theme provider component
-export const ThemeProvider = ({ children }) => {
-  // Check if there's a saved theme preference in localStorage, default to dark mode
+export function ThemeProvider({ children }) {
+  // Check if user has a theme preference in localStorage
   const [darkMode, setDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("darkMode");
-    // If no saved theme, default to dark mode (true)
-    return savedTheme === null ? true : savedTheme === "true";
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme === 'dark';
   });
 
-  // Update localStorage when theme changes
+  // Update localStorage and document class when theme changes
   useEffect(() => {
-    localStorage.setItem("darkMode", darkMode);
-
-    // You could also add a class to the document body for global CSS if needed
-    if (darkMode) {
-      document.body.classList.add("dark-theme");
-    } else {
-      document.body.classList.remove("dark-theme");
-    }
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
-  // Function to toggle the theme
   const toggleTheme = () => {
     setDarkMode(!darkMode);
   };
 
-  // Provide the theme context to all child components
   return (
     <ThemeContext.Provider value={{ darkMode, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
-};
+}
 
-// Custom hook for using the theme
-export const useTheme = () => useContext(ThemeContext);
+// Custom hook to use the theme context
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+}

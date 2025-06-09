@@ -1,6 +1,11 @@
 /* Global dark mode styles */
-body.dark-theme {
-  background-color: #5b3a64;
+html.dark-theme, body.dark-theme {
+  background-color: #231130 !important;
+  min-height: 100vh;
+  min-width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   color: #e8eaed;
 }
 
@@ -20,6 +25,17 @@ body.dark-theme::-webkit-scrollbar-thumb {
 
 body.dark-theme::-webkit-scrollbar-thumb:hover {
   background: #4a2f52;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body.dark-theme::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body.dark-theme {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
 /* Transitions for smooth theme changes */

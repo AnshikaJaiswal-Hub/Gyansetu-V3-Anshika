@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 
-const InstituteContext = createContext();
+export const InstituteContext = createContext(null);
 
 export const InstituteProvider = ({ children }) => {
   // Shared state for classes

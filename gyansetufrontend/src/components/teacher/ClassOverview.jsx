@@ -15,7 +15,7 @@ const ClassOverview = ({
     <div
       className={`${
         darkMode ? "bg-[#231130]" : "bg-gray-200"
-      } border border-[#2a0c2e] p-4 md:p-6 rounded-4xl w-full transition-colors duration-300`}
+      } p-4 md:p-6 rounded-4xl w-full transition-colors duration-300`}
     >
       {/* Header Area for Heading and Dropdowns */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">

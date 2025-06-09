@@ -1,3 +1,5 @@
+//MAIN PAGE WHERE ALL ASSIGNMENT RELATED PAGES ARE IMPORTED
+
 import React, { useState, useEffect } from "react";
 import { Check, ChevronDown, User } from "lucide-react";
 import { useLocation } from "react-router-dom";
@@ -6,9 +8,10 @@ import {
   IoSunnyOutline,
   IoPersonCircleOutline,
 } from "react-icons/io5";
+import { useTheme } from "../../../../context/ThemeContext";
 
 // Import components
-import Navbar from "../../TeacherNavbar"; // Reusing the same Navbar component
+import Navbar from "../../TeacherNavbar"; 
 import TemplateSelection from "./TemplateSelection";
 import ContentCreation from "./content/ContentCreation";
 import SettingsConfiguration from "./SettingConfig";
@@ -16,6 +19,7 @@ import ReviewComponent from "./EnhancedReview";
 
 export default function AssignmentCreatorMain() {
   const location = useLocation();
+  const { darkMode, toggleTheme } = useTheme();
 
   // Original state
   const [currentStep, setCurrentStep] = useState(1);
@@ -31,11 +35,10 @@ export default function AssignmentCreatorMain() {
     sections: [],
   });
 
-  // Navbar state (added from TeacherDashboard)
+  // Navbar state
   const [navExpanded, setNavExpanded] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [profileImage, setProfileImage] = useState(null);
+  
 
   // Reset state when navigating to this component
   useEffect(() => {
@@ -120,54 +123,21 @@ export default function AssignmentCreatorMain() {
     setNavExpanded(expanded);
   };
 
-  // Toggle theme (from TeacherDashboard)
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
-  };
-
-  // Handle profile click (from TeacherDashboard)
-  const handleProfileClick = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setProfileImage(event.target.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    fileInput.click();
-  };
-
-  // Utility Icons component (from TeacherDashboard)
+  // Utility Icons component
   const UtilityIcons = () => (
     <div className="flex items-center space-x-4">
       <button
         onClick={toggleTheme}
-        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+        className={`p-2 rounded-full ${
+          darkMode
+            ? "hover:bg-[#341b47] text-white"
+            : "hover:bg-gray-200 text-gray-800"
+        } transition-colors duration-300`}
       >
         {darkMode ? (
           <IoSunnyOutline className="text-xl" />
         ) : (
           <IoMoonOutline className="text-xl" />
-        )}
-      </button>
-      <button
-        onClick={handleProfileClick}
-        className="p-2 rounded-full hover:bg-gray-200 transition-colors"
-      >
-        {profileImage ? (
-          <img
-            src={profileImage}
-            alt="Profile"
-            className="w-6 h-6 rounded-full"
-          />
-        ) : (
-          <IoPersonCircleOutline className="text-xl" />
         )}
       </button>
     </div>
@@ -176,181 +146,180 @@ export default function AssignmentCreatorMain() {
   return (
     <div
       className={`min-h-screen ${
-        darkMode
-          ? "bg-gray-900"
-          : "bg-gradient-to-br from-purple-200 via-white to-purple-300"
-      }`}
+        darkMode ? "bg-[#5b3a64]" : "bg-gray-100"
+      } transition-colors duration-300`}
     >
       <div className="flex flex-col md:flex-row">
-        {/* Navbar Integration - Using same approach as TeacherDashboard */}
+        {/* Navbar Integration */}
         <Navbar onNavToggle={handleNavToggle} />
 
-        {/* Mobile Utility Icons - Using same positioning as TeacherDashboard */}
-        {isMobile && (
-          <div className="fixed top-3 right-16 z-50">
-            <UtilityIcons />
-          </div>
-        )}
-
-        {/* Main Content Area - Using same margin and transition as TeacherDashboard */}
+        {/* Main Content Area */}
         <div
-          className={`flex-1 transition-all duration-300 pt-[20px] md:pt-0 ${
-            navExpanded ? "ml-0 md:ml-[330px]" : "ml-0 md:ml-[100px]"
-          }`}
+          className={`transition-all duration-300 ${
+            navExpanded ? "ml-0 md:ml-[300px]" : "ml-0 md:ml-[70px]"
+          } flex-1 px-4 md:px-8 py-6`}
         >
-          <div className="p-6 md:p-8">
-            {/* Desktop Utility Icons - Using same layout as TeacherDashboard */}
-            {!isMobile && (
-              <div className="flex justify-between items-center mb-4">
+          {/* Floating container with rounded corners */}
+          <div
+            className={`${
+              darkMode
+                ? "bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]"
+                : "bg-gradient-to-br from-purple-200 via-white to-purple-300"
+            } rounded-[30px] shadow-lg w-full transition-colors duration-300 px-0 md:px-8`}
+          >
+            <div className="p-6 md:p-8 md:px-0">
+              {/* Header with title and utility icons aligned */}
+              <div className="flex justify-between items-start mb-6">
+                {/* Title section */}
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-semibold text-gray-800">
+                  <h1
+                    className={`text-2xl md:text-4xl font-semibold ${
+                      darkMode ? "text-white" : "text-gray-800"
+                    } transition-colors duration-300`}
+                  >
                     Create Assignment
                   </h1>
-                  <h2 className="text-gray-500 text-lg mt-2">
+                  <h2
+                    className={`${
+                      darkMode ? "text-gray-300" : "text-gray-500"
+                    } text-base md:text-lg mt-2 transition-colors duration-300`}
+                  >
                     Build a new learning experience for your students
                   </h2>
                 </div>
+
+                {/* Utility Icons - aligned with the title */}
                 <div className="flex items-center space-x-4">
-                  <UtilityIcons />
+                  <button
+                    onClick={toggleTheme}
+                    className={`p-2 rounded-full ${
+                      darkMode
+                        ? "hover:bg-[#341b47] text-white"
+                        : "hover:bg-gray-200 text-gray-800"
+                    } transition-colors duration-300`}
+                  >
+                    {darkMode ? (
+                      <IoSunnyOutline className="text-xl" />
+                    ) : (
+                      <IoMoonOutline className="text-xl" />
+                    )}
+                  </button>
                 </div>
               </div>
-            )}
 
-            {/* Progress Steps */}
-            <div className="max-w-4xl mx-auto px-2 sm:px-6 lg:px-8 mt-1 mb-8 sm:mb-10 transition-all duration-300">
-              <div className="flex items-center justify-between">
-                {["Template", "Content", "Settings", "Review"].map(
-                  (step, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col items-center relative"
-                    >
+              {/* Progress Steps */}
+              <div className="max-w-4xl mx-auto px-2 sm:px-6 lg:px-8 mt-1 mb-8 sm:mb-10 transition-all duration-300">
+                <div className="flex items-center justify-between">
+                  {["Template", "Content", "Settings", "Review"].map(
+                    (step, index) => (
                       <div
-                        className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full text-sm font-medium ${
-                          currentStep > index + 1
-                            ? "bg-purple-600 text-white"
-                            : currentStep === index + 1
-                            ? "bg-purple-500 text-white"
-                            : "bg-gray-200 text-gray-600"
-                        } shadow-sm transition-all duration-200`}
+                        key={index}
+                        className="flex flex-col items-center relative"
                       >
-                        {currentStep > index + 1 ? (
-                          <Check className="w-5 h-5 sm:w-6 sm:h-6" />
-                        ) : (
-                          index + 1
+                        <div
+                          className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full text-sm font-medium ${
+                            currentStep > index + 1
+                              ? "bg-[#5c4370] text-white"
+                              : currentStep === index + 1
+                              ? "bg-[#5c4370] text-white"
+                              : darkMode
+                              ? "bg-[#2a0c2e] text-gray-300"
+                              : "bg-gray-300 text-gray-700"
+                          } shadow-sm transition-all duration-200`}
+                        >
+                          {currentStep > index + 1 ? (
+                            <Check className="w-5 h-5 sm:w-6 sm:h-6" />
+                          ) : (
+                            index + 1
+                          )}
+                        </div>
+                        <span
+                          className={`mt-2 text-xs sm:text-sm hidden sm:block ${
+                            currentStep === index + 1
+                              ? "font-medium text-purple-300"
+                              : darkMode
+                              ? "text-gray-300 font-medium"
+                              : "text-gray-600"
+                          }`}
+                        >
+                          {step}
+                        </span>
+
+                        {/* Connecting line */}
+                        {index < 3 && (
+                          <div className={`absolute left-10 sm:left-13 top-5 sm:top-6 w-full h-0.5 ${
+                            darkMode ? "bg-[#2a0c2e]" : "bg-gray-300"
+                          }`}>
+                            <div
+                              className="h-full bg-[#5c4370] transition-all duration-300"
+                              style={{
+                                width: currentStep > index + 1 ? "100%" : "0%",
+                              }}
+                            ></div>
+                          </div>
                         )}
                       </div>
-                      <span
-                        className={`mt-2 text-xs sm:text-sm hidden sm:block ${
-                          currentStep === index + 1
-                            ? "font-medium text-purple-800"
-                            : "text-gray-600"
-                        }`}
-                      >
-                        {step}
-                      </span>
-
-                      {/* Connecting line */}
-                      {index < 3 && (
-                        <div className="absolute left-10 sm:left-12 top-5 sm:top-6 w-full h-0.5 bg-gray-200">
-                          <div
-                            className="h-full bg-purple-500 transition-all duration-300"
-                            style={{
-                              width: currentStep > index + 1 ? "100%" : "0%",
-                            }}
-                          ></div>
-                        </div>
-                      )}
-                    </div>
-                  )
-                )}
+                    )
+                  )}
+                </div>
               </div>
+
+              {/* Main Content */}
+              <main className="w-full px-0 md:px-0 pb-12">
+                {currentStep === 1 && (
+                  <TemplateSelection
+                    onSelectTemplate={handleTemplateSelect}
+                    onNext={() => handleNextStep()}
+                  />
+                )}
+
+                {currentStep === 2 && (
+                  <ContentCreation
+                    onNext={handleNextStep}
+                    onPrevious={handlePrevStep}
+                    selectedTemplate={selectedTemplate}
+                  />
+                )}
+
+                {currentStep === 3 && (
+                  <SettingsConfiguration
+                    onNext={handleNextStep}
+                    onPrevious={handlePrevStep}
+                    assignmentData={assignmentData}
+                  />
+                )}
+
+                {currentStep === 4 && (
+                  <ReviewComponent
+                    onPrevious={handlePrevStep}
+                    finalAssignment={{
+                      ...assignmentData,
+                      template: selectedTemplate,
+                    }}
+                  />
+                )}
+              </main>
             </div>
-
-            {/* Template Cards */}
-            <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-              {currentStep === 1 && (
-                <TemplateSelection
-                  onSelectTemplate={handleTemplateSelect}
-                  onNext={() => handleNextStep()}
-                />
-              )}
-
-              {currentStep === 2 && (
-                <ContentCreation
-                  onNext={handleNextStep}
-                  onPrevious={handlePrevStep}
-                  selectedTemplate={selectedTemplate}
-                />
-              )}
-
-              {currentStep === 3 && (
-                <SettingsConfiguration
-                  onNext={handleNextStep}
-                  onPrevious={handlePrevStep}
-                  assignmentData={assignmentData}
-                />
-              )}
-
-              {currentStep === 4 && (
-                <ReviewComponent
-                  onPrevious={handlePrevStep}
-                  finalAssignment={{
-                    ...assignmentData,
-                    template: selectedTemplate,
-                  }}
-                />
-              )}
-            </main>
           </div>
         </div>
       </div>
 
-      {/* Adding TeacherDashboard's responsive styling */}
+      {/* Mobile Nav Overlay */}
+      {navExpanded && isMobile && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={() => setNavExpanded(false)}
+        />
+      )}
+
       <style jsx>{`
-        @media (max-width: 767px) {
-          .p-6 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-          }
-          h1,
-          h2 {
-            text-align: left;
-          }
+        /* Hide scrollbars while maintaining scroll functionality */
+        .scrollbar-hide {
+          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none; /* Firefox */
         }
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .tablet\\:grid-cols-1 {
-            grid-template-columns: 1fr;
-          }
-          .tablet\\:col-span-1 {
-            grid-column: span 1 / span 1;
-          }
-          .p-6,
-          .md\\:p-8 {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-          }
-          .flex-1 {
-            margin-left: ${navExpanded ? "330px" : "100px"};
-          }
-          .mb-10,
-          .p-5 {
-            width: 100%;
-          }
-          .mb-4,
-          .mb-6,
-          .mt-6 {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-          }
-          .flex.justify-end {
-            justify-content: flex-end;
-            width: 100%;
-          }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none; /* Chrome, Safari and Opera */
         }
       `}</style>
     </div>

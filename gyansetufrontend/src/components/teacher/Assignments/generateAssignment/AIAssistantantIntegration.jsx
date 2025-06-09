@@ -18,7 +18,7 @@ export default function AIAssistantIntegration({
   const [navExpanded, setNavExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
-  const [profileImage, setProfileImage] = useState(null);
+
 
   // Use the theme context instead of local state
   const { darkMode, toggleTheme } = useTheme();
@@ -48,23 +48,7 @@ export default function AIAssistantIntegration({
     setNavExpanded(expanded);
   };
 
-  // Handle profile click
-  const handleProfileClick = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setProfileImage(event.target.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    fileInput.click();
-  };
+  
 
   // Utility Icons component
   const UtilityIcons = () => (
@@ -84,25 +68,7 @@ export default function AIAssistantIntegration({
           <IoMoonOutline className="text-lg sm:text-xl" />
         )}
       </button>
-      <button
-        onClick={handleProfileClick}
-        className={`p-1 sm:p-2 rounded-full ${
-          darkMode
-            ? "hover:bg-[#341b47] text-white"
-            : "hover:bg-gray-200 text-gray-800"
-        } transition-colors duration-300`}
-        aria-label="Profile settings"
-      >
-        {profileImage ? (
-          <img
-            src={profileImage}
-            alt="Profile"
-            className="w-5 h-5 sm:w-6 sm:h-6 rounded-full"
-          />
-        ) : (
-          <IoPersonCircleOutline className="text-lg sm:text-xl" />
-        )}
-      </button>
+      
     </div>
   );
 
@@ -116,12 +82,7 @@ export default function AIAssistantIntegration({
         {/* Navbar Integration */}
         <TeacherNavbar onNavToggle={handleNavToggle} />
 
-        {/* Mobile/Tablet Utility Icons - Fixed Position */}
-        {(isMobile || isTablet) && (
-          <div className="fixed top-3 right-16 z-50">
-            <UtilityIcons />
-          </div>
-        )}
+        
 
         {/* Main Content Area */}
         <div
@@ -159,42 +120,22 @@ export default function AIAssistantIntegration({
                 </div>
 
                 {/* Utility Icons - aligned with the title */}
-                {!isMobile && !isTablet && (
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={toggleTheme}
-                      className={`p-2 rounded-full ${
-                        darkMode
-                          ? "hover:bg-[#341b47] text-white"
-                          : "hover:bg-gray-200 text-gray-800"
-                      } transition-colors duration-300`}
-                    >
-                      {darkMode ? (
-                        <IoSunnyOutline className="text-xl" />
-                      ) : (
-                        <IoMoonOutline className="text-xl" />
-                      )}
-                    </button>
-                    <button
-                      onClick={handleProfileClick}
-                      className={`p-2 rounded-full ${
-                        darkMode
-                          ? "hover:bg-[#341b47] text-white"
-                          : "hover:bg-gray-200 text-gray-800"
-                      } transition-colors duration-300`}
-                    >
-                      {profileImage ? (
-                        <img
-                          src={profileImage}
-                          alt="Profile"
-                          className="w-6 h-6 rounded-full"
-                        />
-                      ) : (
-                        <IoPersonCircleOutline className="text-xl" />
-                      )}
-                    </button>
-                  </div>
-                )}
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={toggleTheme}
+                    className={`p-2 rounded-full ${
+                      darkMode
+                        ? "hover:bg-[#341b47] text-white"
+                        : "hover:bg-gray-200 text-gray-800"
+                    } transition-colors duration-300`}
+                  >
+                    {darkMode ? (
+                      <IoSunnyOutline className="text-xl" />
+                    ) : (
+                      <IoMoonOutline className="text-xl" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               {/* AI Assistant Panel */}

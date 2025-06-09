@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoExpandOutline } from "react-icons/io5";
 import { Send } from "lucide-react";
+import { useTheme } from "../../../context/ThemeContext";
 
 const MiniChatbot = () => {
   const [messages, setMessages] = useState([
@@ -9,6 +10,7 @@ const MiniChatbot = () => {
   ]);
   const [input, setInput] = useState("");
   const navigate = useNavigate();
+  const { darkMode } = useTheme();
 
   const handleSend = () => {
     if (input.trim()) {
@@ -41,13 +43,17 @@ const MiniChatbot = () => {
   };
 
   return (
-    <div className="w-[400px] h-[425px] bg-gradient-to-r from-violet-300 to-violet-200 rounded-2xl shadow-[0_0_15px_rgba(147,51,234,0.4)] flex flex-col animate-pulse-slow transition-all duration-300 hover:shadow-[0_0_30px_rgba(147,51,234,0.8)] hover:scale-105">
+    <div className={`w-[400px] h-[425px] ${
+      darkMode 
+        ? "bg-gradient-to-r from-[#341b47] to-[#2a0c2e] shadow-[0_0_15px_rgba(147,51,234,0.2)] hover:shadow-[0_0_30px_rgba(147,51,234,0.4)]" 
+        : "bg-gradient-to-r from-violet-300 to-violet-200 shadow-[0_0_15px_rgba(147,51,234,0.4)] hover:shadow-[0_0_30px_rgba(147,51,234,0.8)]"
+    } rounded-2xl flex flex-col animate-pulse-slow transition-all duration-300 hover:scale-105`}>
       {/* Header with Title and Expand Icon */}
       <div className="flex items-center justify-between px-4 py-2 rounded-2xl">
-        <span className="font-medium text-gray-700">Your AI Chatbot</span>
+        <span className={`font-medium ${darkMode ? "text-white" : "text-gray-700"}`}>Your AI Chatbot</span>
         <button onClick={() => navigate('/chatbot')}>
           <IoExpandOutline
-            className="text-gray-600 hover:text-purple-700 cursor-pointer"
+            className={`${darkMode ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-purple-700"} cursor-pointer`}
             size={20}
           />
         </button>
@@ -65,8 +71,12 @@ const MiniChatbot = () => {
             <div
               className={`max-w-[70%] p-2 rounded-lg ${
                 msg.sender === "user"
-                  ? "bg-purple-500 text-white"
-                  : "bg-gray-100 text-gray-700"
+                  ? darkMode 
+                    ? "bg-[#5b3a64] text-white"
+                    : "bg-purple-500 text-white"
+                  : darkMode
+                    ? "bg-[#2a0c2e] text-gray-200"
+                    : "bg-gray-100 text-gray-700"
               }`}
             >
               {msg.text}
@@ -93,11 +103,19 @@ const MiniChatbot = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleSend()}
             placeholder="Type a message..."
-            className="flex-1 p-2 rounded-xl bg-white focus:outline-none focus:border-purple-500 text-sm"
+            className={`flex-1 p-2 rounded-xl ${
+              darkMode 
+                ? "bg-[#341b47] text-white placeholder-gray-400 focus:border-[#5b3a64]" 
+                : "bg-white text-gray-800 focus:border-purple-500"
+            } focus:outline-none text-sm`}
           />
           <button
             onClick={handleSend}
-            className="bg-violet-500 text-white p-2 md:p-3 rounded-full md:ml-2 order-4 md:order-none"
+            className={`${
+              darkMode 
+                ? "bg-[#5b3a64] hover:bg-[#4a2d52]" 
+                : "bg-violet-500 hover:bg-violet-600"
+            } text-white p-2 md:p-3 rounded-full md:ml-2 order-4 md:order-none transition-colors duration-200`}
           >
             <Send className="w-3 h-3" />
           </button>

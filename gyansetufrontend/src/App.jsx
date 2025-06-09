@@ -45,7 +45,8 @@ import Notes from "./components/students/Chatbot/Notes";
 import AssignmentPage from "./components/teacher/Assignments/createAssignment/AssignmentPage";
 import AIGenerate from "./components/teacher/Assignments/generateAssignment/AIAssistantantIntegration";
 import TeacherContent from "./components/teacher/contentUploading/TeacherContent";
-import CompleteProfilePage from "./components/teacher/profile/CompleteProfilePage";
+import ProfileCard from "./components/teacher/profile/CompleteProfilePage";
+import TeacherCalendarView from "./components/teacher/calender/MainCalenderTeacher";
 
 // Parent Features
 import AttendanceCalendar from "./components/Parent/parentDashboard/AttendanceCalendar";
@@ -136,217 +137,226 @@ function AppContent() {
   };
 
   return (
-    <ThemeProvider>
-      <ThemeWrapper>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          theme="colored"
+    <ThemeWrapper>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        theme="colored"
+      />
+      <Routes>
+        {/* Welcome Page - Initial Landing Page */}
+        <Route
+          path="/"
+          element={
+            authService.isAuthenticated() ? (
+              <RoleBasedRedirect />
+            ) : (
+              <WelcomePage />
+            )
+          }
         />
-        <Routes>
-          {/* Welcome Page - Initial Landing Page */}
-          <Route
-            path="/"
-            element={
-              authService.isAuthenticated() ? (
-                <RoleBasedRedirect />
-              ) : (
-                <WelcomePage />
-              )
-            }
-          />
 
-          {/* Public Routes */}
-          <Route
-            path="/login"
-            element={
-              authService.isAuthenticated() ? (
-                <RoleBasedRedirect />
-              ) : (
-                <LoginPage />
-              )
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              authService.isAuthenticated() ? (
-                <RoleBasedRedirect />
-              ) : (
-                <SignupPage />
-              )
-            }
-          />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+        {/* Public Routes */}
+        <Route
+          path="/login"
+          element={
+            authService.isAuthenticated() ? (
+              <RoleBasedRedirect />
+            ) : (
+              <LoginPage />
+            )
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            authService.isAuthenticated() ? (
+              <RoleBasedRedirect />
+            ) : (
+              <SignupPage />
+            )
+          }
+        />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-          {/* Student Routes */}
-          <Route
-            element={
-              <StudentAuth>
-                <Layout />
-              </StudentAuth>
-            }
-          >
-            <Route path="/studentdashboard/*" element={<StudentDashboard />} />
-            <Route path="/profile" element={<StudentProfileForm />} />
-            <Route path="/content" element={<ContentApp />} />
-            <Route path="/quiz" element={<StudentQuizInterface />} />
-            <Route path="/StudentCalendar" element={<StudentCalendar />} />
-            <Route path="/assignment" element={<StudentAssignmentDashboard />} />
-            <Route path="/projects" element={<StudentProject/>} />
-            <Route path="/chatbot" element={<MainChatbot />} />
-            <Route path="/changepassword" element={<ChangePassword />} />
-            <Route path="/notifications" element={<PopNotifications/>} />
-            <Route path="/notes" element={<Notes />} />
-          </Route>
+        {/* Student Routes */}
+        <Route
+          element={
+            <StudentAuth>
+              <Layout />
+            </StudentAuth>
+          }
+        >
+          <Route path="/studentdashboard/*" element={<StudentDashboard />} />
+          <Route path="/profile" element={<StudentProfileForm />} />
+          <Route path="/content" element={<ContentApp />} />
+          <Route path="/quiz" element={<StudentQuizInterface />} />
+          <Route path="/StudentCalendar" element={<StudentCalendar />} />
+          <Route path="/assignment" element={<StudentAssignmentDashboard />} />
+          <Route path="/projects" element={<StudentProject/>} />
+          <Route path="/chatbot" element={<MainChatbot />} />
+          <Route path="/changepassword" element={<ChangePassword />} />
+          <Route path="/notifications" element={<PopNotifications/>} />
+          <Route path="/notes" element={<Notes />} />
+        </Route>
 
-          {/* Teacher Routes */}
-          <Route
-            key={location.pathname}
-            path="/teacher"
-            element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
-                <TeacherDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            key={location.pathname}
-            path="/teacher/create-assignment"
-            element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
-                <AssignmentPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            key={location.pathname}
-            path="/teacher/generate-assignment"
-            element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
-                <AIGenerate />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            key={location.pathname}
-            path="/teacher/analytics"
-            element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
-                <TeacherDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            key={location.pathname}
-            path="/teacher/content"
-            element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
-                <TeacherContent />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            key={location.pathname}
-            path="/teacher/profile"
-            element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
-                <CompleteProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            key={location.pathname}
-            path="/teacher/schedule-meeting"
-            element={
-              <ProtectedRoute allowedRoles={["teacher"]}>
-                <TeacherMeetingManager />
-              </ProtectedRoute>
-            }
-          />
+        {/* Teacher Routes */}
+        <Route
+          key={location.pathname}
+          path="/teacher"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/create-assignment"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <AssignmentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/generate-assignment"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <AIGenerate />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/analytics"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/content"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherContent />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/calender"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherCalendarView />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/profile"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <ProfileCard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          key={location.pathname}
+          path="/teacher/schedule-meeting"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherMeetingManager />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Institute Routes */}
-          <Route element={<ILayout />}>
-            <Route path="/institute" element={<InstituteDashboard/>} />
-            <Route path="/institute/teachers" element={<Teachers/>} />
-            <Route path="/institute/students" element={<Students/>} />
-            <Route path="/institute/classes" element={<Classes/>} />
-            <Route path="/institute/attendance" element={<AttendanceDashboard/>} />
-            <Route path="/institute/reports" element={<Reports/>} />
-            <Route path="/institute/settings" element={<Settings/>} />
-          </Route>
+        {/* Institute Routes */}
+        <Route element={
+          <InstituteProvider>
+            <ILayout />
+          </InstituteProvider>
+        }>
+          <Route path="/institute" element={<InstituteDashboard/>} />
+          <Route path="/institute/teachers" element={<Teachers/>} />
+          <Route path="/institute/students" element={<Students/>} />
+          <Route path="/institute/classes" element={<Classes/>} />
+          <Route path="/institute/attendance" element={<AttendanceDashboard/>} />
+          <Route path="/institute/reports" element={<Reports/>} />
+          <Route path="/institute/settings" element={<Settings/>} />
+        </Route>
 
-          {/* Parent Routes */}
-          <Route element={<ParentLayout />}>
-            <Route
-              path="/Parentdashboard"
-              element={
-                <ProtectedRoute allowedRoles={["parent"]}>
-                  <ParentDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/parent/attendance"
-              element={
-                <ProtectedRoute allowedRoles={["parent"]}>
-                  <AttendanceCalendar />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/parent/calendar"
-              element={
-                <ProtectedRoute allowedRoles={["parent"]}>
-                  <ParentCalendar />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/parent/schedule-meeting"
-              element={
-                <ProtectedRoute allowedRoles={["parent"]}>
-                  <ParentTeacherMeeting />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/parent/studentprogress"
-              element={
-                <ProtectedRoute allowedRoles={["parent"]}>
-                  <StudentProgressReport />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-
-          {/* Redirect any unknown routes to welcome page or role-based dashboard */}
+        {/* Parent Routes */}
+        <Route element={<ParentLayout />}>
           <Route
-            path="*"
+            path="/Parentdashboard"
             element={
-              authService.isAuthenticated() ? (
-                <RoleBasedRedirect />
-              ) : (
-                <Navigate to="/" replace />
-              )
+              <ProtectedRoute allowedRoles={["parent"]}>
+                <ParentDashboard />
+              </ProtectedRoute>
             }
           />
-        </Routes>
-      </ThemeWrapper>
-    </ThemeProvider>
+          <Route
+            path="/parent/attendance"
+            element={
+              <ProtectedRoute allowedRoles={["parent"]}>
+                <AttendanceCalendar />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/parent/calendar"
+            element={
+              <ProtectedRoute allowedRoles={["parent"]}>
+                <ParentCalendar />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/parent/schedule-meeting"
+            element={
+              <ProtectedRoute allowedRoles={["parent"]}>
+                <ParentTeacherMeeting />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/parent/studentprogress"
+            element={
+              <ProtectedRoute allowedRoles={["parent"]}>
+                <StudentProgressReport />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+
+        {/* Redirect any unknown routes to welcome page or role-based dashboard */}
+        <Route
+          path="*"
+          element={
+            authService.isAuthenticated() ? (
+              <RoleBasedRedirect />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+      </Routes>
+    </ThemeWrapper>
   );
 }
 
 // Main App component
 function App() {
   return (
-    <Router>
-      <ThemeProvider>
-        <InstituteProvider>
-          <AppContent />
-        </InstituteProvider>
-      </ThemeProvider>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </ThemeProvider>
   );
 }
 

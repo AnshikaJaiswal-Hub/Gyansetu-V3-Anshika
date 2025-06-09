@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, Users, User, FileText, Target, BookOpen, AlertCircle, CheckCircle, Upload, Eye, ChevronRight, ChevronDown } from 'lucide-react';
+import { useTheme } from '../../../context/ThemeContext'; // Import theme context
 
 const StudentProject = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [selectedProject, setSelectedProject] = useState(null);
   const [showSubmissionModal, setShowSubmissionModal] = useState(false);
   const [expandedProjects, setExpandedProjects] = useState({});
+  
+  // Use theme context
+  const { darkMode } = useTheme();
 
   // Mock data for projects
   const upcomingProjects = [
@@ -150,33 +154,33 @@ const StudentProject = () => {
     const daysRemaining = !isSubmitted ? getDaysRemaining(project.dueDate) : null;
 
     return (
-      <div className="bg-white rounded-lg shadow-md border border-gray-200 mb-4 overflow-hidden">
+      <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md border ${darkMode ? 'border-[#4a1f5e]' : 'border-gray-200'} mb-4 overflow-hidden transition-colors duration-300`}>
         {/* Card Header */}
         <div className="p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex-1">
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
+              <h3 className={`text-lg sm:text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>
                 {project.title}
               </h3>
-              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-600">
-                <span className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm">
+                <span className={`flex items-center gap-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>
                   <BookOpen className="w-4 h-4" />
                   {project.subject}
                 </span>
                 {!isSubmitted && (
                   <>
-                    <span className="flex items-center gap-1">
+                    <span className={`flex items-center gap-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>
                       <Calendar className="w-4 h-4" />
                       Due: {formatDate(project.dueDate)}
                     </span>
-                    <span className="flex items-center gap-1">
+                    <span className={`flex items-center gap-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>
                       {project.projectType === 'group' ? <Users className="w-4 h-4" /> : <User className="w-4 h-4" />}
                       {project.projectType === 'group' ? 'Group Project' : 'Individual Project'}
                     </span>
                   </>
                 )}
                 {isSubmitted && (
-                  <span className="flex items-center gap-1">
+                  <span className={`flex items-center gap-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>
                     <Calendar className="w-4 h-4" />
                     Submitted: {formatDate(project.submittedDate)}
                   </span>
@@ -203,7 +207,7 @@ const StudentProject = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => toggleProjectExpansion(project.id)}
-                    className="flex items-center gap-1 px-3 py-1 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                    className={`flex items-center gap-1 px-3 py-1 text-sm ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-800'} transition-colors duration-300`}
                   >
                     <Eye className="w-4 h-4" />
                     Details
@@ -238,26 +242,28 @@ const StudentProject = () => {
           </div>
 
           {isSubmitted && project.feedback && (
-            <div className="mt-4 p-3 bg-gray-50 rounded-md">
-              <p className="text-sm text-gray-700"><strong>Feedback:</strong> {project.feedback}</p>
+            <div className={`mt-4 p-3 ${darkMode ? 'bg-[#4a1f5e]' : 'bg-gray-50'} rounded-md transition-colors duration-300`}>
+              <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>
+                <strong>Feedback:</strong> {project.feedback}
+              </p>
             </div>
           )}
         </div>
 
         {/* Expanded Details */}
         {isExpanded && !isSubmitted && (
-          <div className="border-t border-gray-200 p-4 sm:p-6 bg-gray-50">
+          <div className={`border-t ${darkMode ? 'border-[#4a1f5e] bg-[#2a0c2e]' : 'border-gray-200 bg-gray-50'} p-4 sm:p-6 transition-colors duration-300`}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Project Information */}
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Project Description</h4>
-                  <p className="text-gray-700 text-sm leading-relaxed">{project.description}</p>
+                  <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>Project Description</h4>
+                  <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>{project.description}</p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Learning Objectives</h4>
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                  <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>Learning Objectives</h4>
+                  <ul className={`list-disc list-inside text-sm space-y-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>
                     {project.learningObjectives.map((objective, index) => (
                       <li key={index}>{objective}</li>
                     ))}
@@ -265,8 +271,8 @@ const StudentProject = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Resources</h4>
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                  <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>Resources</h4>
+                  <ul className={`list-disc list-inside text-sm space-y-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>
                     {project.resources.map((resource, index) => (
                       <li key={index}>{resource}</li>
                     ))}
@@ -277,8 +283,8 @@ const StudentProject = () => {
               {/* Deliverables and Timeline */}
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Deliverables</h4>
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                  <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>Deliverables</h4>
+                  <ul className={`list-disc list-inside text-sm space-y-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>
                     {project.deliverables.map((deliverable, index) => (
                       <li key={index}>{deliverable}</li>
                     ))}
@@ -287,14 +293,14 @@ const StudentProject = () => {
 
                 {project.milestones.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Project Milestones</h4>
+                    <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>Project Milestones</h4>
                     <div className="space-y-2">
                       {project.milestones.map((milestone, index) => (
                         <div key={index} className="flex items-start gap-2 text-sm">
                           <div className="w-2 h-2 bg-violet-500 rounded-full mt-2 flex-shrink-0"></div>
                           <div>
-                            <span className="font-medium text-gray-900">{formatDate(milestone.date)}</span>
-                            <p className="text-gray-600">{milestone.task}</p>
+                            <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors duration-300`}>{formatDate(milestone.date)}</span>
+                            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>{milestone.task}</p>
                           </div>
                         </div>
                       ))}
@@ -304,40 +310,40 @@ const StudentProject = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div className="text-sm">
-                    <span className="font-medium text-gray-700">Time Limit:</span>
-                    <p className="text-gray-600">{project.hasTimeLimit ? 'Yes' : 'No'}</p>
+                    <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>Time Limit:</span>
+                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>{project.hasTimeLimit ? 'Yes' : 'No'}</p>
                   </div>
                   <div className="text-sm">
-                    <span className="font-medium text-gray-700">Passing Score:</span>
-                    <p className="text-gray-600">{project.passingScore}%</p>
+                    <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>Passing Score:</span>
+                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>{project.passingScore}%</p>
                   </div>
                   <div className="text-sm">
-                    <span className="font-medium text-gray-700">Grading Type:</span>
-                    <p className="text-gray-600 capitalize">{project.gradingType}</p>
+                    <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>Grading Type:</span>
+                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`} style={{ textTransform: 'capitalize' }}>{project.gradingType}</p>
                   </div>
                   <div className="text-sm">
-                    <span className="font-medium text-gray-700">Late Policy:</span>
-                    <p className="text-gray-600">{project.lateSubmissionPolicy}</p>
+                    <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>Late Policy:</span>
+                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>{project.lateSubmissionPolicy}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Timeline */}
-            <div className="mt-6 p-4 bg-white rounded-lg border">
-              <h4 className="font-semibold text-gray-900 mb-3">Timeline</h4>
+            <div className={`mt-6 p-4 ${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg border ${darkMode ? 'border-[#4a1f5e]' : 'border-gray-200'} transition-colors duration-300`}>
+              <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-3 transition-colors duration-300`}>Timeline</h4>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <span className="font-medium text-gray-700">Start Time:</span>
-                  <p className="text-gray-600">{formatDateTime(project.startTime)}</p>
+                  <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>Start Time:</span>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>{formatDateTime(project.startTime)}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">Due Date:</span>
-                  <p className="text-gray-600">{formatDateTime(project.endTime)}</p>
+                  <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>Due Date:</span>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>{formatDateTime(project.endTime)}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">Final Deadline:</span>
-                  <p className="text-gray-600">{formatDate(project.finalSubmissionDate)}</p>
+                  <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} transition-colors duration-300`}>Final Deadline:</span>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>{formatDate(project.finalSubmissionDate)}</p>
                 </div>
               </div>
             </div>
@@ -368,25 +374,25 @@ const StudentProject = () => {
 
     return (
       <div className="fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+        <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto transition-colors duration-300`}>
           <div className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Submit Project</h2>
+            <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4 transition-colors duration-300`}>Submit Project</h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2 transition-colors duration-300`}>
                   Upload Files
                 </label>
                 <input
                   type="file"
                   multiple
                   onChange={handleFileChange}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                  className={`block w-full text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium ${darkMode ? 'file:bg-[#4a1f5e] file:text-violet-300 hover:file:bg-[#5b2a6e]' : 'file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100'} transition-colors duration-300`}
                 />
                 {selectedFiles.length > 0 && (
                   <div className="mt-2">
-                    <p className="text-sm text-gray-600">Selected files:</p>
-                    <ul className="text-sm text-gray-500">
+                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>Selected files:</p>
+                    <ul className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} transition-colors duration-300`}>
                       {Array.from(selectedFiles).map((file, index) => (
                         <li key={index}>• {file.name}</li>
                       ))}
@@ -396,14 +402,14 @@ const StudentProject = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2 transition-colors duration-300`}>
                   Submission Notes (Optional)
                 </label>
                 <textarea
                   value={submissionText}
                   onChange={(e) => setSubmissionText(e.target.value)}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                  className={`w-full px-3 py-2 border ${darkMode ? 'border-[#4a1f5e] bg-[#2a0c2e] text-gray-300' : 'border-gray-300 bg-white text-gray-700'} rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-colors duration-300`}
                   placeholder="Add any notes about your submission..."
                 />
               </div>
@@ -412,7 +418,7 @@ const StudentProject = () => {
                 <button
                   type="button"
                   onClick={() => setShowSubmissionModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+                  className={`px-4 py-2 border ${darkMode ? 'border-[#4a1f5e] text-gray-300 hover:bg-[#4a1f5e]' : 'border-gray-300 text-gray-700 hover:bg-gray-50'} rounded-md transition-colors duration-300`}
                 >
                   Cancel
                 </button>
@@ -431,85 +437,93 @@ const StudentProject = () => {
   };
 
   return (
-    <div className="bg-gray-100 pt-4 sm:pt-6 md:pt-8 px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 ">
-       <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px]">
-      {/* Header */}
-      <div className=" shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Your Projects</h1>
-            <p className="text-gray-600 mt-1">Manage your project submissions and track progress</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Tabs */}
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 mb-6">
-          <div className="border-b border-gray-200 w-full">
-            <nav className="flex space-x-8">
-              <button
-                onClick={() => setActiveTab('upcoming')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'upcoming'
-                    ? 'border-violet-500 text-violet-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Upcoming Projects ({upcomingProjects.length})
-              </button>
-              <button
-                onClick={() => setActiveTab('submitted')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'submitted'
-                    ? 'border-violet-500 text-violet-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Submitted Projects ({submittedProjects.length})
-              </button>
-            </nav>
+    <div className={`${darkMode ? 'bg-[#5b3a64]' : 'bg-gray-100'} pt-4 sm:pt-6 md:pt-8 px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 transition-colors duration-300`}>
+      <div className={`min-h-screen ${darkMode ? 'bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]' : 'bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400'} rounded-[30px] transition-colors duration-300`}>
+        {/* Header */}
+        <div className="shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="py-6">
+              <h1 className={`text-2xl sm:text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors duration-300`}>Your Projects</h1>
+              <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} mt-1 transition-colors duration-300`}>Manage your project submissions and track progress</p>
+            </div>
           </div>
         </div>
 
-        {/* Content */}
-        {activeTab === 'upcoming' && (
-          <div className="space-y-4">
-            {upcomingProjects.length > 0 ? (
-              upcomingProjects.map(project => (
-                <ProjectCard key={project.id} project={project} />
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No upcoming projects</h3>
-                <p className="text-gray-600">You're all caught up! Check back later for new assignments.</p>
-              </div>
-            )}
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* Tabs */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 mb-6">
+            <div className={`border-b ${darkMode ? 'border-[#341b47]' : 'border-gray-200'} w-full transition-colors duration-300`}>
+              <nav className="flex space-x-8">
+                <button
+                  onClick={() => setActiveTab('upcoming')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'upcoming'
+                      ? darkMode 
+                        ? 'border-violet-500 text-violet-300'
+                        : 'border-violet-500 text-violet-600'
+                      : darkMode
+                        ? 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } transition-colors duration-300`}
+                >
+                  Upcoming Projects ({upcomingProjects.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab('submitted')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'submitted'
+                      ? darkMode 
+                        ? 'border-violet-500 text-violet-300'
+                        : 'border-violet-500 text-violet-600'
+                      : darkMode
+                        ? 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } transition-colors duration-300`}
+                >
+                  Submitted Projects ({submittedProjects.length})
+                </button>
+              </nav>
+            </div>
           </div>
-        )}
 
-        {activeTab === 'submitted' && (
-          <div className="space-y-4">
-            {submittedProjects.length > 0 ? (
-              submittedProjects.map(project => (
-                <ProjectCard key={project.id} project={project} isSubmitted={true} />
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <CheckCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No submitted projects</h3>
-                <p className="text-gray-600">Your submitted projects will appear here once you start completing assignments.</p>
-              </div>
-            )}
-          </div>
-        )}
+          {/* Content */}
+          {activeTab === 'upcoming' && (
+            <div className="space-y-4">
+              {upcomingProjects.length > 0 ? (
+                upcomingProjects.map(project => (
+                  <ProjectCard key={project.id} project={project} />
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <FileText className={`w-12 h-12 ${darkMode ? 'text-gray-600' : 'text-gray-400'} mx-auto mb-4 transition-colors duration-300`} />
+                  <h3 className={`text-lg font-medium ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>No upcoming projects</h3>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>You're all caught up! Check back later for new assignments.</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'submitted' && (
+            <div className="space-y-4">
+              {submittedProjects.length > 0 ? (
+                submittedProjects.map(project => (
+                  <ProjectCard key={project.id} project={project} isSubmitted={true} />
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <CheckCircle className={`w-12 h-12 ${darkMode ? 'text-gray-600' : 'text-gray-400'} mx-auto mb-4 transition-colors duration-300`} />
+                  <h3 className={`text-lg font-medium ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>No submitted projects</h3>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-300`}>Your submitted projects will appear here once you start completing assignments.</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Submission Modal */}
+        <SubmissionModal />
       </div>
-
-      {/* Submission Modal */}
-      <SubmissionModal />
-    </div>
     </div>
   );
 };

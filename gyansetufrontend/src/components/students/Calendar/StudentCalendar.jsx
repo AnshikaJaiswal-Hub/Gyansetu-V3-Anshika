@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Bell, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTheme } from '../../../context/ThemeContext'; // Import theme context
 
 // Mock data for demonstration purposes
 const mockEvents = [
@@ -88,9 +89,12 @@ const generateCalendarDays = (year, month) => {
 const StudentCalendar = () => {
   const [activeTab, setActiveTab] = useState('calendar');
   const [calendarView, setCalendarView] = useState('weekly');
-  const [currentDate, setCurrentDate] = useState(new Date()); // Changed to current date
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredAnnouncements, setFilteredAnnouncements] = useState(mockAnnouncements);
+  
+  // Use theme context
+  const { darkMode } = useTheme();
   
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -315,29 +319,30 @@ const StudentCalendar = () => {
     const eventsForToday = getEventsForDate(currentDate);
     
     return (
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-4 border-b">
-          <h3 className="text-lg font-medium">{currentDate.toDateString()}</h3>
+      <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md overflow-hidden transition-colors duration-300`}>
+        <div className={`p-4 border-b ${darkMode ? 'border-[#4a2f52]' : 'border-gray-200'}`}>
+          <h3 className={`text-lg font-medium ${darkMode ? 'text-purple-200' : 'text-gray-900'}`}>{currentDate.toDateString()}</h3>
         </div>
         <div className="overflow-y-auto max-h-96">
           {timeSlots.map((timeSlot, index) => (
-            <div key={index} className="flex border-b">
-              <div className="w-20 p-2 border-r bg-gray-50 text-sm">
+            <div key={index} className={`flex border-b ${darkMode ? 'border-[#4a2f52]' : 'border-gray-200'}`}>
+              <div className={`w-20 p-2 border-r ${darkMode ? 'bg-[#2d1635] text-purple-200' : 'bg-gray-50 text-gray-900'} text-sm`}>
                 {timeSlot}
               </div>
-              <div className="flex-1 p-2 min-h-16">
+              <div className={`flex-1 p-2 min-h-16 ${darkMode ? 'bg-[#341b47]' : 'bg-white'}`}>
                 {eventsForToday
                   .filter(event => isInTimeSlot(event.time, timeSlot))
                   .map(event => (
                     <div 
                       key={event.id} 
                       className={`p-2 mb-1 rounded ${
-                        event.priority === 'high' ? 'bg-red-100 border-l-4 border-red-500' :
-                        event.priority === 'medium' ? 'bg-yellow-100 border-l-4 border-yellow-500' : 'bg-green-100 border-l-4 border-green-500'
+                        event.priority === 'high' ? (darkMode ? 'bg-red-900/30 border-l-4 border-red-500' : 'bg-red-100 border-l-4 border-red-500') :
+                        event.priority === 'medium' ? (darkMode ? 'bg-yellow-900/30 border-l-4 border-yellow-500' : 'bg-yellow-100 border-l-4 border-yellow-500') : 
+                        (darkMode ? 'bg-green-900/30 border-l-4 border-green-500' : 'bg-green-100 border-l-4 border-green-500')
                       }`}
                     >
-                      <div className="font-medium">{event.title}</div>
-                      <div className="text-sm text-gray-600">{event.time}</div>
+                      <div className={`font-medium ${darkMode ? 'text-purple-200' : 'text-gray-900'}`}>{event.title}</div>
+                      <div className={`text-sm ${darkMode ? 'text-purple-300' : 'text-gray-600'}`}>{event.time}</div>
                     </div>
                   ))
                 }
@@ -353,10 +358,10 @@ const StudentCalendar = () => {
     const weekDates = getCurrentWeekDates();
     
     return (
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md overflow-hidden transition-colors duration-300`}>
         {/* Desktop and tablet view */}
         <div className="hidden md:grid grid-cols-8 border-b">
-          <div className="p-2 md:p-3 border-r bg-gray-50"></div>
+          <div className={`p-2 md:p-3 border-r ${darkMode ? 'bg-[#2d1635]' : 'bg-gray-50'}`}></div>
           {weekDates.map((date, index) => {
             const isToday = date.toDateString() === new Date(2025, 4, 20).toDateString();
             
@@ -364,11 +369,17 @@ const StudentCalendar = () => {
               <div 
                 key={index} 
                 className={`p-2 md:p-3 text-center border-r -ml-2 ${
-                  isToday ? 'bg-purple-100 font-bold' : 'bg-gray-50'
+                  isToday 
+                    ? darkMode 
+                      ? 'bg-purple-900/50 font-bold' 
+                      : 'bg-purple-100 font-bold'
+                    : darkMode 
+                      ? 'bg-[#2d1635]' 
+                      : 'bg-gray-50'
                 }`}
               >
-                <div className="font-medium text-xs md:text-sm">{days[date.getDay()]}</div>
-                <div className={`text-xs md:text-sm ${isToday ? 'text-purple-700' : ''}`}>{date.getDate()}</div>
+                <div className={`font-medium text-xs md:text-sm ${darkMode ? 'text-purple-200' : ''}`}>{days[date.getDay()]}</div>
+                <div className={`text-xs md:text-sm ${isToday ? (darkMode ? 'text-purple-300' : 'text-purple-700') : (darkMode ? 'text-purple-200' : '')}`}>{date.getDate()}</div>
               </div>
             );
           })}
@@ -376,18 +387,23 @@ const StudentCalendar = () => {
         <div className="hidden md:block overflow-y-auto max-h-[calc(100vh-300px)] md:max-h-[600px]">
           {timeSlots.map((timeSlot, timeIndex) => (
             <div key={timeIndex} className="grid grid-cols-8 border-b min-h-[60px]">
-              <div className="p-1 md:p-2 border-r bg-gray-50 text-xs md:text-sm font-medium flex items-center justify-center">
+              <div className={`p-1 md:p-2 border-r ${darkMode ? 'bg-[#2d1635] text-purple-200' : 'bg-gray-50'} text-xs md:text-sm font-medium flex items-center justify-center`}>
                 {timeSlot}
               </div>
               {weekDates.map((date, dateIndex) => {
-                // Use the hardcoded events for May 20
                 const eventsForThisDateAndTime = formatDateForComparison(date) === '2025-05-20' 
                   ? getEventsForTimeSlot(date, timeSlot)
                   : [];
                 
                 return (
                   <div key={dateIndex} className={`p-1 border-r ${
-                    date.toDateString() === new Date(2025, 4, 20).toDateString() ? 'bg-purple-50' : ''
+                    date.toDateString() === new Date(2025, 4, 20).toDateString() 
+                      ? darkMode 
+                        ? 'bg-purple-900/30' 
+                        : 'bg-purple-50' 
+                      : darkMode 
+                        ? 'bg-[#341b47]' 
+                        : ''
                   }`}>
                     {eventsForThisDateAndTime.map(event => {
                       const colors = getEventTypeColor(event.type);
@@ -397,7 +413,7 @@ const StudentCalendar = () => {
                           className={`p-1 md:p-2 mb-1 text-xs md:text-sm rounded-md shadow-sm ${colors.bg} ${colors.border}`}
                         >
                           <div className={`font-medium truncate ${colors.text}`}>{event.title}</div>
-                          <div className="text-xs text-gray-600 truncate">{event.time}</div>
+                          <div className={`text-xs ${darkMode ? 'text-purple-300' : 'text-gray-600'} truncate`}>{event.time}</div>
                         </div>
                       );
                     })}
@@ -421,9 +437,9 @@ const StudentCalendar = () => {
             return (
               <div 
                 key={dateIndex} 
-                className={`p-3 border-b ${isToday ? 'bg-purple-50' : ''}`}
+                className={`p-3 border-b ${isToday ? (darkMode ? 'bg-purple-900/30' : 'bg-purple-50') : ''}`}
               >
-                <div className={`font-bold text-sm mb-2 ${isToday ? 'text-purple-700' : ''}`}>
+                <div className={`font-bold text-sm mb-2 ${isToday ? (darkMode ? 'text-purple-300' : 'text-purple-700') : (darkMode ? 'text-purple-200' : '')}`}>
                   {days[date.getDay()]} {date.getDate()}
                 </div>
                 
@@ -436,7 +452,7 @@ const StudentCalendar = () => {
                         className={`p-2 mb-2 rounded-md shadow-sm ${colors.bg} ${colors.border}`}
                       >
                         <div className={`font-medium text-sm ${colors.text}`}>{event.title}</div>
-                        <div className="text-xs text-gray-600 flex justify-between items-center">
+                        <div className={`text-xs ${darkMode ? 'text-purple-300' : 'text-gray-600'} flex justify-between items-center`}>
                           <span>{event.time}</span>
                           <span className="capitalize">{event.type}</span>
                           {renderPriorityBadge(event.priority)}
@@ -445,7 +461,7 @@ const StudentCalendar = () => {
                     );
                   })
                 ) : (
-                  <div className="text-xs text-gray-400 italic py-2">No events</div>
+                  <div className={`text-xs ${darkMode ? 'text-purple-300/50' : 'text-gray-400'} italic py-2`}>No events</div>
                 )}
               </div>
             );
@@ -462,13 +478,13 @@ const StudentCalendar = () => {
     const calendarDays = generateCalendarDays(year, month);
     
     return (
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-3 md:p-4 border-b bg-purple-50">
-          <h3 className="text-base md:text-lg font-medium text-purple-800">{months[month]} {year}</h3>
+      <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md overflow-hidden transition-colors duration-300`}>
+        <div className={`p-3 md:p-4 border-b ${darkMode ? 'bg-purple-900/50' : 'bg-purple-50'}`}>
+          <h3 className={`text-base md:text-lg font-medium ${darkMode ? 'text-purple-200' : 'text-purple-800'}`}>{months[month]} {year}</h3>
         </div>
-        <div className="grid grid-cols-7 text-center p-1 md:p-2">
+        <div className={`grid grid-cols-7 text-center p-1 md:p-2 ${darkMode ? 'bg-[#2d1635]' : ''}`}>
           {days.map((day, index) => (
-            <div key={index} className="font-medium p-1 md:p-2 text-xs md:text-sm">
+            <div key={index} className={`font-medium p-1 md:p-2 text-xs md:text-sm ${darkMode ? 'text-purple-200' : ''}`}>
               {day}
             </div>
           ))}
@@ -482,11 +498,20 @@ const StudentCalendar = () => {
               <div 
                 key={index} 
                 className={`p-1 h-12 md:h-24 border rounded ${
-                  !day.currentMonth ? 'bg-gray-100 text-gray-400' : 
-                  isToday ? 'bg-purple-50 border-purple-300' : ''
+                  !day.currentMonth 
+                    ? darkMode 
+                      ? 'bg-[#2d1635] text-purple-300/50' 
+                      : 'bg-gray-100 text-gray-400' 
+                    : isToday 
+                      ? darkMode 
+                        ? 'bg-purple-900/50 border-purple-700' 
+                        : 'bg-purple-50 border-purple-300' 
+                      : darkMode 
+                        ? 'bg-[#341b47] border-[#4a2f52]' 
+                        : ''
                 }`}
               >
-                <div className={`text-right p-0.5 md:p-1 text-xs md:text-sm ${isToday ? 'font-bold text-purple-700' : ''}`}>{day.date.getDate()}</div>
+                <div className={`text-right p-0.5 md:p-1 text-xs md:text-sm ${isToday ? (darkMode ? 'font-bold text-purple-300' : 'font-bold text-purple-700') : (darkMode ? 'text-purple-200' : '')}`}>{day.date.getDate()}</div>
                 <div className="overflow-y-auto max-h-6 md:max-h-16 hidden md:block">
                   {eventsForThisDay.slice(0, 2).map(event => {
                     const colors = getEventTypeColor(event.type);
@@ -500,7 +525,7 @@ const StudentCalendar = () => {
                     );
                   })}
                   {eventsForThisDay.length > 2 && (
-                    <div className="text-xs text-gray-500 p-0.5 md:p-1">
+                    <div className={`text-xs ${darkMode ? 'text-purple-300/50' : 'text-gray-500'} p-0.5 md:p-1`}>
                       +{eventsForThisDay.length - 2} more
                     </div>
                   )}
@@ -510,7 +535,7 @@ const StudentCalendar = () => {
                   {eventsForThisDay.length > 0 && (
                     <div className="flex space-x-1">
                       {eventsForThisDay.slice(0, Math.min(3, eventsForThisDay.length)).map((_, i) => (
-                        <div key={i} className="w-1 h-1 rounded-full bg-purple-500"></div>
+                        <div key={i} className={`w-1 h-1 rounded-full ${darkMode ? 'bg-purple-400' : 'bg-purple-500'}`}></div>
                       ))}
                     </div>
                   )}
@@ -530,14 +555,14 @@ const StudentCalendar = () => {
     const quarterMonths = [months[quarter * 3], months[quarter * 3 + 1], months[quarter * 3 + 2]];
     
     return (
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-3 md:p-4 border-b bg-purple-50">
-          <h3 className="text-base md:text-lg font-medium text-purple-800">Quarter {quarter + 1}, {year}</h3>
+      <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md overflow-hidden transition-colors duration-300`}>
+        <div className={`p-3 md:p-4 border-b ${darkMode ? 'bg-purple-900/50' : 'bg-purple-50'}`}>
+          <h3 className={`text-base md:text-lg font-medium ${darkMode ? 'text-purple-200' : 'text-purple-800'}`}>Quarter {quarter + 1}, {year}</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 p-3 md:p-4">
           {quarterMonths.map((month, index) => (
-            <div key={index} className="border rounded-lg overflow-hidden">
-              <div className="bg-gray-50 p-2 font-medium border-b text-sm md:text-base">
+            <div key={index} className={`border rounded-lg overflow-hidden ${darkMode ? 'border-[#4a2f52]' : ''}`}>
+              <div className={`${darkMode ? 'bg-[#2d1635]' : 'bg-gray-50'} p-2 font-medium border-b ${darkMode ? 'border-[#4a2f52]' : ''} text-sm md:text-base`}>
                 {month}
               </div>
               <div className="p-2 max-h-64 overflow-y-auto">
@@ -554,7 +579,7 @@ const StudentCalendar = () => {
                         className={`p-2 mb-2 rounded text-xs md:text-sm ${colors.bg} ${colors.border}`}
                       >
                         <div className={`font-medium ${colors.text}`}>{event.title}</div>
-                        <div className="text-xs text-gray-600 flex flex-wrap justify-between">
+                        <div className={`text-xs ${darkMode ? 'text-purple-300' : 'text-gray-600'} flex flex-wrap justify-between`}>
                           <span>{new Date(event.date).toLocaleDateString()}</span>
                           <span>{event.time}</span>
                           <span className="capitalize">({event.type})</span>
@@ -576,9 +601,9 @@ const StudentCalendar = () => {
     const year = currentDate.getFullYear();
     
     return (
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-3 md:p-4 border-b bg-purple-50">
-          <h3 className="text-base md:text-lg font-medium text-purple-800">Year {year}</h3>
+      <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md overflow-hidden transition-colors duration-300`}>
+        <div className={`p-3 md:p-4 border-b ${darkMode ? 'bg-purple-900/50' : 'bg-purple-50'}`}>
+          <h3 className={`text-base md:text-lg font-medium ${darkMode ? 'text-purple-200' : 'text-purple-800'}`}>Year {year}</h3>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 p-2 md:p-4">
           {months.map((month, index) => {
@@ -597,8 +622,16 @@ const StudentCalendar = () => {
             });
             
             return (
-              <div key={index} className="border rounded-lg overflow-hidden">
-                <div className={`p-2 font-medium border-b text-xs md:text-sm ${month === 'May' ? 'bg-purple-100 text-purple-800' : 'bg-gray-50'}`}>
+              <div key={index} className={`border rounded-lg overflow-hidden ${darkMode ? 'border-[#4a2f52]' : ''}`}>
+                <div className={`p-2 font-medium border-b ${darkMode ? 'border-[#4a2f52]' : ''} text-xs md:text-sm ${
+                  month === 'May' 
+                    ? darkMode 
+                      ? 'bg-purple-900/50 text-purple-300' 
+                      : 'bg-purple-100 text-purple-800' 
+                    : darkMode 
+                      ? 'bg-[#2d1635] text-purple-200' 
+                      : 'bg-gray-50'
+                }`}>
                   {month}
                 </div>
                 <div className="p-2 h-20 md:h-32 overflow-y-auto">
@@ -610,22 +643,22 @@ const StudentCalendar = () => {
                         className={`p-1 mb-1 rounded text-xs ${colors.bg}`}
                       >
                         <div className={`truncate ${colors.text}`}>{event.title}</div>
-                        <div className="text-xs text-gray-600 truncate">{new Date(event.date).getDate()} | {event.time}</div>
+                        <div className={`text-xs ${darkMode ? 'text-purple-300' : 'text-gray-600'} truncate`}>{new Date(event.date).getDate()} | {event.time}</div>
                       </div>
                     );
                   })}
                   
                   {eventsForMonth.length > 2 && (
-                    <div className="mt-1 pt-1 border-t text-xs">
-                      <div className="font-medium text-gray-700 text-xs">Summary:</div>
+                    <div className={`mt-1 pt-1 border-t ${darkMode ? 'border-[#4a2f52]' : ''} text-xs`}>
+                      <div className={`font-medium ${darkMode ? 'text-purple-200' : 'text-gray-700'} text-xs`}>Summary:</div>
                       {Object.keys(eventCounts).slice(0, 3).map(type => (
                         <div key={type} className="flex justify-between text-xs">
-                          <span className="capitalize">{type}s:</span>
-                          <span className="font-medium">{eventCounts[type]}</span>
+                          <span className={`capitalize ${darkMode ? 'text-purple-200' : ''}`}>{type}s:</span>
+                          <span className={`font-medium ${darkMode ? 'text-purple-300' : ''}`}>{eventCounts[type]}</span>
                         </div>
                       ))}
                       {Object.keys(eventCounts).length > 3 && (
-                        <div className="text-xs text-gray-500 italic">+{Object.keys(eventCounts).length - 3} more types</div>
+                        <div className={`text-xs ${darkMode ? 'text-purple-300/50' : 'text-gray-500'} italic`}>+{Object.keys(eventCounts).length - 3} more types</div>
                       )}
                     </div>
                   )}
@@ -640,40 +673,40 @@ const StudentCalendar = () => {
   
   const renderTimetable = () => {
     return (
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-3 md:p-4 border-b bg-purple-50">
-          <h3 className="text-base md:text-lg font-medium text-purple-800">Weekly Timetable</h3>
-          <p className="text-xs md:text-sm text-gray-600 mt-1">Week of May 20 - 26, 2025</p>
+      <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md overflow-hidden transition-colors duration-300`}>
+        <div className={`p-3 md:p-4 border-b ${darkMode ? 'bg-purple-900/50' : 'bg-purple-50'}`}>
+          <h3 className={`text-base md:text-lg font-medium ${darkMode ? 'text-purple-200' : 'text-purple-800'}`}>Weekly Timetable</h3>
+          <p className={`text-xs md:text-sm ${darkMode ? 'text-purple-300' : 'text-gray-600'} mt-1`}>Week of May 20 - 26, 2025</p>
         </div>
         
         {/* Desktop and tablet view */}
         <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className={darkMode ? 'bg-[#2d1635]' : 'bg-gray-50'}>
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monday</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tuesday</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-purple-700 uppercase tracking-wider">Wednesday</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thursday</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Friday</th>
+                <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-purple-200' : 'text-gray-500'} uppercase tracking-wider`}>Time</th>
+                <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-purple-200' : 'text-gray-500'} uppercase tracking-wider`}>Monday</th>
+                <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-purple-200' : 'text-gray-500'} uppercase tracking-wider`}>Tuesday</th>
+                <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-purple-300' : 'text-purple-700'} uppercase tracking-wider`}>Wednesday</th>
+                <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-purple-200' : 'text-gray-500'} uppercase tracking-wider`}>Thursday</th>
+                <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-purple-200' : 'text-gray-500'} uppercase tracking-wider`}>Friday</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className={`divide-y ${darkMode ? 'divide-[#4a2f52]' : 'divide-gray-200'}`}>
               {mockTimetable[0].periods.map((period, index) => (
-                <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                <tr key={index} className={index % 2 === 0 ? (darkMode ? 'bg-[#341b47]' : 'bg-white') : (darkMode ? 'bg-[#2d1635]' : 'bg-gray-50')}>
+                  <td className={`px-4 py-3 whitespace-nowrap text-sm font-medium ${darkMode ? 'text-purple-200' : 'text-gray-900'}`}>
                     {period.time}
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                  <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-purple-200' : 'text-gray-500'}`}>
                     <div className="font-medium">{mockTimetable[0].periods[index].subject}</div>
-                    <div className="text-xs text-gray-400">{mockTimetable[0].periods[index].room} • {mockTimetable[0].periods[index].teacher}</div>
+                    <div className={`text-xs ${darkMode ? 'text-purple-300' : 'text-gray-400'}`}>{mockTimetable[0].periods[index].room} • {mockTimetable[0].periods[index].teacher}</div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                  <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-purple-200' : 'text-gray-500'}`}>
                     <div className="font-medium">{mockTimetable[1].periods[index].subject}</div>
-                    <div className="text-xs text-gray-400">{mockTimetable[1].periods[index].room} • {mockTimetable[1].periods[index].teacher}</div>
+                    <div className={`text-xs ${darkMode ? 'text-purple-300' : 'text-gray-400'}`}>{mockTimetable[1].periods[index].room} • {mockTimetable[1].periods[index].teacher}</div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-purple-700 bg-purple-50">
+                  <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-purple-300 bg-purple-900/30' : 'text-purple-700 bg-purple-50'}`}>
                     <div className="font-medium">
                       {index === 0 ? 'English' : 
                        index === 1 ? 'Art' : 
@@ -682,7 +715,7 @@ const StudentCalendar = () => {
                        index === 4 ? 'Physics' : 
                        'Economics'}
                     </div>
-                    <div className="text-xs text-purple-500">
+                    <div className={`text-xs ${darkMode ? 'text-purple-400' : 'text-purple-500'}`}>
                       {index === 0 ? 'R201' : 
                        index === 1 ? 'Art Studio' : 
                        index === 2 ? 'Lab 1' : 
@@ -697,7 +730,7 @@ const StudentCalendar = () => {
                       'Mr. Chen'}
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                  <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-purple-200' : 'text-gray-500'}`}>
                     <div className="font-medium">
                       {index === 0 ? 'History' : 
                        index === 1 ? 'Math' : 
@@ -706,7 +739,7 @@ const StudentCalendar = () => {
                        index === 4 ? 'Chemistry' : 
                        'Library'}
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className={`text-xs ${darkMode ? 'text-purple-300' : 'text-gray-400'}`}>
                       {index === 0 ? 'R301' : 
                        index === 1 ? 'R101' : 
                        index === 2 ? 'Lab 4' : 
@@ -721,7 +754,7 @@ const StudentCalendar = () => {
                       'Ms. Thompson'}
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                  <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-purple-200' : 'text-gray-500'}`}>
                     <div className="font-medium">
                       {index === 0 ? 'Physical Education' : 
                        index === 1 ? 'Geography' : 
@@ -730,7 +763,7 @@ const StudentCalendar = () => {
                        index === 4 ? 'English' : 
                        'Club Activities'}
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className={`text-xs ${darkMode ? 'text-purple-300' : 'text-gray-400'}`}>
                       {index === 0 ? 'Gym' : 
                        index === 1 ? 'R302' : 
                        index === 2 ? 'R101' : 
@@ -754,16 +787,16 @@ const StudentCalendar = () => {
         {/* Mobile view - accordion style */}
         <div className="md:hidden">
           {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, dayIndex) => (
-            <div key={dayIndex} className={`border-b ${day === 'Wednesday' ? 'bg-purple-50' : ''}`}>
-              <div className={`p-3 font-medium text-sm ${day === 'Wednesday' ? 'text-purple-700' : ''}`}>
+            <div key={dayIndex} className={`border-b ${day === 'Wednesday' ? (darkMode ? 'bg-purple-900/30' : 'bg-purple-50') : ''}`}>
+              <div className={`p-3 font-medium text-sm ${day === 'Wednesday' ? (darkMode ? 'text-purple-300' : 'text-purple-700') : (darkMode ? 'text-purple-200' : '')}`}>
                 {day}
               </div>
               <div className="px-3 pb-3">
                 {mockTimetable[Math.min(dayIndex, 1)].periods.map((period, periodIndex) => (
-                  <div key={periodIndex} className="mb-2 border-b pb-2 last:border-b-0 last:pb-0">
+                  <div key={periodIndex} className={`mb-2 border-b pb-2 last:border-b-0 last:pb-0 ${darkMode ? 'border-[#4a2f52]' : ''}`}>
                     <div className="flex justify-between text-xs">
-                      <span className="font-medium">{period.time}</span>
-                      <span className={`${day === 'Wednesday' ? 'text-purple-600' : 'text-gray-600'}`}>
+                      <span className={`font-medium ${darkMode ? 'text-purple-200' : ''}`}>{period.time}</span>
+                      <span className={`${day === 'Wednesday' ? (darkMode ? 'text-purple-300' : 'text-purple-600') : (darkMode ? 'text-purple-200' : 'text-gray-600')}`}>
                         {dayIndex === 0 ? mockTimetable[0].periods[periodIndex].subject :
                          dayIndex === 1 ? mockTimetable[1].periods[periodIndex].subject :
                          dayIndex === 2 ? (
@@ -792,7 +825,7 @@ const StudentCalendar = () => {
                          )}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-400 mt-1">
+                    <div className={`text-xs ${darkMode ? 'text-purple-300' : 'text-gray-400'} mt-1`}>
                       {dayIndex === 0 ? mockTimetable[0].periods[periodIndex].room : 
                        dayIndex === 1 ? mockTimetable[1].periods[periodIndex].room :
                        dayIndex === 2 ? (
@@ -833,38 +866,48 @@ const StudentCalendar = () => {
   // Render announcements
   const renderAnnouncements = () => {
     return (
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-3 md:p-4 border-b bg-purple-50">
-          <h3 className="text-base md:text-lg font-medium text-purple-800">Announcements</h3>
+      <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md overflow-hidden transition-colors duration-300`}>
+        <div className={`p-3 md:p-4 border-b ${darkMode ? 'bg-purple-900/50' : 'bg-purple-50'}`}>
+          <h3 className={`text-base md:text-lg font-medium ${darkMode ? 'text-purple-200' : 'text-purple-800'}`}>Announcements</h3>
           <div className="mt-2 relative">
             <input
               type="text"
-              className="w-full pl-8 pr-3 py-2 text-sm rounded-lg border focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full pl-8 pr-3 py-2 text-sm rounded-lg border focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                darkMode 
+                  ? 'bg-[#2d1635] border-[#4a2f52] text-purple-200 placeholder-purple-300/50' 
+                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+              }`}
               placeholder="Search announcements..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Search className="absolute left-2 top-2.5 text-gray-400" size={16} />
+            <Search className={`absolute left-2 top-2.5 ${darkMode ? 'text-purple-300' : 'text-gray-400'}`} size={16} />
           </div>
         </div>
         <div className="overflow-y-auto max-h-[calc(100vh-300px)] md:max-h-[600px]">
           {filteredAnnouncements.length > 0 ? (
             filteredAnnouncements.map(announcement => (
               <div key={announcement.id} className={`p-3 md:p-4 border-b ${
-                announcement.priority === 'urgent' ? 'bg-red-50' : ''
+                announcement.priority === 'urgent' 
+                  ? darkMode 
+                    ? 'bg-red-900/30' 
+                    : 'bg-red-50' 
+                  : darkMode 
+                    ? 'border-[#4a2f52]' 
+                    : ''
               }`}>
                 <div className="flex flex-col md:flex-row md:items-center justify-between">
-                  <h4 className="text-sm md:text-base font-medium mb-1 md:mb-0">
+                  <h4 className={`text-sm md:text-base font-medium mb-1 md:mb-0 ${darkMode ? 'text-purple-200' : ''}`}>
                     {announcement.title}
                     {renderPriorityBadge(announcement.priority)}
                   </h4>
-                  <span className="text-xs md:text-sm text-gray-500">{new Date(announcement.date).toLocaleDateString()}</span>
+                  <span className={`text-xs md:text-sm ${darkMode ? 'text-purple-300' : 'text-gray-500'}`}>{new Date(announcement.date).toLocaleDateString()}</span>
                 </div>
-                <p className="mt-2 text-xs md:text-sm text-gray-600">{announcement.content}</p>
+                <p className={`mt-2 text-xs md:text-sm ${darkMode ? 'text-purple-300' : 'text-gray-600'}`}>{announcement.content}</p>
               </div>
             ))
           ) : (
-            <div className="p-4 text-center text-gray-500 text-sm">
+            <div className={`p-4 text-center ${darkMode ? 'text-purple-300/50' : 'text-gray-500'} text-sm`}>
               No announcements found matching "{searchQuery}".
             </div>
           )}
@@ -875,128 +918,184 @@ const StudentCalendar = () => {
   
   // Simpler, more visible styling for the Calendar tab
   return (
-    <div className='bg-gray-100 pt-10 pr-10 pb-10'>
-    <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px] p-6">
-      <main className="container mx-auto px-3 md:px-4 py-3 md:py-6">
-        <h1 className="text-3xl text-center font-medium text-black">Calendar</h1>
-        {/* Tab navigation */}
-        <div className="flex border-b mb-6">
-          <button
-            className={`px-4 py-2 font-medium text-sm ${
-              activeTab === 'calendar'
-                ? "border-b-2 border-violet-500 text-violet-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab('calendar')}
-          >
-            <Calendar className="inline-block mr-1 md:mr-2" size={16} />
-            Calendar
-          </button>
-          <button
-            className={`px-4 py-2 font-medium text-sm ${
-              activeTab === 'timetable'
-                ? "border-b-2 border-violet-500 text-violet-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab('timetable')}
-          >
-            <Clock className="inline-block mr-1 md:mr-2" size={16} />
-            Timetable
-          </button>
-          <button
-            className={`px-4 py-2 font-medium text-sm ${
-              activeTab === 'announcements'
-                ? "border-b-2 border-violet-500 text-violet-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setActiveTab('announcements')}
-          >
-            <Bell className="inline-block mr-1 md:mr-2" size={16} />
-            Announcements
-          </button>
-        </div>
-        
-        {/* Calendar view navigation */}
-        {activeTab === 'calendar' && (
-          <div className="mb-4 md:mb-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0">
-              <div className="flex flex-wrap gap-4 w-full md:w-auto mb-6">
-                <button
-                  className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${calendarView === 'daily' ? 'bg-purple-600 text-white font-medium' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                  onClick={() => setCalendarView('daily')}
-                >
-                  Day
-                </button>
-                <button
-                  className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${calendarView === 'weekly' ? 'bg-purple-600 text-white font-medium' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                  onClick={() => setCalendarView('weekly')}
-                >
-                  Week
-                </button>
-                <button
-                  className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${calendarView === 'monthly' ? 'bg-purple-600 text-white font-medium' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                  onClick={() => setCalendarView('monthly')}
-                >
-                  Month
-                </button>
-                <button
-                  className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${calendarView === 'quarterly' ? 'bg-purple-600 text-white font-medium' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                  onClick={() => setCalendarView('quarterly')}
-                >
-                  Quarter
-                </button>
-                <button
-                  className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${calendarView === 'yearly' ? 'bg-purple-600 text-white font-medium' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                  onClick={() => setCalendarView('yearly')}
-                >
-                  Year
-                </button>
+    <div className={`${darkMode ? 'bg-[#5b3a64]' : 'bg-gray-100'} pt-10 pr-10 pb-10 transition-colors duration-300`}>
+      <div className={`min-h-screen ${darkMode ? 'bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]' : 'bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400'} rounded-[30px] p-6 transition-colors duration-300`}>
+        <main className="container mx-auto px-3 md:px-4 py-3 md:py-6">
+          <h1 className={`text-3xl text-center font-medium ${darkMode ? 'text-white' : 'text-black'} transition-colors duration-300`}>Calendar</h1>
+          {/* Tab navigation */}
+          <div className={`flex border-b mb-6 ${darkMode ? 'border-[#4a2f52]' : 'border-gray-200'}`}>
+            <button
+              className={`px-4 py-2 font-medium text-sm ${
+                activeTab === 'calendar'
+                  ? darkMode 
+                    ? "border-b-2 border-purple-500 text-purple-200"
+                    : "border-b-2 border-violet-500 text-violet-600"
+                  : darkMode
+                    ? "text-gray-400 hover:text-purple-200"
+                    : "text-gray-500 hover:text-gray-700"
+              } transition-colors duration-300`}
+              onClick={() => setActiveTab('calendar')}
+            >
+              <Calendar className="inline-block mr-1 md:mr-2" size={16} />
+              Calendar
+            </button>
+            <button
+              className={`px-4 py-2 font-medium text-sm ${
+                activeTab === 'timetable'
+                  ? darkMode 
+                    ? "border-b-2 border-purple-500 text-purple-200"
+                    : "border-b-2 border-violet-500 text-violet-600"
+                  : darkMode
+                    ? "text-gray-400 hover:text-purple-200"
+                    : "text-gray-500 hover:text-gray-700"
+              } transition-colors duration-300`}
+              onClick={() => setActiveTab('timetable')}
+            >
+              <Clock className="inline-block mr-1 md:mr-2" size={16} />
+              Timetable
+            </button>
+            <button
+              className={`px-4 py-2 font-medium text-sm ${
+                activeTab === 'announcements'
+                  ? darkMode 
+                    ? "border-b-2 border-purple-500 text-purple-200"
+                    : "border-b-2 border-violet-500 text-violet-600"
+                  : darkMode
+                    ? "text-gray-400 hover:text-purple-200"
+                    : "text-gray-500 hover:text-gray-700"
+              } transition-colors duration-300`}
+              onClick={() => setActiveTab('announcements')}
+            >
+              <Bell className="inline-block mr-1 md:mr-2" size={16} />
+              Announcements
+            </button>
+          </div>
+          
+          {/* Calendar view navigation */}
+          {activeTab === 'calendar' && (
+            <div className="mb-4 md:mb-6">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0">
+                <div className="flex flex-wrap gap-4 w-full md:w-auto mb-6">
+                  <button
+                    className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${
+                      calendarView === 'daily' 
+                        ? darkMode 
+                          ? 'bg-purple-600 text-purple-200 font-medium' 
+                          : 'bg-purple-600 text-white font-medium'
+                        : darkMode
+                          ? 'bg-[#2d1635] text-purple-200 hover:bg-[#4a2f52]'
+                          : 'bg-white text-gray-600 hover:bg-gray-100'
+                    } transition-colors duration-300`}
+                    onClick={() => setCalendarView('daily')}
+                  >
+                    Day
+                  </button>
+                  <button
+                    className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${
+                      calendarView === 'weekly' 
+                        ? darkMode 
+                          ? 'bg-purple-600 text-purple-200 font-medium' 
+                          : 'bg-purple-600 text-white font-medium'
+                        : darkMode
+                          ? 'bg-[#2d1635] text-purple-200 hover:bg-[#4a2f52]'
+                          : 'bg-white text-gray-600 hover:bg-gray-100'
+                    } transition-colors duration-300`}
+                    onClick={() => setCalendarView('weekly')}
+                  >
+                    Week
+                  </button>
+                  <button
+                    className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${
+                      calendarView === 'monthly' 
+                        ? darkMode 
+                          ? 'bg-purple-600 text-purple-200 font-medium' 
+                          : 'bg-purple-600 text-white font-medium'
+                        : darkMode
+                          ? 'bg-[#2d1635] text-purple-200 hover:bg-[#4a2f52]'
+                          : 'bg-white text-gray-600 hover:bg-gray-100'
+                    } transition-colors duration-300`}
+                    onClick={() => setCalendarView('monthly')}
+                  >
+                    Month
+                  </button>
+                  <button
+                    className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${
+                      calendarView === 'quarterly' 
+                        ? darkMode 
+                          ? 'bg-purple-600 text-purple-200 font-medium' 
+                          : 'bg-purple-600 text-white font-medium'
+                        : darkMode
+                          ? 'bg-[#2d1635] text-purple-200 hover:bg-[#4a2f52]'
+                          : 'bg-white text-gray-600 hover:bg-gray-100'
+                    } transition-colors duration-300`}
+                    onClick={() => setCalendarView('quarterly')}
+                  >
+                    Quarter
+                  </button>
+                  <button
+                    className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${
+                      calendarView === 'yearly' 
+                        ? darkMode 
+                          ? 'bg-purple-600 text-purple-200 font-medium' 
+                          : 'bg-purple-600 text-white font-medium'
+                        : darkMode
+                          ? 'bg-[#2d1635] text-purple-200 hover:bg-[#4a2f52]'
+                          : 'bg-white text-gray-600 hover:bg-gray-100'
+                    } transition-colors duration-300`}
+                    onClick={() => setCalendarView('yearly')}
+                  >
+                    Year
+                  </button>
+                </div>
+                
+                <div className="flex items-center w-full md:w-auto justify-between md:justify-end space-x-2 md:space-x-4">
+                  <button
+                    className={`p-1 rounded-full ${darkMode ? 'hover:bg-[#4a2f52] text-purple-200' : 'hover:bg-gray-200'}`}
+                    onClick={goToPreviousPeriod}
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <span className={`font-medium text-sm md:text-base truncate max-w-[200px] ${darkMode ? 'text-purple-200' : 'text-gray-900'}`}>
+                    {calendarView === 'daily' && currentDate.toDateString()}
+                    {calendarView === 'weekly' && `Week of ${getCurrentWeekDates()[0].toLocaleDateString()} - ${getCurrentWeekDates()[6].toLocaleDateString()}`}
+                    {calendarView === 'monthly' && `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`}
+                    {calendarView === 'quarterly' && `Q${Math.floor(currentDate.getMonth() / 3) + 1} ${currentDate.getFullYear()}`}
+                    {calendarView === 'yearly' && currentDate.getFullYear()}
+                  </span>
+                  <button
+                    className={`p-1 rounded-full ${darkMode ? 'hover:bg-[#4a2f52] text-purple-200' : 'hover:bg-gray-200'}`}
+                    onClick={goToNextPeriod}
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                  <button
+                    className={`px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm rounded-md ${
+                      darkMode 
+                        ? 'bg-purple-600 text-purple-200 hover:bg-purple-700 border-2 border-purple-300'
+                        : 'bg-purple-600 text-white hover:bg-purple-700 border-2 border-purple-800'
+                    } transition-colors duration-300`}
+                    onClick={() => setCurrentDate(new Date())}
+                  >
+                    Today
+                  </button>
+                </div>
               </div>
               
-              <div className="flex items-center w-full md:w-auto justify-between md:justify-end space-x-2 md:space-x-4">
-                <button
-                  className="p-1 rounded-full hover:bg-gray-200"
-                  onClick={goToPreviousPeriod}
-                >
-                  <ChevronLeft size={18} />
-                </button>
-                <span className="font-medium text-sm md:text-base truncate max-w-[200px]">
-                  {calendarView === 'daily' && currentDate.toDateString()}
-                  {calendarView === 'weekly' && `Week of ${getCurrentWeekDates()[0].toLocaleDateString()} - ${getCurrentWeekDates()[6].toLocaleDateString()}`}
-                  {calendarView === 'monthly' && `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`}
-                  {calendarView === 'quarterly' && `Q${Math.floor(currentDate.getMonth() / 3) + 1} ${currentDate.getFullYear()}`}
-                  {calendarView === 'yearly' && currentDate.getFullYear()}
-                </span>
-                <button
-                  className="p-1 rounded-full hover:bg-gray-200"
-                  onClick={goToNextPeriod}
-                >
-                  <ChevronRight size={18} />
-                </button>
-                <button
-                  className="px-2 py-1 md:px-4 md:py-2 text-xs md:text-sm bg-purple-600 text-white rounded-md border hover:bg-purple-700"
-                  onClick={() => setCurrentDate(new Date())}
-                >
-                  Today
-                </button>
-              </div>
+              {calendarView === 'daily' && renderDailyView()}
+              {calendarView === 'weekly' && renderWeeklyView()}
+              {calendarView === 'monthly' && renderMonthlyView()}
+              {calendarView === 'quarterly' && renderQuarterlyView()}
+              {calendarView === 'yearly' && renderYearlyView()}
             </div>
-            
-            {calendarView === 'daily' && renderDailyView()}
-            {calendarView === 'weekly' && renderWeeklyView()}
-            {calendarView === 'monthly' && renderMonthlyView()}
-            {calendarView === 'quarterly' && renderQuarterlyView()}
-            {calendarView === 'yearly' && renderYearlyView()}
-          </div>
-        )}
-        
-        {/* Timetable view */}
-        {activeTab === 'timetable' && renderTimetable()}
-        
-        {/* Announcements view */}
-        {activeTab === 'announcements' && renderAnnouncements()}
-      </main>
-    </div>
+          )}
+          
+          {/* Timetable view */}
+          {activeTab === 'timetable' && renderTimetable()}
+          
+          {/* Announcements view */}
+          {activeTab === 'announcements' && renderAnnouncements()}
+        </main>
+      </div>
     </div>
   );
 };

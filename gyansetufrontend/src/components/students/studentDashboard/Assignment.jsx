@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Calendar, CheckCircle, AlertCircle, FileText, User, ChevronRight, ChevronLeft } from 'lucide-react';
+import { useTheme } from '../../../context/ThemeContext';
 
 // Mock data - this would come from your backend
 const mockAssignments = [
@@ -119,6 +120,7 @@ const StudentAssignmentDashboard = () => {
   const [submittedAssignments, setSubmittedAssignments] = useState(mockSubmittedAssignments);
   const [answers, setAnswers] = useState({});
   const [timeRemaining, setTimeRemaining] = useState(null);
+  const { darkMode } = useTheme();
 
   // Timer logic for active assignment
   useEffect(() => {
@@ -195,19 +197,19 @@ const StudentAssignmentDashboard = () => {
 
   if (selectedAssignment) {
     return (
-      <div className="bg-gray-100 pt-10 pr-10 pb-10">
-        <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-4xl">
+      <div className={`${darkMode ? 'bg-[#5b3a64]' : 'bg-gray-100'} pt-10 pr-10 pb-10 transition-colors duration-300`}>
+        <div className={`min-h-screen ${darkMode ? 'bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]' : 'bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400'} rounded-4xl transition-colors duration-300`}>
           <div className="max-w-4xl mx-auto p-6">
             {/* Assignment Header */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 ">
+            <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md p-6 mb-6 transition-colors duration-300`}>
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
-                  <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+                  <h1 className={`text-2xl lg:text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>
                     {selectedAssignment.title}
                   </h1>
-                  <p className="text-gray-600 mb-4">{selectedAssignment.description}</p>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-4 transition-colors duration-300`}>{selectedAssignment.description}</p>
                   {selectedAssignment.hasGrading && (
-                    <div className="text-sm text-violet-600 font-medium">
+                    <div className={`text-sm ${darkMode ? 'text-purple-200' : 'text-violet-600'} font-medium transition-colors duration-300`}>
                       Total Points: {selectedAssignment.totalPoints}
                     </div>
                   )}
@@ -215,14 +217,14 @@ const StudentAssignmentDashboard = () => {
                 
                 <div className="flex flex-col items-start lg:items-end gap-2">
                   {timeRemaining && (
-                    <div className="bg-red-100 text-red-800 px-4 py-2 rounded-lg font-mono text-lg">
+                    <div className={`${darkMode ? 'bg-[#4a2f52] text-purple-200' : 'bg-red-100 text-red-800'} px-4 py-2 rounded-lg font-mono text-lg transition-colors duration-300`}>
                       <Clock className="inline w-5 h-5 mr-2" />
                       {formatTime(timeRemaining)}
                     </div>
                   )}
                   <button
                     onClick={() => setSelectedAssignment(null)}
-                    className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg text-violet-600 hover:bg-violet-50 hover:text-violet-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                    className={`flex items-center gap-2 ${darkMode ? 'bg-[#4a2f52] hover:bg-[#5b3a64] text-purple-200' : 'bg-white hover:bg-violet-50 text-violet-600'} px-4 py-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md`}
                   >
                     <ChevronLeft className="w-5 h-5" />
                     Back to Dashboard
@@ -234,14 +236,14 @@ const StudentAssignmentDashboard = () => {
             {/* Assignment Sections */}
             <div className="space-y-6">
               {selectedAssignment.sections.map((section) => (
-                <div key={section.id} className="bg-white rounded-lg shadow-md p-6">
-                  <div className="border-b border-gray-200 pb-4 mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                <div key={section.id} className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-lg shadow-md p-6 transition-colors duration-300`}>
+                  <div className={`border-b ${darkMode ? 'border-[#4a2f52]' : 'border-gray-200'} pb-4 mb-6 transition-colors duration-300`}>
+                    <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>
                       {section.title}
                     </h2>
-                    <p className="text-gray-600 text-sm mb-2">{section.instructions}</p>
+                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-sm mb-2 transition-colors duration-300`}>{section.instructions}</p>
                     {selectedAssignment.hasGrading && (
-                      <div className="text-sm text-violet-600">
+                      <div className={`text-sm ${darkMode ? 'text-purple-200' : 'text-violet-600'} transition-colors duration-300`}>
                         Points per question: {section.pointsPerQuestion}
                       </div>
                     )}
@@ -249,15 +251,15 @@ const StudentAssignmentDashboard = () => {
 
                   <div className="space-y-6">
                     {section.questions.map((question, index) => (
-                      <div key={question.id} className="border-l-4 border-violet-500 pl-4">
+                      <div key={question.id} className={`border-l-4 ${darkMode ? 'border-[#4a2f52]' : 'border-violet-500'} pl-4 transition-colors duration-300`}>
                         <div className="mb-3">
-                          <h3 className="font-medium text-gray-900 mb-2">
+                          <h3 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>
                             Question {index + 1}
                           </h3>
-                          <p className="text-gray-700 mb-2">{question.text}</p>
+                          <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2 transition-colors duration-300`}>{question.text}</p>
                           {question.sampleAnswer && (
-                            <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mb-3">
-                              <p className="text-sm text-yellow-800">
+                            <div className={`${darkMode ? 'bg-[#4a2f52]/50 border-[#5b3a64]' : 'bg-yellow-50 border-yellow-200'} border rounded p-3 mb-3 transition-colors duration-300`}>
+                              <p className={`text-sm ${darkMode ? 'text-purple-200' : 'text-yellow-800'} transition-colors duration-300`}>
                                 <strong>Key Points:</strong> {question.sampleAnswer}
                               </p>
                             </div>
@@ -265,14 +267,14 @@ const StudentAssignmentDashboard = () => {
                         </div>
 
                         <textarea
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent resize-vertical min-h-32"
+                          className={`w-full p-3 border ${darkMode ? 'bg-[#4a2f52] border-[#5b3a64] text-white focus:ring-purple-500' : 'border-gray-300 focus:ring-violet-500'} rounded-lg focus:ring-2 focus:border-transparent resize-vertical min-h-32 transition-colors duration-300`}
                           placeholder="Enter your answer here..."
                           value={answers[question.id] || ''}
                           onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                         />
 
                         {question.hasWordLimit && question.wordLimit && (
-                          <div className="mt-2 text-sm text-gray-600">
+                          <div className={`mt-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} transition-colors duration-300`}>
                             Word count: {getWordCount(answers[question.id] || '')} / {question.wordLimit}
                             {getWordCount(answers[question.id] || '') > question.wordLimit && (
                               <span className="text-red-600 ml-2">
@@ -292,7 +294,7 @@ const StudentAssignmentDashboard = () => {
             <div className="mt-8 text-center">
               <button
                 onClick={handleSubmitAssignment}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors"
+                className={`${darkMode ? 'bg-[#4a2f52] hover:bg-[#5b3a64]' : 'bg-green-600 hover:bg-green-700'} text-white px-8 py-3 rounded-lg font-medium transition-colors duration-300`}
               >
                 Submit Assignment
               </button>
@@ -304,23 +306,23 @@ const StudentAssignmentDashboard = () => {
   }
 
   return (
-    <div className="bg-gray-100 pt-4 sm:pt-6 md:pt-8 px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8">
-      <div className="min-h-screen bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px]">
+    <div className={`${darkMode ? 'bg-[#5b3a64]' : 'bg-gray-100'} pt-4 sm:pt-6 md:pt-8 px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 transition-colors duration-300`}>
+      <div className={`min-h-screen ${darkMode ? 'bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]' : 'bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400'} rounded-[30px] transition-colors duration-300`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-6 pt-8">
-            <h1 className="text-3xl text-center font-medium text-black">Assignments</h1>
+            <h1 className={`text-3xl text-center font-medium ${darkMode ? 'text-white' : 'text-black'} transition-colors duration-300`}>Assignments</h1>
           </div>
 
           {/* Tabs */}
-          <div className="flex border-b mb-6">
+          <div className={`flex border-b ${darkMode ? 'border-[#4a2f52]' : 'border-gray-200'} mb-6 transition-colors duration-300`}>
             <button
               onClick={() => setActiveTab('available')}
               className={`px-4 py-2 font-medium text-sm ${
                 activeTab === 'available'
-                  ? 'border-b-2 border-violet-500 text-violet-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
+                  ? `${darkMode ? 'border-b-2 border-purple-500 text-purple-200' : 'border-b-2 border-violet-500 text-violet-600'}`
+                  : `${darkMode ? 'text-gray-400 hover:text-purple-200' : 'text-gray-500 hover:text-gray-700'}`
+              } transition-colors duration-300`}
             >
               Available Assignments ({assignments.length})
             </button>
@@ -328,9 +330,9 @@ const StudentAssignmentDashboard = () => {
               onClick={() => setActiveTab('submitted')}
               className={`px-4 py-2 font-medium text-sm ${
                 activeTab === 'submitted'
-                  ? 'border-b-2 border-violet-500 text-violet-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
+                  ? `${darkMode ? 'border-b-2 border-purple-500 text-purple-200' : 'border-b-2 border-violet-500 text-violet-600'}`
+                  : `${darkMode ? 'text-gray-400 hover:text-purple-200' : 'text-gray-500 hover:text-gray-700'}`
+              } transition-colors duration-300`}
             >
               Submitted Assignments ({submittedAssignments.length})
             </button>
@@ -340,18 +342,18 @@ const StudentAssignmentDashboard = () => {
           {activeTab === 'available' && (
             <div className="space-y-4">
               {assignments.length === 0 ? (
-                <div className="bg-white rounded-4xl shadow-md p-6 sm:p-8 text-center">
-                  <FileText className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No Available Assignments</h3>
-                  <p className="text-gray-600 text-sm sm:text-base">All assignments have been completed or are not yet available.</p>
+                <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-4xl shadow-md p-6 sm:p-8 text-center transition-colors duration-300`}>
+                  <FileText className={`w-10 h-10 sm:w-12 sm:h-12 ${darkMode ? 'text-[#4a2f52]' : 'text-gray-400'} mx-auto mb-4 transition-colors duration-300`} />
+                  <h3 className={`text-base sm:text-lg font-medium ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>No Available Assignments</h3>
+                  <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-sm sm:text-base transition-colors duration-300`}>All assignments have been completed or are not yet available.</p>
                 </div>
               ) : (
                 assignments.map((assignment) => (
-                  <div key={assignment.id} className="bg-white rounded-4xl shadow-md p-4 sm:p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                  <div key={assignment.id} className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-4xl shadow-md p-4 sm:p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-lg`}>
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                          <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+                          <h3 className={`text-lg sm:text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors duration-300`}>
                             {assignment.title}
                           </h3>
                           {isAssignmentOverdue(assignment) && (
@@ -366,26 +368,26 @@ const StudentAssignmentDashboard = () => {
                           )}
                         </div>
                         
-                        <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">
+                        <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-4 line-clamp-2 text-sm sm:text-base transition-colors duration-300`}>
                           {assignment.description}
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm">
-                          <div className="flex items-center text-gray-600">
+                          <div className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} transition-colors duration-300`}>
                             <Clock className="w-4 h-4 mr-2" />
                             {assignment.timeLimit} minutes
                           </div>
-                          <div className="flex items-center text-gray-600">
+                          <div className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} transition-colors duration-300`}>
                             <Calendar className="w-4 h-4 mr-2" />
                             Due: {new Date(assignment.dueDate).toLocaleDateString()}
                           </div>
                           {assignment.hasGrading && (
-                            <div className="flex items-center text-violet-600">
+                            <div className={`flex items-center ${darkMode ? 'text-purple-200' : 'text-violet-600'} transition-colors duration-300`}>
                               <User className="w-4 h-4 mr-2" />
                               {assignment.totalPoints} points
                             </div>
                           )}
-                          <div className="flex items-center text-gray-600">
+                          <div className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} transition-colors duration-300`}>
                             <FileText className="w-4 h-4 mr-2" />
                             {assignment.sections.reduce((total, section) => total + section.questions.length, 0)} questions
                           </div>
@@ -398,8 +400,10 @@ const StudentAssignmentDashboard = () => {
                           disabled={!isAssignmentActive(assignment)}
                           className={`px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors flex items-center justify-center ${
                             isAssignmentActive(assignment)
-                              ? 'bg-violet-600 hover:bg-violet-700 text-white'
-                              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                              ? darkMode 
+                                ? 'bg-[#4a2f52] hover:bg-[#5b3a64] text-purple-200'
+                                : 'bg-violet-600 hover:bg-violet-700 text-white'
+                              : `${darkMode ? 'bg-[#341b47] text-gray-500' : 'bg-gray-300 text-gray-500'} cursor-not-allowed`
                           }`}
                         >
                           Start Assignment
@@ -417,25 +421,25 @@ const StudentAssignmentDashboard = () => {
           {activeTab === 'submitted' && (
             <div className="space-y-4">
               {submittedAssignments.length === 0 ? (
-                <div className="bg-white rounded-4xl shadow-md p-6 sm:p-8 text-center">
-                  <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No Submitted Assignments</h3>
-                  <p className="text-gray-600 text-sm sm:text-base">Completed assignments will appear here.</p>
+                <div className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-4xl shadow-md p-6 sm:p-8 text-center transition-colors duration-300`}>
+                  <CheckCircle className={`w-10 h-10 sm:w-12 sm:h-12 ${darkMode ? 'text-[#4a2f52]' : 'text-gray-400'} mx-auto mb-4 transition-colors duration-300`} />
+                  <h3 className={`text-base sm:text-lg font-medium ${darkMode ? 'text-white' : 'text-gray-900'} mb-2 transition-colors duration-300`}>No Submitted Assignments</h3>
+                  <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-sm sm:text-base transition-colors duration-300`}>Completed assignments will appear here.</p>
                 </div>
               ) : (
                 submittedAssignments.map((assignment) => (
-                  <div key={assignment.id} className="bg-white rounded-4xl shadow-md p-4 sm:p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                  <div key={assignment.id} className={`${darkMode ? 'bg-[#341b47]' : 'bg-white'} rounded-4xl shadow-md p-4 sm:p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-lg`}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                          <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+                          <h3 className={`text-lg sm:text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors duration-300`}>
                             {assignment.title}
                           </h3>
                           <CheckCircle className="w-5 h-5 text-green-500" />
                         </div>
                         
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-gray-600">
-                          <div className="flex items-center">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm">
+                          <div className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} transition-colors duration-300`}>
                             <Calendar className="w-4 h-4 mr-2" />
                             Submitted: {new Date(assignment.submittedDate).toLocaleDateString()} at {new Date(assignment.submittedDate).toLocaleTimeString()}
                           </div>

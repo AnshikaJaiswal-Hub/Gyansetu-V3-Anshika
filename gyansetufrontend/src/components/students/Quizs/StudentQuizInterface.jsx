@@ -12,6 +12,7 @@ import {
   Calendar,
   Clock3,
 } from "lucide-react";
+import { useTheme } from "../../../context/ThemeContext"; // Import theme context
 
 import QuizList from "./QuizList";
 import WelcomeScreen from "./WelcomeScreen";
@@ -20,6 +21,9 @@ import SubmittedScreen from "./SubmittedScreen";
 import { getCurrentDateTime, isQuizAvailable } from "./utils";
 
 const StudentQuizInterface = () => {
+  // Use theme context
+  const { darkMode } = useTheme();
+
   // Mock data - in a real application, this would come from an API
   const [quizzes] = useState([
     {
@@ -32,7 +36,7 @@ const StudentQuizInterface = () => {
       section: "B",
       dueDate: "2025-05-27T23:59:59",
       startDate: "2025-05-20T01:00:00",
-      endDate: "2025-06-01T03:50:59",
+      endDate: "2025-06-08T03:50:59",
       duration: 60, // in minutes
       totalMarks: 30,
       passingScore: 15,
@@ -593,8 +597,12 @@ const StudentQuizInterface = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-10">
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px]">
+    <div className={`${darkMode ? "bg-[#5b3a64]" : "bg-gray-100"} p-10 transition-colors duration-300`}>
+      <div className={`min-h-screen flex items-center justify-center ${
+        darkMode 
+          ? "bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]" 
+          : "bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400"
+      } rounded-[30px] transition-colors duration-300`}>
         <div className="p-4 md:p-8">
           {!activeQuiz ? (
             <QuizList

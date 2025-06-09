@@ -1,13 +1,18 @@
 import React from "react";
 import { Calendar, Clock, AlertCircle } from "lucide-react";
 import { formatDateTimeRange, isQuizAvailable } from "./utils";
+import { useTheme } from "../../../context/ThemeContext";
 
 const WelcomeScreen = ({ activeQuiz, setActiveQuiz, handleStart }) => {
+  const { darkMode } = useTheme();
+
   return (
-    <div className="w-full h-full flex flex-col flex-1 bg-white rounded-4xl p-4 sm:p-6 md:p-10 min-w-[100%] max-h-[75vh] overflow-y-auto">
+    <div className={`w-full h-full flex flex-col flex-1 ${darkMode ? "bg-[#341b47]" : "bg-white"} rounded-4xl p-4 sm:p-6 md:p-10 min-w-[100%] max-h-[75vh] overflow-y-auto transition-colors duration-300`}>
       <div className="text-center flex flex-col items-center mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">{activeQuiz.title}</h1>
-        <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 text-sm text-gray-600">
+        <h1 className={`text-xl sm:text-2xl font-bold ${darkMode ? "text-white" : "text-gray-800"} mb-2 transition-colors duration-300`}>
+          {activeQuiz.title}
+        </h1>
+        <div className={`flex flex-wrap justify-center items-center gap-2 sm:gap-4 text-sm ${darkMode ? "text-gray-400" : "text-gray-600"} transition-colors duration-300`}>
           <span>{activeQuiz.subject}</span>
           <span className="hidden sm:inline">•</span>
           <span>
@@ -17,74 +22,89 @@ const WelcomeScreen = ({ activeQuiz, setActiveQuiz, handleStart }) => {
       </div>
 
       <div className="mb-6">
-        <p className="text-gray-700 mb-4 text-sm sm:text-base">{activeQuiz.description}</p>
+        <p className={`${darkMode ? "text-gray-300" : "text-gray-700"} mb-4 text-sm sm:text-base transition-colors duration-300`}>
+          {activeQuiz.description}
+        </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 my-4">
-          <div className="bg-violet-200 p-3 sm:p-4 rounded-2xl">
-            <p className="text-sm text-gray-700 mb-1">Available</p>
-            <p className="font-semibold text-sm sm:text-base">
+          <div className={`${darkMode ? "bg-[#4a1f5e]" : "bg-violet-200"} p-3 sm:p-4 rounded-2xl transition-colors duration-300`}>
+            <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-700"} mb-1 transition-colors duration-300`}>
+              Available
+            </p>
+            <p className={`font-semibold text-sm sm:text-base ${darkMode ? "text-white" : "text-gray-800"} transition-colors duration-300`}>
               {formatDateTimeRange(activeQuiz.startDate, activeQuiz.endDate)}
             </p>
           </div>
 
-          <div className="bg-violet-200 p-3 sm:p-4 rounded-2xl">
-            <p className="text-sm text-gray-700 mb-1">Duration</p>
-            <p className="font-semibold text-sm sm:text-base">{activeQuiz.duration} minutes</p>
+          <div className={`${darkMode ? "bg-[#4a1f5e]" : "bg-violet-200"} p-3 sm:p-4 rounded-2xl transition-colors duration-300`}>
+            <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-700"} mb-1 transition-colors duration-300`}>
+              Duration
+            </p>
+            <p className={`font-semibold text-sm sm:text-base ${darkMode ? "text-white" : "text-gray-800"} transition-colors duration-300`}>
+              {activeQuiz.duration} minutes
+            </p>
           </div>
 
-          <div className="bg-violet-200 p-3 sm:p-4 rounded-2xl">
-            <p className="text-sm text-gray-700 mb-1">Total Marks</p>
-            <p className="font-semibold text-sm sm:text-base">{activeQuiz.totalMarks} marks</p>
+          <div className={`${darkMode ? "bg-[#4a1f5e]" : "bg-violet-200"} p-3 sm:p-4 rounded-2xl transition-colors duration-300`}>
+            <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-700"} mb-1 transition-colors duration-300`}>
+              Total Marks
+            </p>
+            <p className={`font-semibold text-sm sm:text-base ${darkMode ? "text-white" : "text-gray-800"} transition-colors duration-300`}>
+              {activeQuiz.totalMarks} marks
+            </p>
           </div>
 
-          <div className="bg-violet-200 p-3 sm:p-4 rounded-2xl">
-            <p className="text-sm text-gray-700 mb-1">Passing Score</p>
-            <p className="font-semibold text-sm sm:text-base">{activeQuiz.passingScore} marks</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-yellow-50 border-l-4 border-violet-600 p-3 sm:p-4 mb-6">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <AlertCircle className="h-5 w-5 text-violet-400" />
-          </div>
-          <div className="ml-3">
-            <p className="text-sm text-violet-700">
-              Once you start this quiz, the timer will begin. Make sure you have enough time to
-              complete it.
+          <div className={`${darkMode ? "bg-[#4a1f5e]" : "bg-violet-200"} p-3 sm:p-4 rounded-2xl transition-colors duration-300`}>
+            <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-700"} mb-1 transition-colors duration-300`}>
+              Passing Score
+            </p>
+            <p className={`font-semibold text-sm sm:text-base ${darkMode ? "text-white" : "text-gray-800"} transition-colors duration-300`}>
+              {activeQuiz.passingScore} marks
             </p>
           </div>
         </div>
-      </div>
 
-      <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
-        <button
-          onClick={() => setActiveQuiz(null)}
-          className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-white rounded-lg bg-violet-600 hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors"
-        >
-          Back to Quizzes
-        </button>
-
-        {activeQuiz.status === "upcoming" ? (
-          <button
-            onClick={handleStart}
-            disabled={!isQuizAvailable(activeQuiz)}
-            className={`w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors ${
-              isQuizAvailable(activeQuiz)
-                ? "bg-green-600 text-white hover:bg-green-500 focus:ring-blue-500"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            {isQuizAvailable(activeQuiz) ? "Start Quiz" : "Not Available Yet"}
-          </button>
-        ) : (
-          <div className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-gray-100 text-gray-700 rounded-lg text-center">
-            Quiz{" "}
-            {activeQuiz.status === "completed" ? "Completed" : "Attempted"}: {activeQuiz.score} /{" "}
-            {activeQuiz.totalMarks}
+        {!isQuizAvailable(activeQuiz) && (
+          <div className={`${darkMode ? "bg-red-900/50" : "bg-red-100"} p-4 rounded-lg flex items-start gap-3 transition-colors duration-300`}>
+            <AlertCircle className={`h-5 w-5 ${darkMode ? "text-red-400" : "text-red-500"} flex-shrink-0 mt-0.5`} />
+            <div>
+              <p className={`font-medium ${darkMode ? "text-red-400" : "text-red-700"} transition-colors duration-300`}>
+                Quiz Not Available
+              </p>
+              <p className={`text-sm ${darkMode ? "text-red-300" : "text-red-600"} mt-1 transition-colors duration-300`}>
+                This quiz is not available for taking at the moment. Please check the available time period.
+              </p>
+            </div>
           </div>
         )}
+      </div>
+
+      <div className="mt-auto flex flex-col sm:flex-row gap-4">
+        <button
+          onClick={() => setActiveQuiz(null)}
+          className={`px-6 py-3 rounded-lg font-medium transition-colors duration-300 ${
+            darkMode
+              ? "bg-[#4a1f5e] text-white hover:bg-[#5b2a6e]"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+          }`}
+        >
+          Back to Quiz List
+        </button>
+        <button
+          onClick={handleStart}
+          disabled={!isQuizAvailable(activeQuiz)}
+          className={`px-6 py-3 rounded-lg font-medium transition-colors duration-300 ${
+            isQuizAvailable(activeQuiz)
+              ? darkMode
+                ? "bg-[#4a1f5e] text-white hover:bg-[#5b2a6e]"
+                : "bg-violet-500 text-white hover:bg-violet-600"
+              : darkMode
+                ? "bg-[#341b47] text-gray-500 cursor-not-allowed"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          Start Quiz
+        </button>
       </div>
     </div>
   );

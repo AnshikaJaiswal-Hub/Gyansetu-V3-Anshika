@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Eye, ChevronLeft, ChevronRight, Download, Search, ChevronDown, Menu, X } from 'lucide-react';
+import { useTheme } from '../../../context/ThemeContext'; // Import theme context
 
 const ContentApp = () => {
+  // Use theme context
+  const { darkMode } = useTheme();
+  
   // State to track if navbar is expanded
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
   
@@ -209,276 +213,278 @@ const ContentApp = () => {
   };
 
   return (
-    <div className='bg-gray-100 pt-10 pr-10 pb-10'>
-    <div className="bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400 rounded-[30px] min-h-screen p-6">
-      <div className={`container mx-auto px-2 sm:px-4 py-4 ${isNavbarExpanded ? 'ml-0 sm:ml-52 lg:ml-64 transition-all duration-300' : ''}`}>
-        {/* Overview Section */}
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl text-center font-medium text-black mb-4 sm:mb-6">Content</h1>
-          
-          {/* Subject cards grid - responsive */}
-          <div className={`grid grid-cols-1 ${isNavbarExpanded ? 'sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4' : 'sm:grid-cols-2 lg:grid-cols-4'} gap-2 sm:gap-4`}>
-
-            {subjectData.map((item, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-sm p-3 sm:p-4 flex flex-col items-center">
-                <div className="h-16 w-16 sm:h-24 sm:w-24 relative mb-1 sm:mb-2">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          { name: item.name, value: item.percentage },
-                          { name: 'Remaining', value: 100 - item.percentage }
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={36}
-                        outerRadius={48}
-                        startAngle={90}
-                        endAngle={-270}
-                        dataKey="value"
-                      >
-                        <Cell fill={item.color} />
-                        <Cell fill="#F0F0F0" />
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-sm sm:text-lg font-bold text-black">{item.percentage}</span>
+    <div className={`${darkMode ? 'bg-[#5b3a64]' : 'bg-gray-100'} pt-10 pr-10 pb-10 transition-colors duration-300`}>
+      <div className={`${darkMode ? 'bg-gradient-to-br from-[#100e10] via-[#5b3a64] to-[#2a0c2e]' : 'bg-gradient-to-br from-violet-200 via-gray-200 to-violet-400'} rounded-[30px] min-h-screen p-6 transition-colors duration-300`}>
+        <div className={`container mx-auto px-2 sm:px-4 py-4 ${isNavbarExpanded ? 'ml-0 sm:ml-52 lg:ml-64 transition-all duration-300' : ''}`}>
+          {/* Overview Section */}
+          <div className="mb-6 sm:mb-8">
+            <h1 className={`text-3xl text-center font-medium ${darkMode ? 'text-white' : 'text-black'} mb-4 sm:mb-6 transition-colors duration-300`}>Content</h1>
+            
+            {/* Subject cards grid - responsive */}
+            <div className={`grid grid-cols-1 ${isNavbarExpanded ? 'sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4' : 'sm:grid-cols-2 lg:grid-cols-4'} gap-2 sm:gap-4`}>
+              {subjectData.map((item, index) => (
+                <div key={index} className={`${darkMode ? 'bg-[#231130]' : 'bg-white'} rounded-xl shadow-sm p-3 sm:p-4 flex flex-col items-center transition-colors duration-300 relative z-10`}>
+                  <div className="h-16 w-16 sm:h-24 sm:w-24 relative mb-1 sm:mb-2 flex items-center justify-center">
+                    <div className="w-full h-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { name: item.name, value: item.percentage },
+                              { name: 'Remaining', value: 100 - item.percentage }
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={36}
+                            outerRadius={48}
+                            startAngle={90}
+                            endAngle={-270}
+                            dataKey="value"
+                            stroke={darkMode ? '#341b47' : '#F0F0F0'}
+                            strokeWidth={2}
+                          >
+                            <Cell fill={item.color} />
+                            <Cell fill={darkMode ? '#341b47' : '#F0F0F0'} />
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <span className={`text-sm sm:text-lg font-bold ${darkMode ? 'text-white' : 'text-black'} transition-colors duration-300`}>{item.percentage}</span>
+                    </div>
                   </div>
+                  <div className={`text-sm sm:text-lg font-bold ${darkMode ? 'text-white' : ''} transition-colors duration-300`} style={{ color: item.color }}>{item.status}</div>
+                  <button 
+                    className={`mt-2 sm:mt-3 px-2 sm:px-3 py-1 ${darkMode ? 'bg-[#341b47] text-gray-200 hover:bg-[#4a2f52]' : 'bg-gray-100 text-gray-600 hover:bg-gray-300'} rounded-lg text-xs sm:text-sm transition-colors duration-300`}
+                    onClick={() => handleViewAllForSubject(item.name)}
+                  >
+                    View All
+                  </button>
                 </div>
-                <div className="text-sm sm:text-lg font-bold" style={{ color: item.color }}>{item.status}</div>
-                <button 
-                  className="mt-2 sm:mt-3 px-2 sm:px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs sm:text-sm hover:bg-gray-300"
-                  onClick={() => handleViewAllForSubject(item.name)}
-                >
-                  View All
-                </button>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Contents Section */}
-        <div className="bg-white rounded-xl shadow-sm p-3 sm:p-6">
-          
-          {/* Mobile Filter Toggle Button */}
-          <div className="block sm:hidden mb-3">
-            <button 
-              className="w-full px-4 py-2 bg-violet-100 text-violet-600 rounded-lg flex items-center justify-center"
-              onClick={toggleMobileFilters}
-            >
-              {showMobileFilters ? (
-                <>
-                  <X size={16} className="mr-2" /> Hide Filters
-                </>
-              ) : (
-                <>
-                  <Menu size={16} className="mr-2" /> Show Filters
-                </>
-              )}
-            </button>
-          </div>
-          
-          {/* Filters - responsive layout */}
-          <div className={`${showMobileFilters ? 'block' : 'hidden'} sm:block mb-4`}>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-2 mb-2 items-start sm:items-center">
-              
-              {/* Year dropdown */}
-              <div className="relative w-full sm:w-auto">
-                <button 
-                  className="w-full sm:w-auto px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg flex items-center justify-between"
-                  onClick={() => setShowYearDropdown(!showYearDropdown)}
-                >
-                  {selectedYear === 'All' ? 'All Years' : selectedYear} <ChevronDown size={16} className="ml-1" />
-                </button>
+          {/* Contents Section */}
+          <div className={`${darkMode ? 'bg-[#231130]' : 'bg-white'} rounded-xl shadow-sm p-3 sm:p-6 transition-colors duration-300 relative z-10`}>
+            
+            {/* Mobile Filter Toggle Button */}
+            <div className="block sm:hidden mb-3">
+              <button 
+                className={`w-full px-4 py-2 ${darkMode ? 'bg-[#341b47] text-violet-200 hover:bg-[#4a2f52]' : 'bg-violet-100 text-violet-600 hover:bg-violet-200'} rounded-lg flex items-center justify-center transition-colors duration-300`}
+                onClick={toggleMobileFilters}
+              >
+                {showMobileFilters ? (
+                  <>
+                    <X size={16} className="mr-2" /> Hide Filters
+                  </>
+                ) : (
+                  <>
+                    <Menu size={16} className="mr-2" /> Show Filters
+                  </>
+                )}
+              </button>
+            </div>
+            
+            {/* Filters - responsive layout */}
+            <div className={`${showMobileFilters ? 'block' : 'hidden'} sm:block mb-4`}>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-2 mb-2 items-start sm:items-center">
                 
-                {showYearDropdown && (
-                  <div className="absolute z-10 mt-1 w-full sm:w-auto bg-white rounded-lg shadow-lg border border-gray-200">
-                    <button 
-                      className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                      onClick={() => {
-                        setSelectedYear('All');
-                        setShowYearDropdown(false);
-                      }}
-                    >
-                      All Years
-                    </button>
-                    {years.map(year => (
+                {/* Year dropdown */}
+                <div className="relative w-full sm:w-auto">
+                  <button 
+                    className={`w-full sm:w-auto px-4 py-2 text-sm ${darkMode ? 'bg-[#341b47] text-gray-200' : 'bg-gray-100 text-gray-700'} rounded-lg flex items-center justify-between transition-colors duration-300`}
+                    onClick={() => setShowYearDropdown(!showYearDropdown)}
+                  >
+                    {selectedYear === 'All' ? 'All Years' : selectedYear} <ChevronDown size={16} className="ml-1" />
+                  </button>
+                  
+                  {showYearDropdown && (
+                    <div className={`absolute z-10 mt-1 w-full sm:w-auto ${darkMode ? 'bg-[#231130] border-[#4a2f52]' : 'bg-white border-gray-200'} rounded-lg shadow-lg border transition-colors duration-300`}>
                       <button 
-                        key={year}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        className={`px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-[#341b47]' : 'text-gray-700 hover:bg-gray-100'} w-full text-left transition-colors duration-300`}
                         onClick={() => {
-                          setSelectedYear(year.toString());
+                          setSelectedYear('All');
                           setShowYearDropdown(false);
                         }}
                       >
-                        {year}
+                        All Years
                       </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              
-              {/* Month dropdown */}
-              <div className="relative w-full sm:w-auto">
-                <button 
-                  className="w-full sm:w-auto px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg flex items-center justify-between"
-                  onClick={() => setShowMonthDropdown(!showMonthDropdown)}
-                >
-                  {selectedMonth === 'All' ? 'All Months' : selectedMonth} <ChevronDown size={16} className="ml-1" />
-                </button>
+                      {years.map(year => (
+                        <button 
+                          key={year}
+                          className={`px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-[#341b47]' : 'text-gray-700 hover:bg-gray-100'} w-full text-left transition-colors duration-300`}
+                          onClick={() => {
+                            setSelectedYear(year.toString());
+                            setShowYearDropdown(false);
+                          }}
+                        >
+                          {year}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 
-                {showMonthDropdown && (
-                  <div className="absolute z-10 mt-1 w-full sm:w-auto bg-white rounded-lg shadow-lg border border-gray-200">
-                    <button 
-                      className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                      onClick={() => {
-                        setSelectedMonth('All');
-                        setShowMonthDropdown(false);
-                      }}
-                    >
-                      All Months
-                    </button>
-                    {months.map(month => (
+                {/* Month dropdown */}
+                <div className="relative w-full sm:w-auto">
+                  <button 
+                    className={`w-full sm:w-auto px-4 py-2 text-sm ${darkMode ? 'bg-[#341b47] text-gray-200' : 'bg-gray-100 text-gray-700'} rounded-lg flex items-center justify-between transition-colors duration-300`}
+                    onClick={() => setShowMonthDropdown(!showMonthDropdown)}
+                  >
+                    {selectedMonth === 'All' ? 'All Months' : selectedMonth} <ChevronDown size={16} className="ml-1" />
+                  </button>
+                  
+                  {showMonthDropdown && (
+                    <div className={`absolute z-10 mt-1 w-full sm:w-auto ${darkMode ? 'bg-[#231130] border-[#4a2f52]' : 'bg-white border-gray-200'} rounded-lg shadow-lg border transition-colors duration-300`}>
                       <button 
-                        key={month}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        className={`px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-[#341b47]' : 'text-gray-700 hover:bg-gray-100'} w-full text-left transition-colors duration-300`}
                         onClick={() => {
-                          setSelectedMonth(month);
+                          setSelectedMonth('All');
                           setShowMonthDropdown(false);
                         }}
                       >
-                        {month}
+                        All Months
                       </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              
-              {/* Search bar */}
-              <div className="relative w-full sm:w-auto sm:ml-auto">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search size={16} className="text-gray-400" />
+                      {months.map(month => (
+                        <button 
+                          key={month}
+                          className={`px-4 py-2 text-sm ${darkMode ? 'text-gray-200 hover:bg-[#341b47]' : 'text-gray-700 hover:bg-gray-100'} w-full text-left transition-colors duration-300`}
+                          onClick={() => {
+                            setSelectedMonth(month);
+                            setShowMonthDropdown(false);
+                          }}
+                        >
+                          {month}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <input
-                  type="text"
-                  className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 hover:border-violet-600 focus:border-violet-600 focus:ring-0 focus:outline-none rounded-lg sm:w-48 md:w-64"
-                  placeholder="Search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                
+                {/* Search bar */}
+                <div className="relative w-full sm:w-auto sm:ml-auto">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search size={16} className={darkMode ? 'text-gray-400' : 'text-gray-400'} />
+                  </div>
+                  <input
+                    type="text"
+                    className={`w-full pl-10 pr-4 py-2 ${darkMode ? 'bg-[#341b47] border-[#4a2f52] text-gray-200 placeholder-gray-400' : 'bg-white border-gray-200 text-gray-700'} border-2 hover:border-violet-600 focus:border-violet-600 focus:ring-0 focus:outline-none rounded-lg sm:w-48 md:w-64 transition-colors duration-300`}
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                
               </div>
-              
             </div>
-          </div>
-          
-          {/* Table - responsive design */}
-          <div className="overflow-x-auto -mx-3 sm:mx-0">
-            <table className="min-w-full table-auto">
-              <thead className="bg-gray-50">
-                <tr className="border-b border-gray-200">
-                  {visibleColumns.name && (
-                    <th className="py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium text-violet-600">Content Name</th>
-                  )}
-                  {visibleColumns.subject && (
-                    <th className="py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium text-violet-600">Subject</th>
-                  )}
-                  {visibleColumns.uploadDate && (
-                    <th className="py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium text-violet-600">Upload Date</th>
-                  )}
-                  {visibleColumns.uploadedBy && (
-                    <th className="py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium text-violet-600">Uploaded By</th>
-                  )}
-                  {visibleColumns.id && (
-                    <th className="py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium text-violet-600">Document ID</th>
-                  )}
-                  {visibleColumns.view && (
-                    <th className="py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium text-violet-600">View</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {displayedContents.length > 0 ? (
-                  displayedContents.map((content, index) => (
-                    <tr 
-                      key={content.id} 
-                      className={`${selectedRow === index ? 'bg-yellow-50' : index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100`}
-                      onClick={() => setSelectedRow(index)}
-                    >
-                      {visibleColumns.name && (
-                        <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium truncate max-w-xs sm:max-w-sm">{content.name}</td>
-                      )}
-                      {visibleColumns.subject && (
-                        <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm truncate">{content.subject}</td>
-                      )}
-                      {visibleColumns.uploadDate && (
-                        <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm truncate">{content.uploadDate}</td>
-                      )}
-                      {visibleColumns.uploadedBy && (
-                        <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm truncate">{content.uploadedBy}</td>
-                      )}
-                      {visibleColumns.id && (
-                        <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm font-mono truncate">{content.id}</td>
-                      )}
-                      {visibleColumns.view && (
-                        <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm">
-                          <button
-                            className="text-gray-500 hover:text-violet-500"
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevent row selection when clicking the icon
-                              // Open document in a new window without navbar
-                              window.open(
-                                `/documents/${content.id}`,
-                                `document_${content.id}`,
-                                'toolbar=no,location=no,menubar=no,scrollbars=yes,resizable=yes,width=1000,height=800'
-                              );
-                            }}
-                          >
-                            <Eye size={4} className="sm:size-5" />
-                          </button>
-                        </td>
-                      )}
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={Object.values(visibleColumns).filter(Boolean).length} className="py-4 text-center text-xs sm:text-sm text-gray-500">
-                      No matching documents found
-                    </td>
+            
+            {/* Table - responsive design */}
+            <div className="overflow-x-auto -mx-3 sm:mx-0">
+              <table className="min-w-full table-auto">
+                <thead className={darkMode ? 'bg-[#341b47]' : 'bg-gray-50'}>
+                  <tr className={darkMode ? 'border-b border-[#4a2f52]' : 'border-b border-gray-200'}>
+                    {visibleColumns.name && (
+                      <th className={`py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium ${darkMode ? 'text-violet-300' : 'text-violet-600'}`}>Content Name</th>
+                    )}
+                    {visibleColumns.subject && (
+                      <th className={`py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium ${darkMode ? 'text-violet-300' : 'text-violet-600'}`}>Subject</th>
+                    )}
+                    {visibleColumns.uploadDate && (
+                      <th className={`py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium ${darkMode ? 'text-violet-300' : 'text-violet-600'}`}>Upload Date</th>
+                    )}
+                    {visibleColumns.uploadedBy && (
+                      <th className={`py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium ${darkMode ? 'text-violet-300' : 'text-violet-600'}`}>Uploaded By</th>
+                    )}
+                    {visibleColumns.id && (
+                      <th className={`py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium ${darkMode ? 'text-violet-300' : 'text-violet-600'}`}>Document ID</th>
+                    )}
+                    {visibleColumns.view && (
+                      <th className={`py-3 px-2 sm:px-4 text-left text-xs sm:text-sm font-medium ${darkMode ? 'text-violet-300' : 'text-violet-600'}`}>View</th>
+                    )}
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          
-          {/* Pagination - responsive */}
-          {filteredContents.length > itemsPerPage && (
-            <div className="flex flex-col sm:flex-row justify-between items-center mt-4 space-y-2 sm:space-y-0">
-              <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
-                Showing {Math.min(1 + (currentPage - 1) * itemsPerPage, filteredContents.length)} to {Math.min(currentPage * itemsPerPage, filteredContents.length)} of {filteredContents.length} entries
-              </div>
-              <div className="flex space-x-2">
-                <button 
-                  className="p-1 sm:p-2 rounded-md bg-gray-100 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(prev => prev - 1)}
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <button 
-                  className="p-1 sm:p-2 rounded-md bg-gray-100 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={currentPage * itemsPerPage >= filteredContents.length}
-                  onClick={() => setCurrentPage(prev => prev + 1)}
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
+                </thead>
+                <tbody>
+                  {displayedContents.length > 0 ? (
+                    displayedContents.map((content, index) => (
+                      <tr 
+                        key={content.id} 
+                        className={`${selectedRow === index ? (darkMode ? 'bg-[#4a2f52]' : 'bg-yellow-50') : index % 2 === 0 ? (darkMode ? 'bg-[#231130]' : 'bg-white') : (darkMode ? 'bg-[#2a1b35]' : 'bg-gray-50')} ${darkMode ? 'hover:bg-[#4a2f52]' : 'hover:bg-gray-100'} transition-colors duration-300`}
+                        onClick={() => setSelectedRow(index)}
+                      >
+                        {visibleColumns.name && (
+                          <td className={`py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium truncate max-w-xs sm:max-w-sm ${darkMode ? 'text-gray-200' : ''}`}>{content.name}</td>
+                        )}
+                        {visibleColumns.subject && (
+                          <td className={`py-3 px-2 sm:px-4 text-xs sm:text-sm truncate ${darkMode ? 'text-gray-200' : ''}`}>{content.subject}</td>
+                        )}
+                        {visibleColumns.uploadDate && (
+                          <td className={`py-3 px-2 sm:px-4 text-xs sm:text-sm truncate ${darkMode ? 'text-gray-200' : ''}`}>{content.uploadDate}</td>
+                        )}
+                        {visibleColumns.uploadedBy && (
+                          <td className={`py-3 px-2 sm:px-4 text-xs sm:text-sm truncate ${darkMode ? 'text-gray-200' : ''}`}>{content.uploadedBy}</td>
+                        )}
+                        {visibleColumns.id && (
+                          <td className={`py-3 px-2 sm:px-4 text-xs sm:text-sm font-mono truncate ${darkMode ? 'text-gray-200' : ''}`}>{content.id}</td>
+                        )}
+                        {visibleColumns.view && (
+                          <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm">
+                            <button
+                              className={`${darkMode ? 'text-gray-400 hover:text-violet-300' : 'text-gray-500 hover:text-violet-500'} transition-colors duration-300`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(
+                                  `/documents/${content.id}`,
+                                  `document_${content.id}`,
+                                  'toolbar=no,location=no,menubar=no,scrollbars=yes,resizable=yes,width=1000,height=800'
+                                );
+                              }}
+                            >
+                              <Eye size={4} className="sm:size-5" />
+                            </button>
+                          </td>
+                        )}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={Object.values(visibleColumns).filter(Boolean).length} className={`py-4 text-center text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        No matching documents found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
-          )}
+            
+            {/* Pagination - responsive */}
+            {filteredContents.length > itemsPerPage && (
+              <div className="flex flex-col sm:flex-row justify-between items-center mt-4 space-y-2 sm:space-y-0">
+                <div className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} text-center sm:text-left`}>
+                  Showing {Math.min(1 + (currentPage - 1) * itemsPerPage, filteredContents.length)} to {Math.min(currentPage * itemsPerPage, filteredContents.length)} of {filteredContents.length} entries
+                </div>
+                <div className="flex space-x-2">
+                  <button 
+                    className={`p-1 sm:p-2 rounded-md ${darkMode ? 'bg-[#341b47] text-gray-200 disabled:opacity-50' : 'bg-gray-100 text-gray-600 disabled:opacity-50'} disabled:cursor-not-allowed transition-colors duration-300`}
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(prev => prev - 1)}
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <button 
+                    className={`p-1 sm:p-2 rounded-md ${darkMode ? 'bg-[#341b47] text-gray-200 disabled:opacity-50' : 'bg-gray-100 text-gray-600 disabled:opacity-50'} disabled:cursor-not-allowed transition-colors duration-300`}
+                    disabled={currentPage * itemsPerPage >= filteredContents.length}
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };

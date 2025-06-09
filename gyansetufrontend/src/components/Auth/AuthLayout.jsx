@@ -3,15 +3,15 @@ import LoadingOverlay from "./LoadingOverlay";
 
 const AuthLayout = ({ children, animate, loading }) => {
   return (
-    <div className="min-h-screen w-full bg-black flex">
+    <div className="min-h-screen w-full bg-black flex overflow-hidden">
       {/* Optional loading overlay */}
       {loading && <LoadingOverlay />}
 
       {/* Left (Form) Panel: full width on mobile, 40% width on md and larger */}
-      <div className="w-full md:w-[40%] flex justify-center items-center p-4">
+      <div className="w-full md:w-[40%] flex justify-center items-center p-4 min-h-screen">
         <div
-          className="w-full max-h-[650px] overflow-y-auto md:w-[500px] bg-[#1c1c1c] rounded-2xl px-4 py-5 text-white"
-          style={{ backgroundColor: "#f4f4f4" }}
+          className="w-full md:w-[500px] bg-[#1c1c1c] rounded-2xl px-4 py-5 text-white h-full"
+          style={{ backgroundColor: "#231130" }}
         >
           {/* Wrapper for children to ensure scrollable content */}
           <div className="h-full flex flex-col">{children}</div>
